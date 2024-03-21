@@ -1,0 +1,20 @@
+﻿<MudText Typo="Typo.h5" Class="mb-6">Recovery Codes</MudText>
+<MudAlert Severity="Severity.Warning" ContentAlignment="HorizontalAlignment.Center" Class="mb-4">
+    <MudText>
+        <strong>Put these codes in a safe place.</strong>
+    </MudText>
+    <MudText>
+        If you lose your device and don't have the recovery codes you will lose access to your account.
+    </MudText>
+</MudAlert>
+<div class="d-flex flex-column gap-2 align-center">
+    @foreach (var recoveryCode in RecoveryCodes)
+    {
+        <MudText Align="Align.Center">@recoveryCode</MudText>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string[] RecoveryCodes { get; set; } = [];
+}

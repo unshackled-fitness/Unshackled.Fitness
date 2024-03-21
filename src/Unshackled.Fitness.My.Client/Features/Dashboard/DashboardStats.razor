@@ -1,0 +1,94 @@
+﻿@inherits DashboardStatsBase
+
+<div class="d-flex flex-column flex-md-row gap-8 gap-md-4 mb-12">
+	<div class="workout-summary flex-grow-1">
+		<div class="summary-item">
+			<MudText Class="summary-label" Color="Color.Tertiary" Align="Align.Center">Workouts Tracked</MudText>
+			<MudText Class="summary-value">@Model.TotalWorkouts</MudText>
+			@if (Model.Years.Any())
+			{
+				<MudText Class="summary-caption" Color="Color.Tertiary">since @Model.Years.FirstOrDefault()</MudText>
+			}
+		</div>
+		<MudDivider Vertical="true" FlexItem="true" />
+		<div class="summary-item">
+			<MudText Class="summary-label" Color="Color.Tertiary" Align="Align.Center">Total Volume</MudText>
+			<MudText Class="summary-value">
+				<WeightLabel WeightKg="@Model.TotalVolumeKg" WeightLb="@Model.TotalVolumeLb" UnitSystem="@State.ActiveMember.Settings.DefaultUnits" />
+			</MudText>
+			@if (Model.Years.Any())
+			{
+				<MudText Class="summary-caption" Color="Color.Tertiary">since @Model.Years.FirstOrDefault()</MudText>
+			}
+		</div>
+	</div>
+	<div class="stat-graph">
+		<div>
+			<MudText Typo="Typo.body1" Inline="true">@Model.Workouts.Count Workouts in</MudText>
+				<MudMenu Label="@LabelYear" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.KeyboardArrowDown" Size="Size.Small" Dense="true" Class="ms-1">
+				@foreach (var year in Model.Years)
+				{
+					<MudMenuItem OnClick="@(() => HandleYearClicked(year))" OnTouch="@(() => HandleYearClicked(year))">@year</MudMenuItem>
+				}
+				<MudMenuItem OnClick="@(() => HandlePastYearClicked())" OnTouch="@(() => HandlePastYearClicked())">Past Year</MudMenuItem>
+			</MudMenu>
+		</div>
+		<div class="grid-wrapper">
+			<div class="stat-grid">
+				<div class="day-names">
+					<div class="day-name"></div>
+					@for (int d = 0; d < 7; d++)
+					{
+						<div class="day-name">
+							<div>@GetDayName(d)</div>
+						</div>
+					}
+				</div>
+				<div class="days">
+					@{
+						string curMonth = string.Empty;
+						int curStart = 1;
+					}
+					@for (int i = 0; i < Model.Weeks.Length; i++)
+					{
+						if (Model.Weeks[i].Month != curMonth)
+						{
+							curMonth = Model.Weeks[i].Month;
+							int end = Model.GetWeekColumnsInMonth(i) + curStart;
+
+							@if (end - curStart > 1)
+							{
+								<div class="month" style="@GetMonthStyle(curStart, end)">@Model.Weeks[i].Month</div>
+							}
+							else
+							{
+								<div class="month" style="@GetMonthStyle(curStart, end)"></div>
+							}
+
+							curStart = end;
+						}
+					}
+					@for (int d = 0; d < 7; d++)
+					{
+						@for (int w = 0; w < Model.Weeks.Length; w++)
+						{
+							@if (Model.Weeks[w].Days[d].Date != null)
+							{
+								<div class="@(Model.Weeks[w].Days[d]!.WorkoutCount > 0 ? "day on" : "day off")"
+										title="@Model.Weeks[w].Days[d].Description">
+									<span class="sr-only">@Model.Weeks[w].Days[d].Description</span>
+								</div>
+							}
+							else
+							{
+								<div class="day"></div>
+							}
+						}
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+

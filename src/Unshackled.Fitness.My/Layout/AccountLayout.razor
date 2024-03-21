@@ -1,0 +1,47 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
+<MudThemeProvider @ref="@ThemeProvider" IsDarkMode="false" Theme="@CustomTheme" />
+
+<MudLayout Class="app-account">
+	<MudContainer Class="h-100 pt-6">
+		<MudGrid Justify="Justify.SpaceAround" Class="h-100 align-center">
+			<MudItem xs="12" sm="10" md="8" lg="6">
+				<MudPaper>
+					<MudGrid Justify="Justify.Center" Class="mt-2 mb-4">
+						<MudItem xs="8" sm="6" md="4">
+							<LogoLayout Layout="LogoLayouts.Vertical" />
+						</MudItem>
+					</MudGrid>
+					@if (HttpContext is null)
+					{
+						<MudText Typo="Typo.h4">Loading...</MudText>
+					}
+					else
+					{
+						@Body
+					}
+				</MudPaper>
+			</MudItem>
+		</MudGrid>
+	</MudContainer>
+</MudLayout>
+
+@code {
+	[CascadingParameter]
+	private HttpContext? HttpContext { get; set; }
+
+	private MudThemeProvider? ThemeProvider { get; set; }
+	private AppTheme CustomTheme = new();
+
+	protected override void OnParametersSet()
+	{
+		if (HttpContext is null)
+		{
+			// If this code runs, we're currently rendering in interactive mode, so there is no HttpContext.
+			// The identity pages need to set cookies, so they require an HttpContext. To achieve this we
+			// must transition back from interactive mode to a server-rendered page.
+			NavigationManager.Refresh(forceReload: true);
+		}
+	}
+}

@@ -1,0 +1,146 @@
+﻿@typeparam TItem
+
+<div class="@ListClass">
+	@if (!IsLoading && !IsReordering && Items.Any())
+	{
+		@if ((ToolbarPosition == ToolbarPositions.Top || ToolbarPosition == ToolbarPositions.Both) && (AllowSort || ListTools != null))
+		{
+			<MudToolBar DisableGutters="true">
+				@if (ToolbarAlignment == HorizontalAlignment.Center || ToolbarAlignment == HorizontalAlignment.End || ToolbarAlignment == HorizontalAlignment.Right)
+				{
+					<MudSpacer />
+				}
+
+				@if (ListTools != null)
+				{
+					@ListTools
+				}
+
+				@if (AllowSort)
+				{
+					<MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Sort" Disabled="@DisableSort" OnClick="@(() => HandleSortClicked())">Sort</MudButton>
+				}
+
+				@if (ToolbarAlignment == HorizontalAlignment.Center)
+				{
+					<MudSpacer />
+				}
+			</MudToolBar>
+		}
+
+		@if (UseDividers)
+		{
+			<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+		}
+
+		@for (int i = 0; i < Items.Count; i++)
+		{
+			var item = Items[i];
+			@if (ItemRenderer != null)
+			{
+				@ItemRenderer(new RowContext<TItem> { Item = item, RowIndex = i })
+			}
+
+			@if (UseDividers)
+			{
+				<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+			}
+		}
+
+		@if ((ToolbarPosition == ToolbarPositions.Bottom || ToolbarPosition == ToolbarPositions.Both) && (AllowSort || ListTools != null))
+		{
+			<MudToolBar DisableGutters="true">
+				@if (ToolbarAlignment == HorizontalAlignment.Center || ToolbarAlignment == HorizontalAlignment.End || ToolbarAlignment == HorizontalAlignment.Right)
+				{
+					<MudSpacer />
+				}
+
+				@if (ListTools != null)
+				{
+					@ListTools
+				}
+
+				@if (AllowSort)
+				{
+					<MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Sort" OnClick="@(() => HandleSortClicked())">Sort</MudButton>
+				}
+
+				@if (ToolbarAlignment == HorizontalAlignment.Center)
+				{
+					<MudSpacer />
+				}
+			</MudToolBar>
+		}
+	}
+	else if (!IsLoading && IsReordering && SortingItems.Any())
+	{
+		<MudToolBar DisableGutters="true" Class="mb-2">
+			<ProgressButton Color="Color.Primary" Disabled="@IsWorking" IsWorking="@IsWorking" WorkingText="Applying" StartIcon="@Icons.Material.Filled.Check"
+						OnClick="@(() => HandleUpdateSortClicked())">Apply Order</ProgressButton>
+			<MudButton StartIcon="@Icons.Material.Filled.Cancel" OnClick="@(() => HandleCancelSortClicked())">Cancel</MudButton>
+		</MudToolBar>
+		<MudDropContainer T="TItem" Items="@SortingItems" ItemsSelector="@((item,dropzone) => true)" ItemDropped="HandleItemDropped">
+			<ChildContent>
+				<MudDropZone T="TItem" AllowReorder="true" Class="@ZoneClass" ItemDraggingClass="@ItemDraggingClass">
+				</MudDropZone>
+			</ChildContent>
+			<ItemRenderer>
+				@if (DraggableItemRenderer is not null)
+				{
+					@DraggableItemRenderer(context)
+				}
+			</ItemRenderer>
+		</MudDropContainer>
+	}
+	else if (IsLoading)
+	{
+		<DefaultProgress />
+	}
+	else
+	{
+		@if ((ToolbarPosition == ToolbarPositions.Top || ToolbarPosition == ToolbarPositions.Both) && ListTools != null)
+		{
+			<MudToolBar DisableGutters="true">
+				@if (ToolbarAlignment == HorizontalAlignment.Center || ToolbarAlignment == HorizontalAlignment.End || ToolbarAlignment == HorizontalAlignment.Right)
+				{
+					<MudSpacer />
+				}
+
+				@if (ListTools != null)
+				{
+					@ListTools
+				}
+
+				@if (ToolbarAlignment == HorizontalAlignment.Center)
+				{
+					<MudSpacer />
+				}
+			</MudToolBar>
+		}
+
+		@if (EmptyListRenderer != null)
+		{
+			@EmptyListRenderer
+		}
+
+		@if ((ToolbarPosition == ToolbarPositions.Bottom || ToolbarPosition == ToolbarPositions.Both) && ListTools != null)
+		{
+			<MudToolBar DisableGutters="true">
+				@if (ToolbarAlignment == HorizontalAlignment.Center || ToolbarAlignment == HorizontalAlignment.End || ToolbarAlignment == HorizontalAlignment.Right)
+				{
+					<MudSpacer />
+				}
+
+				@if (ListTools != null)
+				{
+					@ListTools
+				}
+
+				@if (ToolbarAlignment == HorizontalAlignment.Center)
+				{
+					<MudSpacer />
+				}
+			</MudToolBar>
+		}
+	}
+</div>

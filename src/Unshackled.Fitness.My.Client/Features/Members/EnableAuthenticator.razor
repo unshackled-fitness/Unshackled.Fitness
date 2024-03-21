@@ -1,0 +1,63 @@
+﻿@page "/member/2fa/enable-authenticator"
+@inherits EnableAuthenticatorBase
+
+<DynamicPageTitle Title="Configure Authenticator App" />
+
+<MudBreadcrumbs Items="@Breadcrumbs" />
+
+<MudText Typo="Typo.h4" Class="mb-4">Configure Authenticator App</MudText>
+
+@if (AuthenticatorModel.RecoveryCodes is not null)
+{
+	<ShowRecoveryCodes RecoveryCodes="AuthenticatorModel.RecoveryCodes.ToArray()" />
+
+	<MudToolBar DisableGutters="true" Class="mt-4">
+		<MudSpacer />
+		<MudButton Href="/member/2fa">Return</MudButton>
+		<MudSpacer />
+	</MudToolBar>
+}
+else
+{
+	<MudText>To use an authenticator app go through the following steps:</MudText>
+	<MudText>
+		<ol class="list">
+			<li>
+				<DownloadApps />
+			</li>
+			<li>
+				<MudText Class="mb-4">Scan the QR Code or enter the following key into your two factor authenticator app. Spaces and casing do not matter.</MudText>
+
+				<MudAlert Severity="Severity.Info" NoIcon="true" ContentAlignment="HorizontalAlignment.Center" Class="mb-4"><kbd>@AuthenticatorModel.SharedKey</kbd></MudAlert>
+
+				<div class="d-flex flex-column align-center pa-4" style="background-color: #ffffff;">
+					<div id="qrCode" data-url="@AuthenticatorModel.AuthenticatorUri"></div>
+				</div>
+			</li>
+			<li>
+				<MudText Class="mb-4">
+					Once you have scanned the QR code or input the key above, your two factor authentication app will provide you
+					with a unique code. Enter the code in the confirmation box below.
+				</MudText>
+				<div class="row">
+					<div class="col-md-6">
+						<EditForm Model="@FormModel" OnValidSubmit="HandleFormSubmitted">
+							<FluentValidationValidator Validator="FormModelValidator"></FluentValidationValidator>
+							<MudGrid Justify="Justify.SpaceAround">
+								<MudItem xs="12" sm="8" md="6" lg="4">
+									<MudTextField Variant="Variant.Outlined" FullWidth="true" Label="Verification Code" autocomplete="off" Disabled="@DisableControls"
+													@bind-Value="@FormModel.Code" For="@(() => FormModel.Code)"/>
+								</MudItem>
+							</MudGrid>
+							<MudToolBar DisableGutters="true" Class="mt-4">
+								<MudSpacer />
+								<ProgressButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Secondary" IsWorking="@IsWorking" WorkingText="Verifying...">Verify</ProgressButton>
+								<MudSpacer />
+							</MudToolBar>
+						</EditForm>
+					</div>
+				</div>
+			</li>
+		</ol>
+	</MudText>
+}

@@ -1,0 +1,34 @@
+﻿@inherits FormPropertiesBase
+
+<EditForm id="@FormId" Model="@Model" OnValidSubmit="HandleFormSubmitted">
+	<FluentValidationValidator Validator="ModelValidator"></FluentValidationValidator>
+	<MudGrid Spacing="1" Class="mb-3">
+		<MudItem xs="12">
+			<MudTextField Label="Title" Variant="Variant.Outlined" Margin="Margin.Dense" Immediate="true" Disabled="@DisableControls"
+						  FullWidth="true" For="@(() => Model.Title)" @bind-Value="@Model.Title" />
+		</MudItem>
+		@if (Model.IsStarted)
+		{
+			<MudItem xs="6">
+				<MudDatePicker Label="Start Date" Variant="Variant.Outlined" DateFormat="@Model.DateFormat(Model.DateStarted)" Disabled="@DisableControls"
+							   @bind-Date="@Model.DateStarted" For="@(() => Model.DateStartedUtc)" Color="Color.Secondary" />
+			</MudItem>
+			<MudItem xs="6">
+				<MudTimePicker Label="Start Time" AmPm="true" Variant="Variant.Outlined" TimeFormat="h:mm tt" Disabled="@DisableControls" Color="Color.Secondary"
+							   @bind-Time="@Model.TimeStarted" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.TopRight" />
+			</MudItem>
+		}
+		@if (Model.IsComplete)
+		{
+			<MudItem xs="6">
+				<MudDatePicker Label="Completion Date" Variant="Variant.Outlined" DateFormat="@Model.DateFormat(Model.DateCompleted)" Disabled="@DisableControls"
+							   @bind-Date="@Model.DateCompleted" For="@(() => Model.DateCompletedUtc)" Color="Color.Secondary" />
+			</MudItem>
+			<MudItem xs="6">
+				<MudTimePicker Label="Completion Time" AmPm="true" Variant="Variant.Outlined" TimeFormat="h:mm tt" Disabled="@DisableControls" Color="Color.Secondary"
+							   @bind-Time="@Model.TimeCompleted" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.TopRight" />
+			</MudItem>
+		}
+	</MudGrid>
+</EditForm>
+

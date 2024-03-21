@@ -1,0 +1,10 @@
+﻿/// <reference path="./styles.scss" />
+
+.mud-breadcrumbs {
+	padding-left: 0;
+	padding-top: 0;
+}
+
+.mud-breadcrumb-item>a>svg.mud-icon-root {
+    margin-top: -.25rem;
+}

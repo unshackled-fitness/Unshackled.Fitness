@@ -1,0 +1,48 @@
+﻿@typeparam TGroup
+@typeparam TItem
+
+<div class="@ViewClass">
+	@if (!IsLoading && Items.Any())
+	{
+		string currentGroupSid = string.Empty;
+		bool isFirstGroup = true;
+
+		<MudGrid Spacing="@GridSpacing" Justify="@GridJustify">
+			@for (int i = 0; i < Items.Count; i++)
+			{
+				var item = Items[i];
+				if (item.ListGroupSid != currentGroupSid)
+				{
+					currentGroupSid = item.ListGroupSid;
+					@if (ShowSingleGroupTitle || Groups.Count > 1)
+					{
+						var group = Groups.Where(x => x.Sid == item.ListGroupSid).SingleOrDefault();
+						if (group != null && GroupRenderer != null)
+						{
+							<MudItem xs="12" Class="@(isFirstGroup ? "list-group-title first-group" : "list-group-title")">
+								@GroupRenderer(group)
+							</MudItem>
+						}
+					}
+					isFirstGroup = false;
+				}
+				@if (ItemRenderer != null)
+				{
+					@ItemRenderer(item)
+				}
+			}
+		</MudGrid>
+		<PagingComponent Page="@Page" PageSize="@PageSize" Total="@TotalItems" PageSelected="@HandlePageSelected" />
+	}
+	else if (IsLoading)
+	{
+		<DefaultProgress />
+	}
+	else
+	{
+		@if (EmptyListRenderer != null)
+		{
+			@EmptyListRenderer
+		}
+	}
+</div>

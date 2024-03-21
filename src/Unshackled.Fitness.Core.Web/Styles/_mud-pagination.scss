@@ -1,0 +1,8 @@
+﻿/// <reference path="styles.scss" />
+
+.mud-pagination .mud-pagination-item>* {
+	@media (max-width: $breakpoint-xs-max) {
+		height: 24px;
+		min-width: 24px;
+	}
+}

@@ -1,0 +1,28 @@
+﻿@inherits DashboardMetricsBase
+
+
+<div class="mb-4">
+	<MudDatePicker Label="Metrics For" Variant="Variant.Filled" Class="input-no-underline" Date="@DisplayDate" DisableToolbar="true" MaxDate="@DateTimeOffset.Now.Date" DateChanged="@HandleDateChanged" />
+</div>
+<GroupedGrid TGroup="MetricDefinitionGroupModel" TItem="MetricModel" Groups="@GridModel.Groups" Items="@GridModel.Metrics" GridSpacing="2" IsLoading="@IsLoading">
+	<GroupRenderer>
+		<MudText Typo="Typo.subtitle1">@context.Title</MudText>
+	</GroupRenderer>
+	<ItemRenderer>
+		<MudItem xs="6" sm="4" md="3" lg="2">
+			<MetricPanel Title="@context.Title" SubTitle="@context.SubTitle" MetricType="@context.MetricType" MaxValue="@context.MaxValue" @bind-IsEditing="@context.IsEditing"
+						 HighlightColor="@context.HighlightColor" Disabled="!IsMemberActive" Value="@context.RecordedValue" ValueChanged="@((decimal value) => HandleSaveMetric(context, value))">
+				<DisplayToolbar>
+					@if(IsMemberActive)
+					{
+						<MudIconButton Icon="@Icons.Material.Filled.Edit" Disabled="@context.IsSaving" OnClick="@(() => context.IsEditing = true)" />
+					}
+					<MudIconButton Icon="@Icons.Material.Filled.History" Disabled="@context.IsSaving" OnClick="@(() => NavManager.NavigateTo($"/metrics/{context.Sid}"))" />
+				</DisplayToolbar>
+			</MetricPanel>
+		</MudItem>
+	</ItemRenderer>
+	<EmptyListRenderer>
+		<MudText Align="Align.Center">No metrics found for the selected date.</MudText>
+	</EmptyListRenderer>
+</GroupedGrid>

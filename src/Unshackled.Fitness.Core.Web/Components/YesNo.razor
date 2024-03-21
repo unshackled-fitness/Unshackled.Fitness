@@ -1,0 +1,52 @@
+﻿<div class="@GetClass()">
+	@if (Value)
+	{
+		<MudIcon Title="@ToolTipYes" Icon="@IconYes" Color="@ColorYes" Size="@IconSize" />
+		@if (ShowLabel)
+		{
+			<MudText Typo="LabelTypo" Class="ml-1">@LabelYes</MudText>
+		}
+	}
+	else
+	{
+		<MudIcon Title="@ToolTipNo" Icon="@IconNo" Color="@ColorNo" Size="@IconSize" />
+		@if (ShowLabel)
+		{
+			<MudText Typo="@LabelTypo" Class="ml-1">@LabelNo</MudText>
+		}
+	}
+</div>
+
+@code {
+	[Parameter] public string? Class { get; set; }
+	[Parameter] public Color ColorYes { get; set; } = Color.Primary;
+	[Parameter] public Color ColorNo { get; set; } = Color.Default;
+	[Parameter] public string IconYes { get; set; } = Icons.Material.Filled.CheckCircle;
+	[Parameter] public string IconNo { get; set; } = Icons.Material.Filled.DoNotDisturbOn;
+	[Parameter] public Size IconSize { get; set; } = Size.Medium;
+	[Parameter] public bool ShowLabel { get; set; } = true;
+	[Parameter] public string LabelYes { get; set; } = "Yes";
+	[Parameter] public string LabelNo { get; set; } = "No";
+	[Parameter] public Typo LabelTypo { get; set; } = Typo.caption;
+	[Parameter] public string? ToolTipYes { get; set; }
+	[Parameter] public string? ToolTipNo { get; set; }
+	[Parameter] public bool Value { get; set; }
+	[Parameter] public Align Align { get; set; } = Align.Center;
+
+	private string GetClass()
+	{
+		var cls = "d-flex flex-row align-center";
+
+		if (Align == Align.Center)
+			cls += $" justify-center";
+		else if (Align == Align.Start || Align == Align.Left)
+			cls += $" justify-start";
+		else if (Align == Align.End || Align == Align.Right)
+			cls += $" justify-end";
+
+		if (!string.IsNullOrEmpty(Class))
+			cls += $" {Class}";
+
+		return cls;
+	}
+}

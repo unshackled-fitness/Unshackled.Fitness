@@ -1,0 +1,31 @@
+﻿@inherits FormPropertiesBase
+
+<EditForm id="@FormId" Model="@Model" OnValidSubmit="HandleFormSubmitted">
+	<FluentValidationValidator Validator="ModelValidator"></FluentValidationValidator>
+	<MudGrid Spacing="2">
+		<MudItem xs="12">
+			<MudTextField Label="Title" Variant="Variant.Outlined" Disabled="@DisableControls"
+						  FullWidth="true" @bind-Value="@Model.Title" For="@(() => Model.Title)" />
+		</MudItem>
+		<MudItem xs="12">
+			<MuscleTypeSelect AllOption="false" MultiSelection="true" @bind-SelectedValues="@Model.Muscles" Disabled="@DisableControls" />
+		</MudItem>
+		<MudItem xs="12">
+			<EquipmentTypeSelect AllOption="false" MultiSelection="true" @bind-SelectedValues="@Model.Equipment" Disabled="@DisableControls" />
+		</MudItem>
+		<MudItem xs="12">
+			<WorkoutSetTypeSelect Label="Default Set Type" @bind-Value="@Model.DefaultSetType" Disabled="@DisableControls" />
+		</MudItem>
+		<MudItem xs="12">
+			<SetMetricTypeSelect Label="Default Set Metric Type" @bind-Value="@Model.DefaultSetMetricType" Disabled="@DisableControls" />
+		</MudItem>
+		<MudItem xs="12">
+			<MudSwitch @bind-Value="@Model.IsTrackingSplit" Label="Track Left/Right Independently" Color="Color.Success" />
+		</MudItem>
+		<MudItem xs="12">
+			<MudTextField Label="Description" Variant="Variant.Outlined" Disabled="@DisableControls"
+						  FullWidth="true" Lines="10" @bind-Value="@Model.Description" For="@(() => Model.Description)" />
+		</MudItem>
+	</MudGrid>
+</EditForm>
+

@@ -1,0 +1,93 @@
+﻿@inherits SectionPropertiesBase
+
+<SectionComponent IsEditMode="@IsEditMode" IsEditing="@IsEditing" Class="mb-12">
+
+	<SectionHeader Title="@Exercise.Title" IsEditMode="@IsEditMode" IsEditing="@IsEditing" EditingClass="mb-4" FormId="@FormId" Breakpoint="Breakpoint.Sm" 
+				   OnCancelClicked="@HandleEditCancelClicked">
+		<EditModeToolbar>
+			<MudIconButton Icon="@Icons.Material.Filled.Edit" Disabled="@(DisableSectionControls || IsUpdating)"
+							OnClick="@(() => HandleEditClicked())" />
+			<MudToggleIconButton Icon="@Icons.Material.Filled.Archive" ToggledIcon="@Icons.Material.Filled.Unarchive"
+									Color="Color.Default" ToggledColor="Color.Warning"
+									Disabled="@(DisableSectionControls || IsEditing)" Title="@(Exercise.IsArchived ? "Restore" : "Archive")"
+									Toggled="@Exercise.IsArchived" ToggledChanged="@(() => HandleToggleArchiveClicked())" />
+			@if (Exercise.MatchId.HasValue && AllowRestore)
+			{
+				<MudIconButton Icon="@Icons.Material.Filled.Restore" Disabled="@(DisableSectionControls || IsUpdating)"
+								OnClick="@(() => HandleRestoreClicked())" Title="Restore from original source exercise" />
+			}
+		</EditModeToolbar>
+	</SectionHeader>
+
+	@if (!IsEditing)
+	{
+
+		<div class="d-flex flex-column mb-4">
+			<MudText Typo="Typo.caption" Color="Color.Tertiary">@(@Exercise.MatchId.HasValue ? "Imported" : "Added") @Exercise.DateCreatedUtc.ToLocalTime().ToString("F")</MudText>
+			@if (Exercise.DateLastModifiedUtc.HasValue)
+			{
+				<MudText Typo="Typo.caption" Color="Color.Tertiary">Last modified @Exercise.DateLastModifiedUtc.Value.ToLocalTime().ToString("F")</MudText>
+			}
+		</div>
+		<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+		<MudGrid Spacing="2">
+			<MudItem xs="6" sm="6" md="6" lg="3">
+				<CaptionedProperty Title="@(Exercise.Muscles.Count > 1 ? "Muscles" : "Muscle")" Value="@Exercise.Muscles.Titles()" Align="Align.Center" />
+			</MudItem>
+			<MudItem xs="6" sm="6" md="6" lg="3">
+				<CaptionedProperty Title="Equipment" Value="@Exercise.Equipment.Titles()" Align="Align.Center" />
+			</MudItem>
+			<MudItem xs="6" sm="4" md="4" lg="2">
+				<CaptionedProperty Title="Default Set Type" Value="@Exercise.DefaultSetType.Title()" Align="Align.Center" />
+			</MudItem>
+			<MudItem xs="6" sm="4" md="4" lg="2">
+				<CaptionedProperty Title="Default Metric Type" Value="@Exercise.DefaultSetMetricType.Title()" Align="Align.Center" />
+			</MudItem>
+			<MudItem xs="6" sm="4" md="4" lg="2">
+				<CaptionedProperty Title="Split L/R" Align="Align.Center">
+					<YesNo Value="@Exercise.IsTrackingSplit" IconSize="Size.Small" Align="Align.Center" ShowLabel="false" />
+				</CaptionedProperty>
+			</MudItem>
+		</MudGrid>
+		<MudDivider DividerType="DividerType.FullWidth" Class="mt-2 mb-12" />
+		
+		<div class="mb-12">
+			<div class="d-flex flex-row gap-2 align-center mb-2">
+				<MudText Typo="Typo.h6">My Exercise Notes</MudText>
+				@if (IsEditMode)
+				{
+					<MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Title="Edit Notes" OnClick="@(() => HandleEditNoteClicked())" />
+				}
+			</div>
+			@if(string.IsNullOrEmpty(Exercise.Notes))
+			{
+				<MudText Typo="Typo.body2" Color="Color.Tertiary">You have not added any notes.</MudText>
+			}
+			else
+			{
+				<MudText Class="px-4">@((MarkupString)Exercise.Notes.ReplaceLineBreaks("<br />"))</MudText>
+			}
+			@if (!string.IsNullOrEmpty(Exercise.Description))
+			{
+				<MudText Typo="Typo.body1" Class="mt-6">@Exercise.Description</MudText>
+			}
+		</div>
+	}
+	else
+	{
+		<FormProperties Model="@Model" FormId="@FormId" DisableFormControls="@DisableControls" OnFormSubmitted="@HandleFormSubmitted" />
+	}
+</SectionComponent>
+
+<SideDrawer @bind-Open="DrawerOpen" Icon="@Icons.Material.Filled.StickyNote2" Title="Exercise Notes">
+	<MudTextField Variant="Variant.Outlined" FullWidth="true" Lines="5" @bind-Value="FormNoteModel.Notes" />
+
+	<MudToolBar DisableGutters="true" Class="mt-4">
+		<MudSpacer />
+		<ProgressButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@IsUpdating" IsWorking="@IsUpdating" WorkingText="Saving"
+						OnClick="@(() => HandleSaveNoteClicked())">Save</ProgressButton>
+		<MudButton Variant="Variant.Outlined" Color="Color.Primary" Disabled="@IsUpdating" OnClick="@(() => DrawerOpen = false)">Cancel</MudButton>
+		<MudSpacer />
+	</MudToolBar>
+</SideDrawer>
+

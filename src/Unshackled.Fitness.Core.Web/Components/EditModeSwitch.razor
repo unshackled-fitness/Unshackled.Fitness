@@ -1,0 +1,23 @@
+﻿<MudSwitch Class="align-self-end align-self-sm-center" 
+		   Color="Color.Secondary" 
+		   Label="Edit" 
+		   LabelPosition="LabelPosition.Start" 
+		   T="bool"
+		   Value="@IsEditMode" 
+		   ValueChanged="@HandleCheckChanged"
+		   Disabled="@Disabled" />
+
+@code {
+	[Parameter] public bool IsEditMode { get; set; }
+	[Parameter] public EventCallback<bool> IsEditModeChanged { get; set; }
+	[Parameter] public bool Disabled { get; set; }
+
+	private async Task HandleCheckChanged(bool value)
+	{
+		if (IsEditMode != value)
+		{
+			IsEditMode = value;
+			await IsEditModeChanged.InvokeAsync(value);
+		}
+	}
+}

@@ -1,0 +1,88 @@
+﻿@page "/member/2fa"
+@inherits TwoFactorAuthenticationBase
+
+<DynamicPageTitle Title="Two-factor Authentication" />
+
+<MudBreadcrumbs Items="@Breadcrumbs" />
+
+<MudText Typo="Typo.h4" Class="mb-4">Two-factor Authentication</MudText>
+
+@if (IsLoading)
+{
+	<DefaultProgress />
+}
+else
+{
+	@if (CurrentStatus.CanTrack)
+	{
+		if (CurrentStatus.Is2faEnabled)
+		{
+			<div class="d-flex flex-row gap-2 mb-6">
+				<MudText Typo="Typo.h5">Status:</MudText>
+				<MudText Typo="Typo.h5" Color="Color.Success">Active</MudText>
+			</div>
+
+			@if (CurrentStatus.IsMachineRemembered)
+			{
+				<MudButton>Forget this browser</MudButton>
+			}
+
+			<MudDivider DividerType="DividerType.FullWidth" Class="my-4" />
+
+			@if (CurrentStatus.RecoveryCodesLeft == 0)
+			{
+				<MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center" Class="mb-4">
+					<MudText><strong>You have no recovery codes left.</strong></MudText>
+					<MudText>You must generate a new set of recovery codes before you can log in with a recovery code.</MudText>
+				</MudAlert>
+			}
+			else if (CurrentStatus.RecoveryCodesLeft <= 3)
+			{
+				<MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center" Class="mb-4">
+					<MudText><strong>You have @CurrentStatus.RecoveryCodesLeft recovery codes left.</strong></MudText>
+					<MudText>You should generate a new set of recovery codes.</MudText>
+				</MudAlert>
+			}
+			else
+			{
+				<MudText><strong>You have @CurrentStatus.RecoveryCodesLeft recovery codes left.</strong></MudText>
+			}
+
+			<MudText Class="mb-4">You can remove existing codes and generate a new set of recovery codes.</MudText>
+			<MudButton Href="/member/2fa/generate-recovery-codes" class="btn btn-primary">Reset recovery codes</MudButton>
+
+			<MudDivider DividerType="DividerType.FullWidth" Class="my-4" />
+
+			<MudText Class="mb-4">You can turn off two-factor authentication (2fa).</MudText>
+			<MudButton Href="/member/2fa/disable-2fa" class="btn btn-primary">Disable 2FA</MudButton>
+
+			<MudDivider DividerType="DividerType.FullWidth" Class="my-4" />
+
+			<MudText Class="mb-4">You can turn off two-factor authentication (2fa) and reset your authenticator app key.</MudText>
+			<MudButton Href="/member/2fa/reset-authenticator" class="btn btn-primary">Reset authenticator key</MudButton>
+
+			<MudDivider DividerType="DividerType.FullWidth" Class="my-4" />
+
+			<MudButton Disabled="@DisableControls" Href="/member">Cancel</MudButton>
+		}
+		else
+		{
+			<div class="d-flex flex-row gap-2 mb-6">
+				<MudText Typo="Typo.h5">Status:</MudText>
+				<MudText Typo="Typo.h5" Color="Color.Error">Inactive</MudText>
+			</div>
+			<DownloadApps Class="mb-4" />
+			<MudToolBar DisableGutters="true">
+				<MudButton Variant="Variant.Filled" Color="Color.Secondary" Href="/member/2fa/enable-authenticator">Add authenticator app</MudButton>
+				<MudButton Color="Color.Secondary" Variant="Variant.Outlined" Disabled="@DisableControls" Href="/member">Cancel</MudButton>
+			</MudToolBar>
+		}
+	}
+	else
+	{
+		<MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center">
+			<MudText><strong>Privacy and cookie policy have not been accepted.</strong></MudText>
+			<MudText>You must accept the policy before you can enable two factor authentication.</MudText>
+		</MudAlert>
+	}
+}

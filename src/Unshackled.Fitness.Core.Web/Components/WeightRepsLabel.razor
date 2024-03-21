@@ -1,0 +1,52 @@
+﻿@if(IsRepsOnly)
+{
+	<span class="result">@DisplayReps()</span>
+}
+else
+{
+	<span class="result"><WeightLabel WeightKg="@WeightKg" WeightLb="WeightLb" UnitSystem="@UnitSystem" />@DisplayReps()</span>
+}
+
+@code {
+
+	[Parameter] public decimal? WeightKg { get; set; }
+	[Parameter] public decimal? WeightLb { get; set; }
+	[Parameter] public UnitSystems UnitSystem { get; set; } = UnitSystems.None;
+	[Parameter] public bool IsRepsOnly { get; set; }
+	[Parameter] public bool IsTrackingSplit { get; set; }
+	[Parameter] public int? Reps { get; set; }
+	[Parameter] public int? RepsLeft { get; set; }
+	[Parameter] public int? RepsRight { get; set; }
+	[Parameter] public int SplitOrder { get; set; }
+
+	MarkupString DisplayReps()
+	{
+		string output = string.Empty;
+		if (Reps > 0 || RepsLeft > 0 || RepsRight > 0)
+		{
+			if(!IsRepsOnly)
+				output += "<span class=\"multiply-by\">x</span>";
+
+			output += "<span class=\"result\">";
+
+			if (IsTrackingSplit && SplitOrder == 0)
+			{
+				output += $"<span class=\"pre-result-label\">L</span>{RepsLeft} / <span class=\"pre-result-label\">R</span>{RepsRight}";
+			}
+			else if (IsTrackingSplit && SplitOrder == 1)
+			{
+				output += $"<span class=\"pre-result-label\">R</span>{RepsRight} / <span class=\"pre-result-label\">L</span>{RepsLeft}";
+			}
+			else
+			{
+				output += $"{Reps}";
+			}
+			if(IsRepsOnly)
+			{
+				output += " <span class=\"post-result-label\">reps</span>";
+			}
+			output += "</span>";
+		}
+		return (MarkupString)output;
+	}
+}

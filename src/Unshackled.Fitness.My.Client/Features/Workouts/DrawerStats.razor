@@ -1,0 +1,83 @@
+﻿@inherits DrawerStatsBase
+
+<SearchForm @bind-Model="@SearchModel" Class="mb-6" ForceColumnLayout="true" SearchClicked="@(() => DoSearch(1))" ResetClicked="@HandleResetClicked">
+	<SearchFields>
+		<MudGrid Spacing="1">
+			@if (SetMetricType.HasReps())
+			{
+				<MudItem xs="12">
+					<MudSelect T="RepModes?" Label="Rep Mode" FullWidth="true" Variant="Variant.Outlined" Immediate="true"
+							   Margin="Margin.Dense" Disabled="@DisableControls" @bind-Value="@SearchModel.RepMode">
+						<MudSelectItem T="RepModes?" Value="@null">Any</MudSelectItem>
+						@foreach (var item in EnumUtils.GetValues<RepModes>())
+						{
+							<MudSelectItem T="RepModes?" Value="@((RepModes?)item)">@item.Title()</MudSelectItem>
+						}
+					</MudSelect>
+				</MudItem>
+				<MudItem xs="12">
+					<MudNumericField T="int?" Label="Target Reps" FullWidth="true" Variant="Variant.Outlined" Immediate="true"
+									 Margin="Margin.Dense" Disabled="@DisableControls" Min="0" Clearable="true" Step="1"
+									 @bind-Value="@SearchModel.RepsTarget" />
+				</MudItem>
+			}
+			else
+			{
+				<MudItem xs="12">
+					<SecondsTimePicker Variant="Variant.Outlined" OpenTo="SecondsTimePicker.OpenToView.Minutes" Margin="Margin.Dense" Color="Color.Secondary"
+									   Disabled="@DisableControls" @bind-Time="SearchModel.TimeSeconds" Label="Target Time" Clearable="true" />
+				</MudItem>
+			}
+		</MudGrid>
+	</SearchFields>
+</SearchForm>
+<GroupedList Class="mb-6" Groups="@Groups" Items="@SearchResults.Data" IsLoading="@IsLoading" ShowSingleGroupTitle="true"
+			 PageSize="@SearchResults.PageSize" Page="@SearchModel.Page" TotalItems="@SearchResults.Total" PageSelected="@HandlePageSelected">
+	<GroupRenderer>
+		<MudText Typo="Typo.body1" Class="mt-4">@context.Title</MudText>
+	</GroupRenderer>
+	<ItemRenderer>
+		<MudGrid Spacing="1" Class="align-center">
+			<MudItem xs="5" sm="6">
+				<MudText Typo="Typo.caption" Class="d-block" Color="@context.Item.SetType.DisplayColor()">@($"{context.Item.SetType.Title()} Set")</MudText>
+				@if (context.Item.SetMetricType.HasReps())
+				{
+					<MudText Typo="Typo.caption" Class="d-block">@context.Item.RepMode.Label(context.Item.RepsTarget)</MudText>
+				}
+				else
+				{
+					<MudText Typo="Typo.caption" Class="d-block">@($"Target: {context.Item.SecondsTarget.SecondsAsTimeSpan()}")</MudText>
+				}
+			</MudItem>
+			<MudItem xs="7" sm="6">
+				<MudText Typo="Typo.subtitle1" Align="Align.End">
+					@if(context.Item.SetMetricType.HasReps())
+					{
+						<WeightRepsLabel IsTrackingSplit="@context.Item.IsTrackingSplit" SplitOrder="State.ActiveMember.Settings.DisplaySplitTracking" 
+										 IsRepsOnly="@(context.Item.SetMetricType == SetMetricTypes.RepsOnly)" Reps="@context.Item.Reps" 
+										 RepsLeft="@context.Item.RepsLeft" RepsRight="@context.Item.RepsRight" WeightKg="@context.Item.WeightKg" 
+										 WeightLb="@context.Item.WeightLb" UnitSystem="@State.ActiveMember.Settings.DefaultUnits" />
+					}
+					else if(context.Item.SetMetricType == SetMetricTypes.WeightTime)
+					{
+						<div class="d-flex flex-row gap-2 justify-space-between">
+							<WeightLabel WeightKg="@context.Item.WeightKg" WeightLb="@context.Item.WeightLb" UnitSystem="@State.ActiveMember.Settings.DefaultUnits" />
+							<TimeLabel DisplaySplitTracking="@State.ActiveMember.Settings.DisplaySplitTracking" IsTrackingSplit="@context.Item.IsTrackingSplit"
+									   Seconds="@context.Item.Seconds" SecondsLeft="@context.Item.SecondsLeft" SecondsRight="@context.Item.SecondsRight" />
+						</div>
+					}
+					else
+					{
+						<TimeLabel DisplaySplitTracking="@State.ActiveMember.Settings.DisplaySplitTracking" IsTrackingSplit="@context.Item.IsTrackingSplit"
+								   Seconds="@context.Item.Seconds" SecondsLeft="@context.Item.SecondsLeft" SecondsRight="@context.Item.SecondsRight" />
+					}
+				</MudText>
+			</MudItem>
+		</MudGrid>
+	</ItemRenderer>
+	<EmptyListRenderer>
+		<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+		<MudText Align="Align.Center" Class="mt-4">No sets matched your search.</MudText>
+		<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+	</EmptyListRenderer>
+</GroupedList>

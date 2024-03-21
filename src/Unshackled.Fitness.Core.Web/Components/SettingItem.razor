@@ -1,0 +1,20 @@
+﻿<div class="setting-item">
+	<div class="setting-label">
+		@LabelContent
+		@if (DescriptionContent != null)
+		{
+			<div class="setting-description">
+				@DescriptionContent
+			</div>
+		}
+	</div>
+	<div class="setting-value">
+		@SettingContent
+	</div>
+</div>
+
+@code {
+	[Parameter] public RenderFragment LabelContent { get; set; } = default!;
+	[Parameter] public RenderFragment DescriptionContent { get; set; } = default!;
+	[Parameter] public RenderFragment SettingContent { get; set; } = default!;
+}

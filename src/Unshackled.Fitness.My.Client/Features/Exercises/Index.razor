@@ -1,0 +1,103 @@
+﻿@page "/exercises"
+@inherits IndexBase
+
+<DynamicPageTitle  IsLoading="@IsLoading" LoadingTitle="Loading Exercises..." Title="Exercises" />
+
+<MudBreadcrumbs Items="@Breadcrumbs" />
+
+@if (ShowView == Views.List)
+{
+	<MudText Typo="Typo.h4" Class="mb-6">Exercises</MudText>
+
+	<div class="mb-6">
+		<SearchForm @bind-Model="@SearchModel" Class="mb-6" SearchClicked="@(() => DoSearch(1))" ResetClicked="@HandleResetClicked" Disable="@IsLoading">
+			<SearchFields>
+				<MudGrid Spacing="1">
+					<MudItem xs="12" sm="3">
+						<MuscleTypeSelect AllOption="true" Margin="Margin.Dense" @bind-Value="@SearchModel.MuscleType" Disabled="@DisableControls" />
+					</MudItem>
+					<MudItem xs="12" sm="3">
+						<EquipmentTypeSelect AllOption="true" Margin="Margin.Dense" @bind-Value="@SearchModel.EquipmentType" Disabled="@DisableControls" />
+					</MudItem>
+					<MudItem xs="12" sm="3">
+						<MudTextField Label="Title" Variant="Variant.Outlined" Margin="Margin.Dense" FullWidth="true"
+									  Disabled="@DisableControls" @bind-Value="@SearchModel.Title" />
+					</MudItem>
+					<MudItem xs="12" sm="3">
+						<ArchivedSelect @bind-Value="@SearchModel.IsArchived" Margin="Margin.Dense" Disabled="@DisableControls" />
+					</MudItem>
+				</MudGrid>
+			</SearchFields>
+		</SearchForm>
+
+		@if (IsMemberActive)
+		{
+			<MudToolBar Class="mb-2" DisableGutters="true" Dense="true">
+				@if (AllowImport)
+				{
+					<MudButton StartIcon="@Icons.Material.Filled.AddCircle" Disabled="@DisableControls" OnClick="@(() => HandleImportClicked())">
+						Import
+					</MudButton>
+					<MudButton StartIcon="@Icons.Material.Outlined.AddCircleOutline" Disabled="@DisableControls" OnClick="@(() => HandleAddCustomClicked())">
+						Custom
+					</MudButton>
+				}
+				else
+				{
+					<MudButton StartIcon="@Icons.Material.Outlined.AddCircleOutline" Disabled="@DisableControls" OnClick="@(() => HandleAddCustomClicked())">
+						New
+					</MudButton>
+				}
+				<MudMenu Label="Sort" StartIcon="@Icons.Material.Filled.Sort">
+					<MudMenuItem OnClick="@(() => HandleSortByClicked(0, nameof(ExerciseModel.Title)))"
+					OnTouch="@(() => HandleSortByClicked(0, nameof(ExerciseModel.Title)))">Title (Asc)</MudMenuItem>
+					<MudMenuItem OnClick="@(() => HandleSortByClicked(1, nameof(ExerciseModel.Title)))"
+					OnTouch="@(() => HandleSortByClicked(1, nameof(ExerciseModel.Title)))">Title (Desc)</MudMenuItem>
+				</MudMenu>
+				<MudButton StartIcon="@Icons.Material.Filled.MergeType" Disabled="@(DisableControls || !MaxSelectionReached)" OnClick="@HandleMergeClicked">
+					@(SelectedSids.Any() ? $"Merge ({SelectedSids.Count} selected)" : "Merge")
+				</MudButton>
+			</MudToolBar>
+		}
+
+		<ListView Class="mb-6" Items="@SearchResults.Data" PageSize="@SearchResults.PageSize" Page="@SearchModel.Page" TotalItems="@SearchResults.Total" IsLoading="@IsLoading"
+				  PageSelected="@HandlePageSelected">
+			<ItemRenderer>
+				<div class="d-flex flex-row gap-4 align-center">
+					@if (IsMemberActive)
+					{
+						<div>
+							<MudCheckBox T="bool" Disabled="@DisableCheckbox(context.Item.Sid)"
+										 Value="@SelectedSids.Contains(context.Item.Sid)" ValueChanged="@((bool value) => HandleCheckboxChanged(value, context.Item.Sid))" />
+						</div>
+					}
+					<div class="flex-grow-1">
+						<MudText Typo="Typo.body2" Color="Color.Secondary">@context.Item.Muscles.Titles()</MudText>
+						<div class="d-flex flex-row gap-2 align-center">
+							<MudLink Typo="Typo.subtitle1" Class="d-block" Href="@($"/exercises/{context.Item.Sid}")">@context.Item.Title</MudLink>
+							@if(!context.Item.MatchId.HasValue && AllowImport)
+							{
+								<MudChip Text="Custom" Color="Color.Tertiary" Class="mud-chip-size-tiny" />
+							}
+						</div>
+						<MudText Typo="Typo.body1" Color="Color.Tertiary">@context.Item.Equipment.Titles()</MudText>
+					</div>
+				</div>
+			</ItemRenderer>
+			<EmptyListRenderer>
+				<MudText Align="Align.Center" Class="mt-4">No exercises matched your search.</MudText>
+			</EmptyListRenderer>
+		</ListView>
+	</div>
+}
+else if (ShowView == Views.AddCustom)
+{
+	<div class="mb-6">
+		<SectionHeader Title="Add Exercise" IsEditing="true" EditingClass="mb-4" FormId="@FormId" OnCancelClicked="@HandleCancelViewClicked" />
+		<FormProperties Model="@AddModel" FormId="@FormId" DisableFormControls="DisableControls" OnFormSubmitted="@HandleAddFormSubmitted" />
+	</div>
+}
+else if (ShowView == Views.Library)
+{
+	<ViewLibrary InitialSearch="@InitialLibrarySearchModel" OnCancelClicked="@HandleCancelViewClicked" OnExercisesSelected="@HandleImportExercisesSelected" />
+}

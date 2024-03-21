@@ -1,0 +1,78 @@
+﻿@inherits SectionRecordsBase
+
+<div Class="mb-12">
+	<SectionHeader Title="Personal Records" Typo="Typo.h5" Class="mb-4" />
+	@if (Records.Any())
+	{
+		<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+		@if (Exercise.DefaultSetMetricType == SetMetricTypes.WeightReps && MaxWeight.WeightKg > 0)
+		{
+			<div class="d-flex flex-row align-center gap-2">
+				<div class="flex-grow-1">
+					<MudLink Href="@($"/workouts/{MaxWeight.WorkoutSid}")" Color="Color.Secondary">@MaxWeight.DateWorkoutUtc.ToLocalTime().ToString("D")</MudLink>
+				</div>
+				<div class="d-flex flex-row align-center gap-2">
+					<MudIcon Icon="@Icons.Material.Filled.EmojiEvents" />
+					<MudText Class="me-2">Weight</MudText>
+					<MudText Typo="Typo.subtitle1">
+						<WeightLabel WeightKg="@MaxWeight.WeightKg" WeightLb="@MaxWeight.WeightLb" UnitSystem="@State.ActiveMember.Settings.DefaultUnits" />
+					</MudText>
+				</div>
+			</div>
+			<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+		}
+		@if (Exercise.DefaultSetMetricType == SetMetricTypes.WeightReps && MaxVolume.VolumeKg > 0)
+		{
+			<div class="d-flex flex-row align-center gap-2">
+				<div class="flex-grow-1">
+					<MudLink Href="@($"/workouts/{MaxVolume.WorkoutSid}")" Color="Color.Secondary">@MaxVolume.DateWorkoutUtc.ToLocalTime().ToString("D")</MudLink>
+				</div>
+				<div class="d-flex flex-row align-center gap-2">
+					<MudIcon Icon="@Icons.Material.Filled.EmojiEvents" />
+					<MudText Class="me-2">Volume</MudText>
+					<MudText Typo="Typo.subtitle1">
+						<WeightLabel WeightKg="@MaxVolume.VolumeKg" WeightLb="@MaxVolume.VolumeLb" UnitSystem="@State.ActiveMember.Settings.DefaultUnits" />
+					</MudText>
+				</div>
+			</div>
+			<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+		}
+		@if (Exercise.DefaultSetMetricType == SetMetricTypes.TimeOnly && MaxSeconds.MaxSeconds > 0)
+		{
+			<div class="d-flex flex-row align-center gap-2">
+				<div class="flex-grow-1">
+					<MudLink Href="@($"/workouts/{MaxSeconds.WorkoutSid}")" Color="Color.Secondary">@MaxSeconds.DateWorkoutUtc.ToLocalTime().ToString("D")</MudLink>
+				</div>
+				<div class="d-flex flex-row align-center gap-2">
+					<MudIcon Icon="@Icons.Material.Filled.EmojiEvents" />
+					<MudText Class="me-2">Time</MudText>
+					<MudText Typo="Typo.subtitle1">
+						<TimeLabel Seconds="@MaxSeconds.MaxSeconds" />
+					</MudText>
+				</div>
+			</div>
+			<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+		}
+		@if (Exercise.DefaultSetMetricType == SetMetricTypes.WeightTime && MaxWeightSeconds.MaxSeconds > 0 && MaxWeightSeconds.WeightKg > 0)
+		{
+			<div class="d-flex flex-row align-center gap-2">
+				<div class="flex-grow-1">
+					<MudLink Href="@($"/workouts/{MaxWeightSeconds.WorkoutSid}")" Color="Color.Secondary">@MaxWeightSeconds.DateWorkoutUtc.ToLocalTime().ToString("D")</MudLink>
+				</div>
+				<div class="d-flex flex-row align-center gap-2">
+					<MudIcon Icon="@Icons.Material.Filled.EmojiEvents" />
+					<MudText Class="me-2">Time at Weight</MudText>
+					<MudText Typo="Typo.subtitle1">
+						<TimeLabel Seconds="@MaxWeightSeconds.MaxSeconds" /> @@ <WeightLabel WeightKg="@MaxWeightSeconds.WeightKg" WeightLb="@MaxWeightSeconds.WeightLb" UnitSystem="@State.ActiveMember.Settings.DefaultUnits" />
+					</MudText>
+				</div>
+			</div>
+			<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+		}
+	}
+	else
+	{
+		<MudAlert NoIcon="true" Severity="Severity.Normal">No personal records were found.</MudAlert>
+	}
+</div>
+

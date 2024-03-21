@@ -1,0 +1,38 @@
+{
+	"AllowedHosts": "*",
+	"DbConfiguration": {
+		"DatabaseType": "mssql",
+		"TablePrefix": "uf_"
+	},
+	"HashIdConfiguration": {
+		"Alphabet": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+		"Salt": "randomstringofcharacters",
+		"MinLength": 12
+	},
+	"Logging": {
+		"LogLevel": {
+			"Default": "Information",
+			"Microsoft.AspNetCore": "Warning"
+		}
+	},
+	"SiteConfiguration": {
+		"SiteName": "Unshackled Fitness",
+		"AppThemeColor": "#194480",
+		"AllowRegistration": true,
+		"RequireConfirmedAccount": true,
+		"PasswordStrength": {
+			"RequireDigit": true,
+			"RequireLowercase": true,
+			"RequireNonAlphanumeric": true,
+			"RequireUppercase": true,
+			"RequiredLength": 10,
+			"RequiredUniqueChars": 7
+		}
+	},
+	"SmtpSettings": {
+		"Host": "smtp.host.domain",
+		"Port": 587,
+		"UseSSL": true,
+		"DefaultReplyTo": "email@domain.com"
+	}
+}

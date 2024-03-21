@@ -1,0 +1,154 @@
+﻿@inherits SectionSetsBase
+
+<SectionComponent IsEditMode="@IsEditMode" IsEditing="@IsEditing">
+	<SectionHeader Typo="Typo.h5" Title="Sets" IsEditMode="@IsEditMode" IsEditing="@IsEditing" DisableControls="@DisableControls" Class="mb-4" EditingClass="mb-4"
+				   OnCancelClicked="@HandleCancelEditClicked" OnSaveClicked="@HandleUpdateClicked">
+		<EditModeToolbar>
+			<MudIconButton Icon="@Icons.Material.Filled.Edit" Title="Edit" Disabled="@DisableSectionControls" OnClick="@(() => HandleEditClicked())" />
+		</EditModeToolbar>
+	</SectionHeader>
+
+	@if(!IsEditing)
+	{
+		<GroupedList Groups="@Groups" Items="@Sets" IsLoading="@IsLoading">
+			<GroupRenderer>
+				<MudText Typo="Typo.subtitle1">@context.Title</MudText>
+			</GroupRenderer>
+			<ItemRenderer>
+				<div class="d-flex flex-row gap-3">
+					<div>
+						<MudAvatar Variant="Variant.Outlined" Size="Size.Small">@(context.RowIndex + 1)</MudAvatar>
+					</div>
+					<div class="flex-grow-1">
+						<MudGrid Spacing="2">
+							<MudItem xs="12" sm="8" md="9" lg="10">
+								<MudText Typo="Typo.caption" Class="d-block" Color="@context.Item.SetType.DisplayColor()">@($"{context.Item.SetType.Title()} Set")</MudText>
+								<MudText Typo="Typo.subtitle1">@context.Item.Title</MudText>
+								<MudText Typo="Typo.body1" Color="Color.Tertiary">@context.Item.Equipment.Titles()</MudText>
+							</MudItem>
+							@if (ShowTargetReps(context.Item))
+							{
+								<MudItem xs="12" sm="4" md="3" lg="2" Class="d-flex flex-column justify-center align-start align-sm-end">
+									<CaptionedProperty Align="Align.Inherit" Class="align-sm-end" Title="@context.Item.SetMetricType.Title()" 
+													   Value="@context.Item.RepMode.Label(context.Item.RepsTarget, context.Item.IntensityTarget)" />
+								</MudItem>
+							}
+							else
+							{
+								<MudItem xs="12" sm="4" md="3" lg="2" Class="d-flex flex-column justify-center align-start align-sm-end">
+									<CaptionedProperty Align="Align.Inherit" Class="align-sm-end" Title="@context.Item.SetMetricType.Title()"
+													   Value="@($"Target: {context.Item.SecondsTarget.SecondsAsTimeSpan(context.Item.IntensityTarget)}")" />
+								</MudItem>
+							}
+						</MudGrid>
+					</div>
+				</div>
+			</ItemRenderer>
+			<EmptyListRenderer>
+				<MudAlert Severity="Severity.Normal" Icon="@Icons.Material.Filled.Info">You have not added any sets.</MudAlert>
+			</EmptyListRenderer>
+		</GroupedList>
+	}
+	else if (IsEditing && !IsAdding)
+	{
+		<SortableGroupedList TGroup="FormTemplateSetGroupModel" TItem="FormTemplateSetModel" Groups="@FormGroups" Items="@FormSets"
+							 ToolbarAlignment="HorizontalAlignment.Left" ToolbarPosition="ToolbarPositions.Top"
+							 IsSortingChanged="@HandleIsSorting" SortOrderChanged="@HandleSortChanged">
+			<GroupRenderer>
+				<MudText Typo="Typo.subtitle1" Class="mt-4">@context.Title</MudText>
+			</GroupRenderer>
+			<ItemRenderer>
+				<div class="d-flex flex-row gap-3 mb-3">
+					<div>
+						<MudAvatar Variant="Variant.Outlined" Size="Size.Small">@(context.RowIndex + 1)</MudAvatar>
+					</div>
+					<div class="flex-grow-1">
+						<MudText Typo="Typo.subtitle1">@context.Item.Title</MudText>
+						<MudText Typo="Typo.body1" Color="Color.Tertiary">@context.Item.Equipment.Titles()</MudText>
+					</div>
+				</div>
+				<div class="d-flex flex-column flex-md-row gap-2">
+					<MudGrid Spacing="2">
+						<MudItem xs="12" md="3">
+							<WorkoutSetTypeSelect @bind-Value="context.Item.SetType" Margin="Margin.Dense" Disabled="@DisableControls" />
+						</MudItem>
+						<MudItem xs="12" md="3">
+							<SetMetricTypeSelect @bind-Value="context.Item.SetMetricType" Margin="Margin.Dense" Disabled="@DisableControls" />
+						</MudItem>
+						@if (ShowTargetReps(context.Item))
+						{
+							<MudItem xs="12" md="2">
+								<RepModeSelect Disabled="@DisableControls" Margin="Margin.Dense" @bind-Value="context.Item.RepMode" />
+							</MudItem>
+							@if (context.Item.RepMode == RepModes.Exact)
+							{
+								<MudItem xs="12" md="2">
+									<MudNumericField Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="@context.Item.RepsTarget" Step="1" Min="0" Max="@AppGlobals.MaxSetReps"
+													 HideSpinButtons="true" T="int" Immediate="true" Disabled="@DisableControls" Label="Target Reps" />
+								</MudItem>
+							}
+						}
+						else
+						{
+							<MudItem xs="12" md="2">
+								<SecondsTimePicker Label="Target Time" Variant="Variant.Outlined" OpenTo="SecondsTimePicker.OpenToView.Minutes" Margin="Margin.Dense" Color="Color.Secondary" 
+												   Disabled="@DisableControls" @bind-Time="context.Item.TimeSeconds" />
+							</MudItem>
+						}
+						<MudItem xs="12" md="2">
+							<IntensitySelect Label="Target Intensity" Disabled="@DisableControls" Margin="Margin.Dense" @bind-Value="context.Item.IntensityTarget" />
+						</MudItem>
+					</MudGrid>
+					<div class="flex-grow-1 d-flex flex-row justify-end align-center">
+						<MudIconButton Icon="@Icons.Material.Filled.CopyAll" Title="Add Duplicate" Disabled="@DisableControls" OnClick="@(() => HandleAddDuplicateClicked(context.Item))" />
+						<MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Remove" Disabled="@DisableControls" OnClick="@(() => HandleDeleteClicked(context.Item))" />
+					</div>
+				</div>
+			</ItemRenderer>
+			<EmptyListRenderer>
+				<MudAlert Severity="Severity.Normal" Icon="@Icons.Material.Filled.Info">You have not added any sets.</MudAlert>
+			</EmptyListRenderer>
+			<ListTools>
+				<MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.AddCircle" Disabled="@(DisableControls || IsAdding)"
+							OnClick="@(() => HandleAddClicked())">Add</MudButton>
+			</ListTools>
+			<DraggableGroupRenderer>
+				<MudPaper Elevation="2" Class="py-2 px-4 my-2">
+					<div class="d-flex flex-row gap-4 align-center">
+						<div>
+							<MudIcon Icon="@Icons.Material.Filled.DragIndicator" />
+						</div>
+						<div>
+							<MudText>@(string.IsNullOrEmpty(context.Title) ? "Group: <No title>" : context.Title)</MudText>
+						</div>
+					</div>
+				</MudPaper>
+			</DraggableGroupRenderer>
+			<DraggableItemRenderer>
+				<MudPaper Elevation="2" Class="py-2 px-4 my-2">
+					<div class="d-flex flex-row gap-4 align-center">
+						<div>
+							<MudIcon Icon="@Icons.Material.Filled.DragIndicator" />
+						</div>
+						<div>
+							<MudText Typo="Typo.body1">@context.Title</MudText>
+							<MudText Typo="Typo.body2" Color="Color.Tertiary">@context.Equipment.Titles()</MudText>
+						</div>
+					</div>
+				</MudPaper>
+			</DraggableItemRenderer>
+			<NewZoneRenderer>
+				<MudText Typo="Typo.body1" Class="my-4">Drop here to create a new group.</MudText>
+			</NewZoneRenderer>
+		</SortableGroupedList>
+	}
+	else
+	{
+		<ExercisePicker OnAdd="@HandleAddSets" />
+		<MudToolBar DisableGutters="true">
+			<MudSpacer />
+			<MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="@(() => HandleCancelAddClicked())">Cancel</MudButton>
+			<MudSpacer />
+		</MudToolBar>
+	}
+</SectionComponent>

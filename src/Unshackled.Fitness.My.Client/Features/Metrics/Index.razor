@@ -1,0 +1,202 @@
+﻿@page "/metrics"
+@inherits IndexBase
+
+<DynamicPageTitle  IsLoading="@IsLoading" LoadingTitle="Loading Metrics..." Title="Metrics" />
+
+<MudBreadcrumbs Items="@Breadcrumbs" />
+
+<MudText Typo="Typo.h4" Class="mb-6">Metrics</MudText>
+
+@if (ShowView == Views.List)
+{
+	<div Class="mb-6">
+		<SortableGroupedList IsLoading="@IsLoading" TGroup="FormMetricDefinitionGroupModel" TItem="FormMetricDefinitionModel" AllowSort="@IsMemberActive"
+							 Groups="@ListModel.Groups" Items="@ListModel.Metrics" ShowSingleGroupTitle="true" DisableSort="@IsWorking"
+							 ToolbarPosition="ToolbarPositions.Top" ToolbarAlignment="HorizontalAlignment.Left" SortOrderChanged="@HandleSortChanged">
+			<GroupRenderer>
+				<div class="d-flex flex-row gap-2 align-center">
+					<MudText Typo="Typo.subtitle1" Class="flex-grow-1">@context.Title</MudText>
+					@if (IsMemberActive)
+					{
+						<div>
+							<MudIconButton Icon="@Icons.Material.Filled.AddCircle" Color="Color.Primary" Disabled="@IsWorking" OnClick="@(() => HandleAddToGroupClicked(context.Sid))" />
+						</div>
+					}
+				</div>
+			</GroupRenderer>
+			<ItemRenderer>
+				<div class="d-flex flex-row gap-2 align-center">
+					<div class="d-flex flex-row gap-2 align-center flex-grow-1">
+						<MudElement HtmlTag="div" Style="@HighlightStyle(context.Item)" />
+						<div class="flex-grow-1">
+							<MudLink Typo="Typo.subtitle1" Href="@($"/metrics/{context.Item.Sid}")">@context.Item.Title</MudLink>
+							@if (!string.IsNullOrEmpty(context.Item.SubTitle))
+							{
+								<MudText Typo="Typo.body2" Color="Color.Tertiary">@context.Item.SubTitle</MudText>
+							}
+						</div>
+					</div>
+					@if (IsMemberActive)
+					{
+						<div class="justify-self-end" style="min-width: 105px;">
+							<MudIconButton Icon="@Icons.Material.Filled.Edit" Disabled="@IsWorking" Size="Size.Small" Class="me-2" OnClick="@(() => HandleEditClicked(context.Item))" />
+							<MudToggleIconButton Icon="@Icons.Material.Outlined.Archive" ToggledIcon="@Icons.Material.Filled.Archive" Disabled="@IsWorking" Class="me-2"
+												 Color="Color.Default" ToggledColor="Color.Primary" Title="Active" ToggledTitle="Archived" Size="Size.Small" ToggledSize="Size.Small"
+												 Toggled="@context.Item.IsArchived" ToggledChanged="@((bool toggled) => HandleToggleArchived(context.Item, toggled))" />
+							<MudIconButton Icon="@Icons.Material.Filled.Delete" Disabled="@IsWorking" Size="Size.Small" OnClick="@(() => HandleDeleteClicked(context.Item))" />
+						</div>
+					}
+				</div>
+			</ItemRenderer>
+			<EmptyListRenderer>
+				<div class="d-flex flex-column align-center gap-4">
+					<MudAlert Severity="Severity.Normal">You have not added any metrics.</MudAlert>
+					@if(IsMemberActive)
+					{
+						<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircle" 
+								   OnClick="@(() => HandleAddToGroupClicked(string.Empty))">Add Metric</MudButton>
+					}
+				</div>
+			</EmptyListRenderer>
+			<DraggableGroupRenderer>
+				<MudPaper Elevation="2" Class="py-2 px-4 my-4">
+					<MudGrid Spacing="2" Class="align-center">
+						<MudItem xs="1">
+							<MudIcon Icon="@Icons.Material.Filled.DragHandle" />
+						</MudItem>
+						<MudItem xs="11">
+							<MudText>@(string.IsNullOrEmpty(context.Title) ? "Group: <No title>" : context.Title)</MudText>
+						</MudItem>
+					</MudGrid>
+				</MudPaper>
+			</DraggableGroupRenderer>
+			<DraggableItemRenderer>
+				<MudPaper Elevation="2" Class="py-2 px-4 my-4">
+					<div class="d-flex flex-row gap-4 align-center">
+						<div>
+							<MudIcon Icon="@Icons.Material.Filled.DragHandle" />
+						</div>
+						<div>
+							<MudText Typo="Typo.subtitle1">@context.Title</MudText>
+							@if (!string.IsNullOrEmpty(context.SubTitle))
+							{
+								<MudText Typo="Typo.body2" Color="Color.Tertiary">@context.SubTitle</MudText>
+							}
+						</div>
+					</div>
+				</MudPaper>
+			</DraggableItemRenderer>
+			<NewZoneRenderer>
+				<MudText Typo="Typo.body1" Class="my-4">Drop here to create a new group.</MudText>
+			</NewZoneRenderer>
+		</SortableGroupedList>
+	</div>
+}
+else if (ShowView == Views.Adding)
+{
+	<MudGrid Spacing="4" Class="mb-6">
+		<MudItem xs="12" sm="6" md="4" lg="3">
+			<MetricPanel Title="@MetricTypes.ExactValue.Title()" MetricType="@MetricTypes.ExactValue" IsEditing="true" AutoFocus="false">
+				<EditingToolbar>
+					<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => HandleAddMetricClicked(MetricTypes.ExactValue))">Add</MudButton>
+				</EditingToolbar>
+			</MetricPanel>
+		</MudItem>
+		<MudItem xs="12" sm="6" md="4" lg="3">
+			<MetricPanel Title="@MetricTypes.Toggle.Title()" MetricType="@MetricTypes.Toggle" IsEditing="true" AutoFocus="false">
+				<EditingToolbar>
+					<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => HandleAddMetricClicked(MetricTypes.Toggle))">Add</MudButton>
+				</EditingToolbar>
+			</MetricPanel>
+		</MudItem>
+		<MudItem xs="12" sm="6" md="4" lg="3">
+			<MetricPanel Title="@MetricTypes.Counter.Title()" MetricType="@MetricTypes.Counter" IsEditing="true" AutoFocus="false">
+				<EditingToolbar>
+					<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => HandleAddMetricClicked(MetricTypes.Counter))">Add</MudButton>
+				</EditingToolbar>
+			</MetricPanel>
+		</MudItem>
+		<MudItem xs="12" sm="6" md="4" lg="3">
+			<MetricPanel Title="@MetricTypes.Range.Title()" SubTitle="Max: 0 - 10" MetricType="@MetricTypes.Range" MaxValue="5" IsEditing="true" AutoFocus="false">
+				<EditingToolbar>
+					<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => HandleAddMetricClicked(MetricTypes.Range))">Add</MudButton>
+				</EditingToolbar>
+			</MetricPanel>
+		</MudItem>
+	</MudGrid>
+	<MudToolBar DisableGutters="true">
+		<MudSpacer />
+		<MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="@(() => ShowView = Views.List)">Cancel</MudButton>
+		<MudSpacer />
+	</MudToolBar>
+}
+else if (ShowView == Views.Editing)
+{
+	<EditForm Model="@EditingDefinition" OnValidSubmit="@HandleFormSubmit">
+		<MudGrid Spacing="4" Justify="Justify.Center">
+			<MudItem xs="12" sm="6" md="4">
+				<MudGrid Spacing="2">
+					<MudItem xs="12">
+						<MudTextField Variant="Variant.Outlined" FullWidth="true" MaxLength="50" Label="Title" Immediate="true"
+										@bind-Value="@EditingDefinition.Title" For="@(() => EditingDefinition.Title)" />
+					</MudItem>
+					<MudItem xs="12">
+						<MudTextField Variant="Variant.Outlined" FullWidth="true" MaxLength="50" Label="Sub-Title" Immediate="true"
+										@bind-Value="@EditingDefinition.SubTitle" For="@(() => EditingDefinition.SubTitle)" />
+					</MudItem>
+					@if(EditingDefinition.MetricType == MetricTypes.Range)
+					{
+						<MudItem xs="12">
+							<MudNumericField T="decimal" Variant="Variant.Outlined" FullWidth="true" Min="0" Max="10" Label="Max Value"
+												@bind-Value="@EditingDefinition.MaxValue" For="@(() => EditingDefinition.MaxValue)" />
+						</MudItem>
+					}
+					<MudItem xs="12">
+						<MudColorPicker Label="Highlight Color" ColorPickerMode="ColorPickerMode.HEX" Variant="Variant.Outlined" Clearable="true" DisableToolbar="false" 
+										AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.CenterCenter"
+										Value="@EditingColor" ValueChanged="@HandleEditingColorChanged" @bind-Text="@EditingDefinition.HighlightColor" />
+					</MudItem>
+				</MudGrid>
+			</MudItem>
+			<MudItem xs="6" sm="4" md="3" lg="2">
+				<MetricPanel Title="@EditingDefinition.Title" SubTitle="@EditingDefinition.SubTitle" MetricType="@EditingDefinition.MetricType" IsEditing="true"
+							 MaxValue="@EditingDefinition.MaxValue" HighlightColor="@EditingDefinition.HighlightColor" AutoFocus="false">
+					<EditingToolbar>
+						<MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Save" Title="Save" Disabled="true" />
+						<MudIconButton Icon="@Icons.Material.Filled.Cancel" Title="Cancel" Disabled="true" />
+					</EditingToolbar>
+				</MetricPanel>
+			</MudItem>
+		</MudGrid>
+		<MudToolBar DisableGutters="true" Class="mt-6">
+			<MudSpacer />
+			<ProgressButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" IsWorking="@IsWorking" WorkingText="Saving">Save</ProgressButton>
+			<MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="@(() => ShowView = Views.List)">Cancel</MudButton>
+			<MudSpacer />
+		</MudToolBar>
+	</EditForm>
+}
+else if (ShowView == Views.Deleting && DeletingDefinition != null)
+{
+	<MudPaper>
+		<MudText Typo="Typo.h4" Class="mb-6">Confirm Deletion of @DeletingDefinition.Title</MudText>
+
+		<MudAlert Severity="Severity.Warning">Deleting will <strong>permanently</strong> remove all history for this metric.</MudAlert>
+
+		<MudText Class="my-6">
+			If you want to keep the history, archive the metric instead. Archiving a metric will remove it from your dashboard
+			while retaining its history.
+		</MudText>
+
+		<MudText>If you are sure you want to delete the metric, type the full title, <strong>@DeletingDefinition.Title</strong>, below.</MudText>
+
+		<MudTextField T="string" Variant="Variant.Outlined" FullWidth="true" @bind-Value="DeletingConfirmation" Immediate="true" Disabled="@IsWorking" />
+		<MudToolBar DisableGutters="true" Dense="true" Class="mt-6">
+			<MudSpacer />
+			<ProgressButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(IsWorking || DeletingConfirmation != DeletingDefinition.Title)"
+							IsWorking="@IsWorking" WorkingText="Deleting" OnClick="@(() => HandleConfirmDelete())">Confirm Delete</ProgressButton>
+			<MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="@(() => ShowView = Views.List)">Cancel</MudButton>
+			<MudSpacer />
+		</MudToolBar>
+	</MudPaper>
+}

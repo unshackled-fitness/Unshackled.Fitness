@@ -1,0 +1,76 @@
+﻿/// <reference path="./styles.scss" />
+
+.calendar {
+	.cal-wrapper {
+		max-width: 100%;
+		margin-top: 0.5rem;
+		width: 100%;
+	}
+
+	.cal-grid {
+		display: inline-grid;
+		grid-template-columns: repeat(7, 1fr);
+		grid-gap: 0;
+		width: 100%;
+		font-size: 10px;
+		border-top: solid 1px var(--mud-palette-table-lines);
+		border-left: solid 1px var(--mud-palette-table-lines);
+
+		@media (min-width: $breakpoint-sm-min) {
+			font-size: 11px;
+		}
+
+		@media (min-width: $breakpoint-md-min) {
+			font-size: 12px;
+		}
+
+		.day {
+			color: var(--mud-palette-text-primary);
+			min-height: 50px;
+			min-width: 0;
+			padding: .25rem;
+			border-right: solid 1px var(--mud-palette-table-lines);
+			border-bottom: solid 1px var(--mud-palette-table-lines);
+
+			@media (min-width: $breakpoint-sm-min) {
+				min-height: 80px;
+			}
+
+			@media (min-width: $breakpoint-md-min) {
+				min-height: 150px;
+			}
+
+			.block {
+				min-height: 1.8em;
+				width: 100%;
+				overflow: hidden;
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: flex-start;
+				border-radius: 1em;
+				margin: .25em 0;
+
+				.block-title {
+					font-size: 1em;
+					margin: 1px 0;
+					padding: .2em .5em 0;
+					white-space: nowrap;
+				}
+
+				.mud-icon-root {
+					font-size: 1.1em;
+					margin: .25em 0;
+				}
+			}
+
+			.block-centered {
+				justify-content: center;
+			}
+
+			&.day-alt {
+				background-color: var(--mud-palette-table-striped);
+			}
+		}
+	}
+}

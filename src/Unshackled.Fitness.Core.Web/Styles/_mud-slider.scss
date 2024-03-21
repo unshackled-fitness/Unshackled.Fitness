@@ -1,0 +1,17 @@
+﻿/// <reference path="styles.scss" />
+
+.mud-slider .mud-slider-filled {
+	background-color: var(--mud-palette-action-default);
+}
+
+.mud-slider .mud-slider-track-tick {
+    background-color: var(--mud-palette-action-default);
+}
+
+.mud-slider .mud-slider-input::-webkit-slider-runnable-track {
+    background-color: var(--mud-palette-action-default-hover);
+}
+
+.mud-slider .mud-slider-input::-webkit-slider-thumb {
+	background-color: var(--mud-palette-action-default);
+}

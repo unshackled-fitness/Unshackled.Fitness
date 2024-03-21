@@ -1,0 +1,130 @@
+﻿@page "/account/login"
+
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Identity
+@using Unshackled.Fitness.Core.Configuration
+@using Unshackled.Fitness.Core.Data.Entities
+
+@inject UserManager<UserEntity> UserManager
+@inject SignInManager<UserEntity> SignInManager
+@inject ILogger<Login> Logger
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
+@inject SiteConfiguration SiteConfig
+
+<PageTitle>Log In</PageTitle>
+
+<MudText Typo="Typo.h6" Class="mb-3">Log In</MudText>
+<StatusMessage Message="@errorMessage" />
+<EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login" class="disable-on-submit">
+	<DataAnnotationsValidator />
+	<div class="form-floating mb-3">
+		<InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+		<label for="email" class="form-label">Email</label>
+		<ValidationMessage For="() => Input.Email" class="text-danger mt-2" />
+	</div>
+	<div class="form-floating mb-3">
+		<InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+		<label for="password" class="form-label">Password</label>
+		<ValidationMessage For="() => Input.Password" class="text-danger mt-2" />
+	</div>
+	<div class="checkbox mb-3">
+		<label class="form-label">
+			<InputCheckbox @bind-Value="Input.RememberMe" class="darker-border-checkbox form-check-input" />
+			<span class="d-inline-block ps-2 pt-1">
+				Remember me
+			</span>
+		</label>
+	</div>
+	<MudToolBar DisableGutters="true" Class="mb-3">
+		<MudSpacer />
+		<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Secondary">Log in</MudButton>
+		<MudSpacer />
+	</MudToolBar>
+</EditForm>
+<div class="d-flex flex-column flex-sm-row flex-wrap align-center justify-sm-center gap-2 gap-sm-4">
+	<div>
+		<MudLink Typo="Typo.caption" Color="Color.Secondary" Href="account/forgot-password">Forgot your password?</MudLink>
+	</div>
+	@if (SiteConfig.AllowRegistration)
+	{
+		<div>
+			<MudLink Typo="Typo.caption" Color="Color.Secondary" Href="@(NavigationManager.GetUriWithQueryParameters("account/register", new Dictionary<string, object?> { ["returnUrl"] = ReturnUrl }))">Register as a new user</MudLink>
+		</div>
+		<div>
+			<MudLink Typo="Typo.caption" Color="Color.Secondary" Href="account/resend-confirmation">Resend email confirmation</MudLink>
+		</div>
+	}
+</div>
+
+@code {
+	private string? errorMessage;
+
+	[CascadingParameter]
+	private HttpContext HttpContext { get; set; } = default!;
+
+	[SupplyParameterFromForm]
+	private InputModel Input { get; set; } = new();
+
+	[SupplyParameterFromQuery(Name = "returnUrl")]
+	private string? ReturnUrl { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		if (HttpMethods.IsGet(HttpContext.Request.Method))
+		{
+			// Clear the existing external cookie to ensure a clean login process
+			await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+		}
+	}
+
+	public async Task LoginUser()
+	{
+		// If email confirmation required, must be confirmed before login
+		var user = await UserManager.FindByEmailAsync(Input.Email);
+		if (SiteConfig.RequireConfirmedAccount && user != null && !user.EmailConfirmed)
+		{
+			RedirectManager.RedirectTo("/account/resend-confirmation");
+			return;
+		}
+
+		// This doesn't count login failures towards account lockout
+		// To enable password failures to trigger account lockout, set lockoutOnFailure: true
+		var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+		if (result.Succeeded)
+		{
+			Logger.LogInformation("User logged in.");
+			RedirectManager.RedirectTo(ReturnUrl);
+		}
+        else if (result.RequiresTwoFactor)
+        {
+            RedirectManager.RedirectTo(
+                "account/login-with-2fa",
+                new() { ["returnUrl"] = ReturnUrl, ["rememberMe"] = Input.RememberMe });
+        }
+        else if (result.IsLockedOut)
+        {
+            Logger.LogWarning("User account locked out.");
+            RedirectManager.RedirectTo("account/lockout");
+        }
+        else
+        {
+            errorMessage = "Error: Invalid login attempt.";
+        }
+    }
+
+    private sealed class InputModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = "";
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; } = "";
+
+        [Display(Name = "Remember me?")]
+        public bool RememberMe { get; set; }
+    }
+}

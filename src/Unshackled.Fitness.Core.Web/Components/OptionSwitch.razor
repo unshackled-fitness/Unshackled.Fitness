@@ -1,0 +1,13 @@
+﻿<div class="option-switch">
+	<MudText Typo="Typo.body1" Color="Color.Inherit" Class="first-option">@FirstLabel</MudText>
+	<MudSwitch Color="@Color" Label="@SecondLabel" Disabled="@Disabled" Checked="@Checked" CheckedChanged="@CheckedChanged" />
+</div>
+
+@code {
+	[Parameter] public string? FirstLabel { get; set; }
+	[Parameter] public string? SecondLabel { get; set; }
+	[Parameter] public bool Checked { get; set; }
+	[Parameter] public EventCallback<bool> CheckedChanged { get; set; }
+	[Parameter] public Color Color { get; set; } = Color.Inherit;
+	[Parameter] public bool Disabled { get; set; } = false;
+}

@@ -1,0 +1,44 @@
+﻿<div class="calendar">
+	<div class="d-flex flex-row gap-2 align-center">
+		<MudSpacer />
+		@if(ChildContent != null)
+		{
+			@ChildContent
+		}
+		<MudSpacer />
+		<div>
+			<MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Title="Scroll to End"
+						   OnClick="@(() => HandleScrollToBottomClicked())" />
+		</div>
+	</div>
+	<div class="cal-wrapper">
+		<div class="cal-grid">
+			@for (int i = 0; i < FirstDayOfWeek; i++)
+			{
+				<div class="day day-empty"></div>
+			}
+			@foreach (var day in Model.Days)
+			{
+				<div class="@GetDayClass(day)">
+					<div class="day-header">@GetDayTitle(day)</div>
+					<div class="day-content">
+						@foreach (var block in day.Blocks)
+						{
+							<div class="@GetBlockClass(block)" style="@GetBlockStyle(block)">
+								@if(!string.IsNullOrEmpty(block.Title))
+								{
+									<div class="block-title" style="@GetBlockTextStyle(block)">@block.Title</div>
+								}
+								else
+								{
+									<MudIcon Icon="@Icons.Material.Filled.Check" style="@GetBlockTextStyle(block)" />
+								}
+							</div>
+						}
+					</div>
+				</div>
+			}
+		</div>
+		<div id="calendar_bottom"></div>
+	</div>
+</div>

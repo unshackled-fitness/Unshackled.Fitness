@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>unshackled-secrets</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Unshackled.Fitness.Core.Data\Unshackled.Fitness.Core.Data.csproj" />
+		<ProjectReference Include="..\Unshackled.Fitness.Core.Web\Unshackled.Fitness.Core.Web.csproj" />
+		<ProjectReference Include="..\Unshackled.Fitness.Core\Unshackled.Fitness.Core.csproj" />
+		<ProjectReference Include="..\Unshackled.Fitness.My.Client\Unshackled.Fitness.My.Client.csproj" />
+		<PackageReference Include="AutoMapper" Version="13.0.1" />
+		<PackageReference Include="Azure.Storage.Queues" Version="12.17.1" />
+		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+		<PackageReference Include="Hashids.net" Version="1.7.0" />
+		<PackageReference Include="LinqKit" Version="1.2.5" />
+		<PackageReference Include="MediatR" Version="12.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.2" />
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,53 @@
+﻿@page "/account/register-confirmation"
+
+@using System.Text
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.WebUtilities
+@using Unshackled.Fitness.Core.Data.Entities
+
+@inject UserManager<UserEntity> UserManager
+@inject IEmailSender<UserEntity> EmailSender
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
+
+<PageTitle>Register Confirmation</PageTitle>
+
+<MudText Typo="Typo.h6" Class="mb-4">Register Confirmation</MudText>
+
+<StatusMessage Message="@statusMessage" />
+
+<MudText>Please check your email to confirm your account.</MudText>
+
+<MudToolBar Class="mt-6">
+	<MudSpacer />
+	<MudButton Href="/">Return</MudButton>
+	<MudSpacer />
+</MudToolBar>
+
+@code {
+    private string? statusMessage;
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromQuery]
+    private string? Email { get; set; }
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Email is null)
+        {
+            RedirectManager.RedirectTo("/");
+        }
+
+        var user = await UserManager.FindByEmailAsync(Email);
+        if (user is null)
+        {
+            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+            statusMessage = "Error finding user for unspecified email";
+        }
+    }
+}

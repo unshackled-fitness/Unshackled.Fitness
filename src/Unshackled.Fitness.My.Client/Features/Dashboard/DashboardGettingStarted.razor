@@ -1,0 +1,43 @@
+﻿@inherits DashboardGettingStartedBase
+
+@if (!State.ActiveMember.Settings.HideGettingStarted)
+{
+	<MudPaper Class="mb-6">
+		<SectionHeader Typo="Typo.h4" Title="Getting Started" Class="mb-4">
+			<DefaultToolbar>
+				<MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@(() => HandleDismissClicked())" />
+			</DefaultToolbar>
+		</SectionHeader>
+
+		<MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-2">1. Set your default units.</MudText>
+		<MudText Class="mb-6">
+			Visit your <MudLink Href="/member/app-settings" Color="Color.Secondary">app settings</MudLink> and select your unit system (Metric or US/Imperial). Adjust any other settings you wish while you are there.
+		</MudText>
+
+		<MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-2">2. Add some exercises to your library.</MudText>
+		<MudText Class="mb-6">
+			Visit the <MudLink Href="/exercises" Color="Color.Secondary">Exercises</MudLink> page and add some exercises to your library. Use the "Import" button to copy exercises from 
+			our exercise library or the "Custom" button to add your own.
+		</MudText>
+
+		<MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-2">3. Create some templates</MudText>
+		<MudText Class="mb-6">
+			Visit the <MudLink Href="/templates" Color="Color.Secondary">Templates</MudLink> page to create a list of exercises that you will perform in a single workout. Templates are
+			reusable so you don't have to recreate your workouts from scratch every time you hit the gym. They let you define the number of sets you will perform for each exercise, the 
+			order you will perform them, and the target number of reps for each set.
+		</MudText>
+
+		<MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-2">4. Create a program</MudText>
+		<MudText Class="mb-6">
+			Visit the <MudLink Href="/programs" Color="Color.Secondary">Programs</MudLink> page to organize your templates into a complete program. Schedule the program and you will see 
+			the current day's workout listed on the Dashboard (this page) for quick access when you get to the gym.
+		</MudText>
+
+		<MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-2">5. Complete a workout</MudText>
+		<MudText Class="mb-6">
+			Visit the <MudLink Href="/templates" Color="Color.Secondary">Templates</MudLink> page and start tracking a workout using one of your templates or visit the <MudLink Href="/workouts" Color="Color.Secondary">Workouts</MudLink>
+			page and start a new, blank workout from scratch. Repeat often.
+		</MudText>
+	</MudPaper>
+}
+

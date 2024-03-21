@@ -1,0 +1,11 @@
+﻿@inherits DrawerNotesBase
+
+<MudTextField Variant="Variant.Outlined" FullWidth="true" Lines="5" @bind-Value="Model.Notes" />
+
+<MudToolBar DisableGutters="true" Class="mt-4">
+	<MudSpacer />
+	<ProgressButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@IsSaving" IsWorking="@IsSaving" WorkingText="Saving"
+					OnClick="@(() => HandleUpdateClicked())">Save</ProgressButton>
+	<MudButton Variant="Variant.Outlined" Color="Color.Primary" Disabled="@IsSaving" OnClick="@(() => HandleCancelClicked())">Cancel</MudButton>
+	<MudSpacer />
+</MudToolBar>

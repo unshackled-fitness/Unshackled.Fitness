@@ -1,0 +1,122 @@
+﻿@if (IsWorkoutStarted)
+{
+	@if (IsWorkoutComplete || TotalReps > 0 || TotalVolume > 0)
+	{
+		<MudDivider DividerType="DividerType.FullWidth" />
+		<div class="workout-summary">
+			@if (IsWorkoutComplete)
+			{
+				<div class="summary-item">
+					<MudText Class="summary-label" Color="Color.Tertiary">Total Time</MudText>
+					<MudText Class="summary-value">@Workout.TotalWorkoutTime.ToString(@"hh\:mm")</MudText>
+						<MudText Class="summary-caption" Color="Color.Tertiary">hr:min</MudText>
+					</div>
+				@if (TotalReps > 0)
+				{
+					<MudDivider Vertical="true" FlexItem="true" />
+				}
+			}
+			@if (TotalReps > 0)
+			{
+				<div class="summary-item">
+					<MudText Class="summary-label" Color="Color.Tertiary">Total Reps</MudText>
+					<MudText Class="summary-value">@TotalReps</MudText>
+					</div>
+			}
+			@if (TotalVolume > 0)
+			{
+				<MudDivider Vertical="true" FlexItem="true" />
+				<div class="summary-item">
+					<MudText Class="summary-label" Color="Color.Tertiary">Volume</MudText>
+					<MudText Class="summary-value">
+						<WeightLabel WeightKg="@TotalVolume" WeightLb="@TotalVolume" UnitSystem="@State.ActiveMember.Settings.DefaultUnits" />
+					</MudText>
+				</div>
+			}
+		</div>
+		<MudDivider DividerType="DividerType.FullWidth" Class="mb-4" />
+	}
+	@if (IsWorkoutComplete && HasRecords)
+	{
+		<div class="d-flex flex-column align-center w-100">
+			<div class="d-flex flex-row flex-wrap gap-1">
+				@if (Workout.RecordWeightCount > 0)
+				{
+					<MudChip Size="Size.Small" Icon="@Icons.Material.Filled.EmojiEvents" Color="Color.Primary">
+						@(Workout.RecordWeightCount.CountLabel("Weight PR", "Weight PRs"))
+					</MudChip>
+				}
+				@if (Workout.AdjustedRecordTargetWeightCount > 0)
+				{
+					<MudChip Size="Size.Small" Icon="@Icons.Material.Filled.EmojiEvents" Color="Color.Primary">
+						@(Workout.AdjustedRecordTargetWeightCount.CountLabel($"Weight PR @ TR", "Weight PRs @ TR"))
+					</MudChip>
+				}
+				@if (Workout.RecordVolumeCount > 0)
+				{
+					<MudChip Size="Size.Small" Icon="@Icons.Material.Filled.EmojiEvents" Color="Color.Primary">
+						@(Workout.RecordVolumeCount.CountLabel("Volume PR", "Volume PRs"))
+					</MudChip>
+				}
+				@if (Workout.AdjustedRecordTargetVolumeCount > 0)
+				{
+					<MudChip Size="Size.Small" Icon="@Icons.Material.Filled.EmojiEvents" Color="Color.Primary">
+						@(Workout.AdjustedRecordTargetVolumeCount.CountLabel($"Volume PR @ TR", "Volume PRs @ TR"))
+					</MudChip>
+				}
+				@if (Workout.RecordSecondsCount > 0)
+				{
+					<MudChip Size="Size.Small" Icon="@Icons.Material.Filled.EmojiEvents" Color="Color.Primary">
+						@(Workout.RecordSecondsCount.CountLabel("Time PR", "Time PRs"))
+					</MudChip>
+				}
+				@if (Workout.RecordSecondsAtWeightCount > 0)
+				{
+					<MudChip Size="Size.Small" Icon="@Icons.Material.Filled.EmojiEvents" Color="Color.Primary">
+						@(Workout.RecordSecondsAtWeightCount.CountLabel($"Time PR @ WT", "Time PRs @ WT"))
+					</MudChip>
+				}
+			</div>
+		</div>
+	}
+}
+
+@code {
+	[Inject] public AppState State { get; set; } = default!;
+
+	[Parameter] public FormWorkoutModel Workout { get; set; } = null!;
+
+	private bool IsWorkoutComplete => Workout.DateStartedUtc.HasValue && Workout.DateCompletedUtc.HasValue;
+
+	private bool IsWorkoutStarted => Workout.DateStartedUtc.HasValue;
+
+	private decimal TotalVolume => Workout.Sets.Where(x => x.DateRecordedUtc.HasValue).Select(x => x.Volume).Sum();
+
+	private bool HasRecords => Workout.RecordTargetVolumeCount > 0 || Workout.RecordTargetWeightCount > 0
+			|| Workout.RecordVolumeCount > 0 || Workout.RecordWeightCount > 0 || Workout.RecordSecondsCount > 0
+			|| Workout.RecordSecondsAtWeightCount > 0;
+
+	private int TotalReps
+	{
+		get
+		{
+			int reps = 0;
+			foreach (var set in Workout.Sets.Where(x => x.DateRecordedUtc.HasValue).ToList())
+			{
+				if (set.IsTrackingSplit)
+				{
+					if (set.RepsLeft.HasValue)
+						reps += set.RepsLeft.Value;
+					if (set.RepsRight.HasValue)
+						reps += set.RepsRight.Value;
+				}
+				else
+				{
+					if (set.Reps.HasValue)
+						reps += set.Reps.Value;
+				}
+			}
+			return reps;
+		}
+	}
+}

@@ -1,0 +1,79 @@
+﻿@page "/account/resend-confirmation"
+
+@using System.ComponentModel.DataAnnotations
+@using System.Text
+@using System.Text.Encodings.Web
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.WebUtilities
+@using Unshackled.Fitness.Core.Configuration
+@using Unshackled.Fitness.Core.Data.Entities
+
+@inject UserManager<UserEntity> UserManager
+@inject IEmailSender<UserEntity> EmailSender
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
+@inject SiteConfiguration SiteConfig
+
+<PageTitle>Resend Email Confirmation</PageTitle>
+
+<MudText Typo="Typo.h6" Class="mb-4">Resend Email Confirmation</MudText>
+@if (SiteConfig.RequireConfirmedAccount)
+{
+	<MudText Class="mb-6">You must confirm your email address before you can log in.</MudText>
+}
+<StatusMessage Message="@message" />
+<EditForm Model="Input" FormName="resend-email-confirmation" OnValidSubmit="OnValidSubmitAsync" method="post" class="disable-on-submit">
+    <DataAnnotationsValidator />
+    <div class="form-floating mb-3">
+        <InputText @bind-Value="Input.Email" class="form-control" aria-required="true" placeholder="name@example.com" />
+        <label for="email" class="form-label">Email</label>
+        <ValidationMessage For="() => Input.Email" class="text-danger" />
+	</div>
+	<MudToolBar DisableGutters="true" Class="mb-3">
+		<MudSpacer />
+		<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Secondary">Resend</MudButton>
+		<MudButton ButtonType="ButtonType.Button" Variant="Variant.Outlined" Color="Color.Secondary" Class="ms-2" Href="/">Cancel</MudButton>
+		<MudSpacer />
+	</MudToolBar>
+</EditForm>
+
+@code {
+	private string? message;
+
+	[SupplyParameterFromForm]
+	private InputModel Input { get; set; } = new();
+
+	private async Task OnValidSubmitAsync()
+	{
+		var user = await UserManager.FindByEmailAsync(Input.Email!);
+		if (user is null)
+		{
+			message = "Verification email sent. Please check your email.";
+			return;
+		}
+
+		try
+		{
+			var userId = await UserManager.GetUserIdAsync(user);
+			var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+			code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+			var callbackUrl = NavigationManager.GetUriWithQueryParameters(
+				NavigationManager.ToAbsoluteUri("account/confirm-email").AbsoluteUri,
+				new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code });
+			await EmailSender.SendConfirmationLinkAsync(user, Input.Email, HtmlEncoder.Default.Encode(callbackUrl));
+
+			message = "Verification email sent. Please check your email.";
+		}
+		catch (Exception ex)
+		{
+			message = ex.Message;
+		}
+	}
+
+    private sealed class InputModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = "";
+    }
+}

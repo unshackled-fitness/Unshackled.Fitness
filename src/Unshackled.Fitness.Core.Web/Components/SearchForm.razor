@@ -1,0 +1,23 @@
+﻿@using MudBlazor.Utilities
+@typeparam T
+
+<EditForm Model="@Model" OnSubmit="@(() => HandleSubmit())">
+	<div class="@FormClass">
+		<div class="search-form">
+			@if (SearchFields != null)
+			{
+				@SearchFields
+			}
+		</div>
+		<div class="@ToolbarClass">
+			<MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Search"
+					   Disabled="@Disable" ButtonType="ButtonType.Submit" title="Search">
+				<span class="search-button-label">Search</span>
+			</MudButton>
+			<MudButton Color="Color.Dark" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Clear"
+					   Disabled="@Disable" OnClick="@HandleResetClicked" title="Reset">
+				<span class="search-button-label">Reset</span>
+			</MudButton>
+		</div>
+	</div>
+</EditForm>

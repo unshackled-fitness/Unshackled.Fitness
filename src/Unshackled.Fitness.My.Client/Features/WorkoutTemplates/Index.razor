@@ -1,0 +1,84 @@
+﻿@page "/templates"
+@inherits IndexBase
+
+<DynamicPageTitle  IsLoading="@IsLoading" LoadingTitle="Loading Templates..." Title="Templates" />
+
+<MudBreadcrumbs Items="@Breadcrumbs" />
+
+@if (IsWorking)
+{
+	<DefaultProgress />
+}
+else if (!Adding)
+{
+	<MudText Typo="Typo.h4" Class="mb-6">Templates</MudText>
+
+	<div Class="mb-6">
+		<SearchForm @bind-Model="@SearchModel" Class="mb-6" SearchClicked="@(() => DoSearch(1))" ResetClicked="@HandleResetClicked" Disable="@IsLoading">
+			<SearchFields>
+				<MudGrid Spacing="1">
+					<MudItem xs="12" sm="4">
+						<MuscleTypeSelect AllOption="true" Margin="Margin.Dense" @bind-Value="@SearchModel.MuscleType" Disabled="@DisableControls" />
+					</MudItem>
+					<MudItem xs="12" sm="8">
+						<MudTextField Label="Title" Variant="Variant.Outlined" FullWidth="true" Margin="Margin.Dense"
+								  T="string" @bind-Value="@SearchModel.Title" Disabled="@IsLoading" />
+					</MudItem>
+				</MudGrid>
+			</SearchFields>
+		</SearchForm>
+		@if (IsMemberActive)
+		{
+			<MudToolBar Class="mb-2" DisableGutters="true" Dense="true">
+				<ProgressButton StartIcon="@Icons.Material.Filled.AddCircle" Disabled="@DisableControls" 
+								IsWorking="@(IsWorking && TrackNowSid == string.Empty)" WorkingText="Opening"
+								OnClick="@(() => HandleAddClicked())">New</ProgressButton>
+				<MudMenu Label="Sort" StartIcon="@Icons.Material.Filled.Sort" Class="ms-2">
+					<MudMenuItem OnClick="@(() => HandleSortByClicked(0, nameof(TemplateListItem.Title)))"
+								 OnTouch="@(() => HandleSortByClicked(0, nameof(TemplateListItem.Title)))">Title (Asc)</MudMenuItem>
+					<MudMenuItem OnClick="@(() => HandleSortByClicked(1, nameof(TemplateListItem.Title)))"
+								 OnTouch="@(() => HandleSortByClicked(1, nameof(TemplateListItem.Title)))">Title (Desc)</MudMenuItem>
+				</MudMenu>
+			</MudToolBar>
+		}
+		<ListView Class="mb-6" Items="@SearchResults.Data" PageSize="@SearchResults.PageSize" Page="@SearchModel.Page" TotalItems="@SearchResults.Total" IsLoading="@IsLoading"
+			  PageSelected="@HandlePageSelected">
+			<ItemRenderer>
+				<MudGrid Spacing="2" Class="my-2">
+					<MudItem xs="12" sm="6" md="8">
+						<div class="d-flex flex-row gap-4 align-center">
+							@if (IsMemberActive)
+							{
+								<div>
+									<ProgressButton Variant="Variant.Filled" Color="Color.Secondary" Disabled="@DisableControls" 
+													IsWorking="@(context.Item.Sid == TrackNowSid)" WorkingText="Opening" Size="Size.Small" Class="my-2 my-md-0"
+													OnClick="@(() => HandleTrackNowClicked(context.Item))">Track</ProgressButton>
+								</div>
+							}
+							<div class="flex-grow-1">
+								<MudLink Typo="Typo.subtitle1" Href="@($"/templates/{context.Item.Sid}")">@context.Item.Title</MudLink>
+								<MudText Typo="Typo.body1" Color="Color.Tertiary">@context.Item.MusclesTargeted</MudText>
+							</div>
+						</div>
+					</MudItem>
+					<MudItem xs="6" sm="3" md="2">
+						<CaptionedProperty Align="Align.Center" Title="Total Exercises" Value="@context.Item.ExerciseCount.ToString()" />
+					</MudItem>
+					<MudItem xs="6" sm="3" md="2">
+						<CaptionedProperty Align="Align.Center" Title="Total Sets" Value="@context.Item.SetCount.ToString()" />
+					</MudItem>
+				</MudGrid>
+			</ItemRenderer>
+			<EmptyListRenderer>
+				<MudText Align="Align.Center" Class="mt-4">No templates matched your search.</MudText>
+			</EmptyListRenderer>
+		</ListView>
+	</div>
+}
+else
+{
+	<div class="mb-6">
+		<SectionHeader Title="Add New Template" IsEditing="true" EditingClass="mb-4" FormId="@FormId" OnCancelClicked="@(() => Adding = false)" />
+		<FormProperties Model="@FormModel" FormId="@FormId" DisableFormControls="DisableControls" OnFormSubmitted="@HandleFormSubmitted" />
+	</div>
+}

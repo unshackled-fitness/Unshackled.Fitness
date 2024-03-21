@@ -1,0 +1,13 @@
+﻿@page "/member"
+@inherits IndexBase
+
+<PageTitle>Settings</PageTitle>
+
+<MudBreadcrumbs Items="@Breadcrumbs" />
+
+<div class="d-flex flex-row flex-wrap gap-3 align-center justify-center">
+	<DashboardTile Icon="@Icons.Material.Filled.AppSettingsAlt" Href="/member/app-settings" Title="App Settings" />
+	<DashboardTile Icon="@Icons.Material.Filled.Email" Href="/member/change-email" Title="Change Email" />
+	<DashboardTile Icon="@Icons.Material.Filled.Password" Href="/member/change-password" Title="Change Password" />
+	<DashboardTile Icon="@Icons.Material.Filled.DevicesOther" Href="/member/2fa" Title="Two-factor Authentication" />
+</div>

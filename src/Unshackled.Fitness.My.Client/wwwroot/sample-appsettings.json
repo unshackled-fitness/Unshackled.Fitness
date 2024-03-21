@@ -1,0 +1,12 @@
+{
+	"ClientConfiguration": {
+		"SiteName": "Unshackled Fitness",
+		"LibraryApiUrl": "https://my.unshackled.fitness/api/"
+	},
+	"Logging": {
+		"LogLevel": {
+			"Default": "Information",
+			"Microsoft.AspNetCore": "Warning"
+		}
+	}
+}

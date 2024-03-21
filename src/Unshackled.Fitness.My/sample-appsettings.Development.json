@@ -1,0 +1,11 @@
+{
+	"ConnectionStrings": {
+		"DefaultDatabase": ""
+	},
+	"Logging": {
+		"LogLevel": {
+			"Default": "Information",
+			"Microsoft.AspNetCore": "Warning"
+		}
+	}
+}

@@ -1,0 +1,35 @@
+﻿<MudDialog DisableSidePadding="true">
+	<DialogContent>
+		<MudContainer Style="max-height: 300px; overflow-y: scroll">
+			<ListView TItem="TemplateListModel" Items="@Templates">
+				<ItemRenderer>
+					<div class="d-flex flex-row gap-2 align-center">
+						<div>
+							<MudIconButton Icon="@Icons.Material.Filled.AddCircle" Color="Color.Primary" OnClick="@(() => Submit(context.Item))" />
+						</div>
+						<div class="flex-grow-1">
+							<MudText>@context.Item.Title</MudText>
+							@if (!string.IsNullOrEmpty(context.Item.MusclesTargeted))
+							{
+								<MudText Typo="Typo.caption" Color="Color.Tertiary">@context.Item.MusclesTargeted</MudText>
+							}
+						</div>
+					</div>
+				</ItemRenderer>
+			</ListView>
+		</MudContainer>
+	</DialogContent>
+	<DialogActions>
+		<MudSpacer />
+		<MudButton Variant="Variant.Filled" OnClick="Cancel">Cancel</MudButton>
+		<MudSpacer />
+	</DialogActions>
+</MudDialog>
+
+@code {
+	[CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+	[Parameter] public List<TemplateListModel> Templates { get; set; } = new();
+
+	void Submit(TemplateListModel model) => MudDialog.Close(DialogResult.Ok(model));
+	void Cancel() => MudDialog.Cancel();
+}

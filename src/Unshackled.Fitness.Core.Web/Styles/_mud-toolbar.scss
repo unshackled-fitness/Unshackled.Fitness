@@ -1,0 +1,44 @@
+﻿/// <reference path="./styles.scss" />
+
+.mud-main-content {
+	.mud-toolbar {
+		flex-wrap: wrap;
+		height: auto;
+		column-gap: .5rem;
+
+		.mud-switch .mud-typography {
+			font-family: var(--mud-typography-button-family) !important;
+			font-size: var(--mud-typography-button-size) !important;
+			font-weight: var(--mud-typography-button-weight) !important;
+			line-height: var(--mud-typography-button-lineheight) !important;
+			letter-spacing: var(--mud-typography-button-letterspacing) !important;
+			text-transform: var(--mud-typography-button-text-transform) !important;
+		}
+	}
+
+	@media (max-width: $breakpoint-xs-max) {
+		.toolbar-xs-stacked {
+			flex-direction: column;
+
+			button.mud-button {
+				margin-bottom: .5em;
+				margin-right: 0;
+				width: 100%;
+
+				&:last-of-type {
+					margin-bottom: 0;
+				}
+			}
+			
+			a.mud-button {
+				margin-bottom: .5em;
+				margin-right: 0;
+				width: 100%;
+			}
+		}
+	}
+
+	.mud-table-toolbar {
+		height: auto !important;
+	}
+}

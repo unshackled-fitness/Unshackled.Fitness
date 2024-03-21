@@ -1,0 +1,25 @@
+﻿@page "/member/2fa/generate-recovery-codes"
+@inherits GenerateRecoveryCodesBase
+
+<DynamicPageTitle Title="Generate Recovery Codes" />
+
+<MudBreadcrumbs Items="@Breadcrumbs" />
+
+<MudText Typo="Typo.h4" Class="mb-4">Generate Recovery Codes</MudText>
+
+@if (Model.RecoveryCodes is null)
+{
+	<MudAlert Severity="Severity.Warning" Class="mb-4">
+		<MudText>
+			Generating new recovery codes does not change the keys used in authenticator apps. If you wish to change the key
+			used in an authenticator app you should <MudLink Href="/member/2fa/reset-authenticator-app">reset your authenticator keys.</MudLink>
+		</MudText>
+	</MudAlert>
+	<MudButton Variant="Variant.Filled" Color="Color.Secondary" Disabled="@DisableControls" OnClick="@(() => HandleGenerateClicked())">Generate New Recovery Codes</MudButton>
+}
+else
+{
+	<ShowRecoveryCodes RecoveryCodes="Model.RecoveryCodes.ToArray()" />
+
+	<MudButton Class="mt-4" Href="/member/2fa">Return to 2FA settings</MudButton>
+}

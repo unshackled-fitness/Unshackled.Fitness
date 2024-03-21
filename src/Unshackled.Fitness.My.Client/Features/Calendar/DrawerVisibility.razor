@@ -1,0 +1,70 @@
+﻿@inherits DrawerStatsBase
+
+<MudText Typo="Typo.subtitle1" Color="Color.Tertiary" Class="mb-2">Presets</MudText>
+<MudPaper Class="mb-4 py-2 px-0">
+	<ListView Items="@Presets" UseDividers="false">
+		<ItemRenderer>
+			<div class="d-flex flex-row gap-2 align-center">
+				<div>
+					<MudIconButton Icon="@Icons.Material.Filled.PlayCircleFilled" Color="Color.Primary" Title="Apply Preset" Disabled="@IsSaving" 
+								   OnClick="@(() => HandleApplyPresetClicked(context.Item))" />
+				</div>
+				<MudText Class="flex-grow-1">@context.Item.Title</MudText>
+				@if (IsMemberActive)
+				{
+					<div>
+						<MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.TopRight" Disabled="@IsSaving">
+							<MudMenuItem OnClick="@(() => HandleUpdatePresetClicked(context.Item))" OnTouch="@(() => HandleUpdatePresetClicked(context.Item))">Update with current</MudMenuItem>
+							<MudMenuItem OnClick="@(() => HandleDeletePresetClicked(context.Item))" OnTouch="@(() => HandleDeletePresetClicked(context.Item))">Delete</MudMenuItem>
+						</MudMenu>
+					</div>
+				}
+			</div>
+		</ItemRenderer>
+		<EmptyListRenderer>
+			<MudText Align="Align.Center" Color="Color.Tertiary">You don't have any presets.</MudText>
+		</EmptyListRenderer>
+		</ListView>
+</MudPaper>
+
+
+<MudText Typo="Typo.subtitle1" Color="Color.Tertiary">Current Filters</MudText>
+<div class="d-flex flex-row gap-2 align-center">
+	<div class="flex-grow-1">
+		<MudCheckBox T="bool?" Value="@GetAllCheckboxState()" Color="Color.Primary" UnCheckedColor="Color.Default" Disabled="@IsSaving"
+					 ValueChanged="@((bool? value) => HandleCheckAllClicked(value))" Label="Check All/None" />
+	</div>
+	@if (IsMemberActive)
+	{
+		<div>
+			<MudButton StartIcon="@Icons.Material.Filled.SaveAs" Disabled="@IsSaving" OnClick="@(() => HandleAddPresetClicked())">Save As Preset</MudButton>
+		</div>
+	}
+</div>
+<GroupedExpansionList Groups="@FilterGroups" Items="@Filters" PanelClass="pb-4">
+	<GroupRenderer>
+		<div class="d-flex flex-row gap-2 align-center">
+			<div>
+				<MudCheckBox T="bool?" Value="@GetGroupCheckboxState(context)" Color="Color.Primary" UnCheckedColor="Color.Default" Disabled="@IsSaving"
+							 ValueChanged="@((bool? value) => HandleCheckAllInGroupClicked(context, value))" />
+			</div>
+			<MudText Typo="Typo.body1" Class="flex-grow-1">@context.Title</MudText>
+		</div>
+	</GroupRenderer>
+	<ItemRenderer>
+		<div class="d-flex flex-row gap-2 align-center ms-4" style="@GetItemStyle(context.Item)">
+			<div>
+				<MudCheckBox Value="@context.Item.IsChecked" Color="Color.Primary" UnCheckedColor="Color.Default" Disabled="@IsSaving"
+								ValueChanged="@((bool value) => HandleDefinitionChecked(context.Item, value))"/>
+			</div>
+			<div class="flex-grow-1">
+				<MudText Typo="Typo.body1">@context.Item.Title</MudText>
+				<MudText Typo="Typo.body2" Color="Color.Tertiary">@context.Item.SubTitle</MudText>
+			</div>
+		</div>
+	</ItemRenderer>
+	<EmptyListRenderer>
+		<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+		<MudText Align="Align.Center" Class="mt-4">No metrics were found.</MudText>
+	</EmptyListRenderer>
+</GroupedExpansionList>

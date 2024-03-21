@@ -1,0 +1,42 @@
+﻿@page "/templates/{TemplateId}"
+@inherits SingleBase
+
+<DynamicPageTitle  IsLoading="@IsLoading" LoadingTitle="Loading Template" FallbackTitle="Template" Title="@Template?.Title" />
+
+<MudBreadcrumbs Items="Breadcrumbs"></MudBreadcrumbs>
+
+@if (IsLoading)
+{
+	<DefaultProgress />
+}
+else
+{
+	@if (!string.IsNullOrEmpty(Template?.Sid))
+	{
+		@if (IsMemberActive)
+		{
+			<MudToolBar DisableGutters="true" Class="mb-4">
+				<ProgressButton Variant="Variant.Filled" Color="Color.Secondary" Disabled="@DisableTrack" IsWorking="@IsWorking" WorkingText="Opening"
+								OnClick="@(() => HandleTrackNowClicked())">Track Now</ProgressButton>
+				<MudSpacer />
+				<EditModeSwitch @bind-IsEditMode="@IsEditMode" Disabled="@(IsEditing || IsWorking)" />
+			</MudToolBar>
+		}
+
+		<SectionProperties @bind-Template="@Template" IsEditMode="@IsEditMode" DisableSectionControls="@DisableControls"
+				OnIsEditingSectionChange="@HandleIsEditingSectionChange" />
+
+		<SectionTasks TemplateSid="@Template.Sid" TaskType="@WorkoutTaskTypes.PreWorkout" IsEditMode="@IsEditMode" DisableSectionControls="@DisableControls"
+			  OnIsEditingSectionChange="@HandleIsEditingSectionChange" />
+
+		<SectionSets TemplateSid="@Template.Sid" IsEditMode="@IsEditMode" DisableSectionControls="@DisableControls"
+			 OnIsEditingSectionChange="@HandleIsEditingSectionChange" SetsUpdated="@HandleSetsUpdated" />
+
+		<SectionTasks TemplateSid="@Template.Sid" TaskType="@WorkoutTaskTypes.PostWorkout" IsEditMode="@IsEditMode" DisableSectionControls="@DisableControls"
+			  OnIsEditingSectionChange="@HandleIsEditingSectionChange" />
+	}
+	else
+	{
+		<MudAlert Severity="Severity.Error" Dense="true">The template was not found.</MudAlert>
+	}
+}

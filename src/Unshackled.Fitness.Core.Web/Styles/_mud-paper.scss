@@ -1,0 +1,13 @@
+﻿/// <reference path="styles.scss" />
+
+.mud-paper:not(.mud-popover):not(.mud-picker) {
+	padding: 1rem;
+
+	@media (min-width: $breakpoint-sm-min) {
+		padding: 1.5rem;
+	}
+}
+
+.mud-paper:not(.mud-popover):not(.mud-paper-square) {
+	border-radius: 1rem;
+}

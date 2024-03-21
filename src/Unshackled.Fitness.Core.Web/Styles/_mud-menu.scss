@@ -1,0 +1,24 @@
+﻿/// <reference path="./styles.scss" />
+
+.icon-only {
+	min-width: auto;
+
+	.mud-button {
+		min-width: auto;
+	}
+
+	.mud-button-label {
+		.mud-button-icon-start {
+			margin-right: 0;
+		}
+
+		.mud-button-icon-end {
+			margin-left: 0;
+		}
+	}
+}
+
+.mud-list-item-icon {
+   min-width: auto;
+   margin-right: .5em;
+}

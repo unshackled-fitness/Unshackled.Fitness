@@ -1,0 +1,36 @@
+﻿@page "/exercises/{Sid}"
+@inherits SingleBase
+
+<DynamicPageTitle  IsLoading="@IsLoading" LoadingTitle="Loading Exercise..." FallbackTitle="Exercise" Title="@Exercise.Title" />
+
+<MudBreadcrumbs Items="@Breadcrumbs" />
+
+@if (IsLoading)
+{
+	<DefaultProgress />
+}
+else if (!string.IsNullOrEmpty(Exercise.Sid))
+{
+	@if (IsMemberActive)
+	{
+		<MudToolBar DisableGutters="true" Dense="true">
+			<MudSpacer />
+			<EditModeSwitch @bind-IsEditMode="@IsEditMode" Disabled="@IsEditing" />
+		</MudToolBar>
+	}
+
+	<SectionProperties @bind-Exercise="@Exercise" IsEditMode="@IsEditMode" DisableSectionControls="@DisableControls"
+					   OnIsEditingSectionChange="@HandleIsEditingChange" />
+
+	<SectionRecords Exercise="@Exercise" />
+
+	<SectionResults Exercise="@Exercise" />
+
+	<MudButton Href="/exercises" Class="mb-6" StartIcon="@Icons.Material.Filled.ArrowBack">Back to Exercises</MudButton>
+}
+else
+{
+	<MudAlert Severity="Severity.Error">Invalid Exercise ID</MudAlert>
+
+	<MudButton Href="/exercises" Class="my-6" StartIcon="@Icons.Material.Filled.ArrowBack">Back to Exercises</MudButton>
+}

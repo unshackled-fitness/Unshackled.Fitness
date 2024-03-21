@@ -1,0 +1,47 @@
+﻿/// <reference path="styles.scss" />
+
+.section-edit-mode {
+	position: relative;
+
+	.section-toolbar {
+		.section-tools {
+			border-left: solid 2px var(--mud-palette-divider);
+			border-bottom: solid 2px var(--mud-palette-divider);
+			border-bottom-left-radius: var(--mud-default-borderradius);
+		}
+	}
+
+	.pos-relative {
+		margin: -1rem -1rem 0 0;
+	}
+
+	.pos-absolute {
+		position: absolute;
+		top: 0;
+		right: 0;
+		margin: 0;
+	}
+
+	@each $bp, $size in $breakpoints-min {
+		@media (min-width: #{$size}) {
+			.pos-#{$bp}-absolute {
+				position: absolute;
+				top: 0;
+				right: 0;
+				margin: 0;
+			}
+		}
+	}
+}
+
+.section-editing {
+	.section-toolbar {
+		.section-tools {
+			color: var(--mud-palette-secondary-text);
+			border-left-color: var(--mud-palette-secondary);
+			border-bottom-color: var(--mud-palette-secondary);
+			background-color: var(--mud-palette-secondary);
+			border-top-right-radius: 1rem;
+		}
+	}
+}

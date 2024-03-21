@@ -1,0 +1,41 @@
+﻿@if (ShowPagination)
+{
+	<div class="d-flex flex-column-reverse flex-md-row align-center gap-2">
+		@if (Pages > 1)
+		{
+			<div class="flex-grow-1">
+				<MudPagination Count="@Pages" Selected="@Page" SelectedChanged="@HandlePageSelected" BoundaryCount="1" MiddleCount="3" />
+			</div>
+		}
+		<div class="flex-grow-1"></div>
+		<div>
+			<MudText Typo="Typo.caption" Class="d-block">@ShowingLabel()</MudText>
+		</div>
+	</div>
+}
+
+@code {
+
+	[Parameter] public EventCallback<int> PageSelected { get; set; }
+	[Parameter] public int Page { get; set; }
+	[Parameter] public int PageSize { get; set; }
+	[Parameter] public int Total { get; set; }
+
+	private int Pages => Calculator.Pages(PageSize, Total);
+	private bool ShowPagination => PageSize > 0 && Total > 0;
+
+	private async Task HandlePageSelected(int page)
+	{
+		if (page != Page)
+		{
+			await PageSelected.InvokeAsync(page);
+		}
+	}
+
+	private string ShowingLabel()
+	{
+		int start = Calculator.PageStartItem(Page, PageSize);
+		int end = Calculator.PageEndItem(Page, PageSize, Total);
+		return $"Showing {start} - {end} of {Total}";
+	}
+}

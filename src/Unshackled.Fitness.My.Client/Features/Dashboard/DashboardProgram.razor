@@ -1,0 +1,56 @@
+﻿@inherits DashboardProgramBase
+
+@if (Templates.Any())
+{
+	<div class="d-flex flex-column gap-0 align-center align-md-start mb-12">
+		<MudText Color="Color.Tertiary">@(Templates.Count > 1 ? "Today's Workouts" : "Today's Workout")</MudText>
+		<ListView TItem="ProgramListModel" Items="@Templates" Class="w-100">
+			<ItemRenderer>
+				@if (!context.Item.IsStarted)
+				{
+					<div class="d-flex flex-row gap-2 align-center">
+						<div class="flex-grow-1">
+							<MudLink Class="d-block" Href="@($"/templates/{context.Item.Sid}")" Disabled="@(IsWorking || IsSkipping)">@context.Item.Title</MudLink>
+							<MudText Typo="Typo.caption" Color="Color.Tertiary">from @context.Item.ProgramTitle</MudText>
+						</div>
+						@if (IsMemberActive)
+						{
+							<div>
+								@if (context.Item.ProgramType == ProgramTypes.Sequential)
+								{
+									<MudIconButton Icon="@Icons.Material.Filled.NextPlan" Class="me-2" Title="Skip to next workout" Disabled="@IsSkipping"
+												   OnClick="@(() => HandleSkipClicked(context.Item))" />
+								}
+								<ProgressButton Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Small"
+												IsWorking="@IsWorking" WorkingText="Opening" Disabled="@IsSkipping"
+												OnClick="@(() => HandleTrackClicked(context.Item.Sid))">Track</ProgressButton>
+							</div>
+						}
+					</div>
+				}
+				else
+				{
+					<div class="d-flex flex-row gap-2 align-center">
+						<div class="flex-grow-1">
+							<MudLink Class="d-block" Href="@($"/workouts/{context.Item.Sid}")" Disabled="@(IsWorking || IsSkipping)">@context.Item.Title</MudLink>
+							<MudText Typo="Typo.caption" Color="Color.Tertiary">from @context.Item.ProgramTitle</MudText>
+						</div>
+						<div>
+							@if (!context.Item.IsCompleted)
+							{
+								<MudButton Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Small" Disabled="@IsSkipping"
+											Href="@($"/workouts/{context.Item.Sid}")">Track</MudButton>
+							}
+							else
+							{
+								<MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+							}
+						</div>
+					</div>
+				}
+			</ItemRenderer>
+		</ListView>
+	</div>
+}
+
+

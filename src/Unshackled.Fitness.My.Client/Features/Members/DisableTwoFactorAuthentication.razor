@@ -1,0 +1,17 @@
+﻿@page "/member/2fa/disable-2fa"
+@inherits DisableTwoFactorAuthenticationBase
+
+<DynamicPageTitle Title="Disable Two-factor Authentication" />
+
+<MudBreadcrumbs Items="@Breadcrumbs" />
+
+<MudText Typo="Typo.h4" Class="mb-4">Disable Two-factor Authentication</MudText>
+
+<MudAlert Severity="Severity.Warning" Class="mb-4">
+	<MudText><strong>This action only disables 2FA.</strong></MudText>
+	<MudText>
+		Disabling 2FA does not change the keys used in authenticator apps. If you wish to change the key
+		used in an authenticator app you should <MudLink Href="/member/2fa/reset-authenticator-app">reset your authenticator keys.</MudLink>
+	</MudText>
+</MudAlert>
+<MudButton Variant="Variant.Filled" Color="Color.Secondary" Disabled="@DisableControls" OnClick="@(() => HandleDisableClicked())">Disable 2FA</MudButton>

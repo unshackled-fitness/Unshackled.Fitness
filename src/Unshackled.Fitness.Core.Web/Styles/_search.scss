@@ -1,0 +1,147 @@
+﻿/// <reference path="styles.scss" />
+
+.search {
+	display: flex;
+	flex-direction: column;
+	gap: .5rem;
+	align-items: center;
+
+	@media (min-width: $breakpoint-sm-min) {
+		flex-direction: row;
+	}
+
+	.search-form {
+		width: 100%;
+
+		@media (min-width: $breakpoint-sm-min) {
+			flex: 1 1 auto;
+		}
+	}
+
+	.search-actions {
+		display: flex;
+		flex-direction: row;
+		width: 100%;
+		gap: .5em;
+
+		@media (min-width: $breakpoint-sm-min) {
+			flex: 0 0 auto;
+			width: auto;
+			overflow: hidden;
+		}
+
+		button {
+			flex: 1;
+
+			@media (min-width: $breakpoint-sm-min) {
+				flex: 0 0 auto;
+				padding: 5px;
+				min-width: 36px;
+				overflow: visible;
+				font-size: 1.5rem;
+				text-align: center;
+
+				.mud-button-label .mud-button-icon-start {
+					margin-left: 0;
+					margin-right: 0;
+					margin-inline-start: 0;
+					margin-inline-end: 0;
+				}
+
+				.mud-icon-size-medium {
+					font-size: 1.5rem !important;
+				}
+
+				.search-button-label {
+					display: none;
+				}
+			}
+
+			&:last-of-type {
+				margin-right: 0;
+			}
+		}
+	}
+
+	@each $bp, $size in $breakpoints-min {
+		@media (min-width: #{$size}) and (max-width: map-get($breakpoints, $bp)) {
+			.vertical-#{$bp} {
+				flex-direction: column;
+				align-self: start;
+				padding-top: 3px;
+
+				button {
+					margin-bottom: .25rem;
+					margin-right: 0;
+
+					&:last-of-type {
+						margin-bottom: 0;
+					}
+				}
+			}
+		}
+
+		@media (min-width: #{$size}) {
+			.vertical-#{$bp}-up {
+				flex-direction: column;
+				align-self: start;
+				padding-top: 3px;
+
+				button {
+					margin-bottom: .25rem;
+					margin-right: 0;
+
+					&:last-of-type {
+						margin-bottom: 0;
+					}
+				}
+			}
+		}
+
+		@media (min-width: $breakpoint-sm-min) and (max-width: map-get($breakpoints, $bp)) {
+			.vertical-#{$bp}-down {
+				flex-direction: column;
+				align-self: start;
+				padding-top: 3px;
+
+				button {
+					margin-bottom: .25rem;
+					margin-right: 0;
+
+					&:last-of-type {
+						margin-bottom: 0;
+					}
+				}
+			}
+		}
+	}
+
+	@media (min-width: $breakpoint-sm-min) {
+		.vertical {
+			flex-direction: column;
+			align-self: start;
+			padding-top: 3px;
+
+			button {
+				margin-bottom: .25rem;
+				margin-right: 0;
+
+				&:last-of-type {
+					margin-bottom: 0;
+				}
+			}
+		}
+	}
+}
+
+.search-column-forced {
+	flex-direction: column !important;
+
+	button {
+		margin-right: .25rem;
+
+		&:last-of-type {
+			margin-right: 0;
+		}
+	}
+}

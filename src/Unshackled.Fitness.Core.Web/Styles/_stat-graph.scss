@@ -1,0 +1,79 @@
+﻿/// <reference path="./styles.scss" />
+
+.stat-graph {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	.grid-wrapper {
+		max-width: 100%;
+		margin-top: 0.5rem;
+		width: 100%;
+
+		@media (min-width: $breakpoint-md-min) {
+			width: auto;
+		}
+	}
+
+	.stat-grid {
+		display: inline-grid;
+		grid-template-areas: "day-names days";
+		grid-template-columns: auto 1fr;
+		grid-gap: 2px;
+		width: 100%;
+		font-size: 6px;
+
+		@media (min-width: $breakpoint-md-min) {
+			font-size: 9px;
+		}
+
+		.day-names {
+			grid-area: day-names;
+			display: grid;
+			grid-template-rows: repeat(8, 1fr);
+			grid-gap: 2px;
+
+			.day-name {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+			}
+		}
+
+		.days {
+			grid-area: days;
+			display: grid;
+			grid-template-rows: repeat(8, 1fr);
+			grid-template-columns: repeat(53, 1fr);
+			grid-gap: 2px;
+
+			.month {
+				display: inline-block;
+			}
+
+			.day {
+				height: 0;
+				padding-bottom: 100%;
+				min-height: 7px;
+
+				@media (min-width: $breakpoint-md-min) {
+					min-width: 10px;
+				}
+
+				@media (min-width: $breakpoint-xl-min) {
+					min-width: 12px;
+				}
+
+				&.on {
+					fill: var(--mud-palette-primary);
+					background-color: var(--mud-palette-secondary);
+				}
+
+				&.off {
+					fill: var(--mud-palette-background);
+					background-color: var(--mud-palette-background-grey);
+				}
+			}
+		}
+	}
+}

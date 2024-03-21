@@ -1,0 +1,14 @@
+﻿@typeparam TItem
+
+<MudDropContainer T="TItem" Items="@Items" ItemsSelector="@((item,dropzone) => true)" ItemDropped="HandleItemDropped">
+	<ChildContent>
+		<MudDropZone T="TItem" AllowReorder="true" Class="@ZoneClass" ItemDraggingClass="@ItemDraggingClass">
+		</MudDropZone>
+	</ChildContent>
+	<ItemRenderer>
+		@if (ItemRenderer is not null)
+		{
+			@ItemRenderer(context)
+		}
+	</ItemRenderer>
+</MudDropContainer>

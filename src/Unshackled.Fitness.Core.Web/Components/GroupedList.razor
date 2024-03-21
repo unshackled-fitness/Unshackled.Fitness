@@ -1,0 +1,62 @@
+﻿@typeparam TGroup
+@typeparam TItem
+@using Unshackled.Fitness.Core
+
+<div class="@ListClass">
+	@if (!IsLoading && Items.Any())
+	{
+		string currentGroupSid = string.Empty;
+		bool isFirstGroup = true;
+
+		@if (PagingPosition == PagingPositions.Top || PagingPosition == PagingPositions.Both)
+		{
+			<PagingComponent Page="@Page" PageSize="@PageSize" Total="@TotalItems" PageSelected="@HandlePageSelected" />
+		}
+		@for (int i = 0; i < Items.Count; i++)
+		{
+			var item = Items[i];
+			if (item.ListGroupSid != currentGroupSid)
+			{
+				currentGroupSid = item.ListGroupSid;
+				@if (ShowSingleGroupTitle || Groups.Count > 1)
+				{
+					var group = Groups.Where(x => x.Sid == item.ListGroupSid).SingleOrDefault();
+					if (group != null && GroupRenderer != null)
+					{
+						<div class="@(isFirstGroup ? "list-group-title first-group" : "list-group-title")">
+							@GroupRenderer(group)
+						</div>
+					}
+				}
+				@if (UseDividers)
+				{
+					<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+				}
+				isFirstGroup = false;
+			}
+			@if (ItemRenderer != null)
+			{
+				@ItemRenderer(new RowContext<TItem>{ Item = item, RowIndex = i })
+				@if (UseDividers)
+				{
+					<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+				}
+			}
+		}
+		@if (PagingPosition == PagingPositions.Bottom || PagingPosition == PagingPositions.Both)
+		{
+			<PagingComponent Page="@Page" PageSize="@PageSize" Total="@TotalItems" PageSelected="@HandlePageSelected" />
+		}
+	}
+	else if (IsLoading)
+	{
+		<DefaultProgress />
+	}
+	else
+	{
+		@if (EmptyListRenderer != null)
+		{
+			@EmptyListRenderer
+		}
+	}
+</div>

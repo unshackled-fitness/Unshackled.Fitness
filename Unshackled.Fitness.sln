@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34408.163
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{07F06619-1C93-4602-B235-B2FCBAA7C2CB}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unshackled.Fitness.My.Client", "src\Unshackled.Fitness.My.Client\Unshackled.Fitness.My.Client.csproj", "{7C93D157-FA5F-46AF-99E4-3F99CCEDAD7F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unshackled.Fitness.My", "src\Unshackled.Fitness.My\Unshackled.Fitness.My.csproj", "{40BDA468-E0F3-4B6B-BD3F-5E40EC56CF56}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unshackled.Fitness.Core", "src\Unshackled.Fitness.Core\Unshackled.Fitness.Core.csproj", "{9A531C44-C518-4C22-A6BB-02C337AFBEA5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unshackled.Fitness.Core.Data", "src\Unshackled.Fitness.Core.Data\Unshackled.Fitness.Core.Data.csproj", "{AA7B4529-88D6-4F42-A0E3-B467FC76D961}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unshackled.Fitness.Core.Web", "src\Unshackled.Fitness.Core.Web\Unshackled.Fitness.Core.Web.csproj", "{3693C804-2BFB-4420-A2B3-BAAF719C76F7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7C93D157-FA5F-46AF-99E4-3F99CCEDAD7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C93D157-FA5F-46AF-99E4-3F99CCEDAD7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C93D157-FA5F-46AF-99E4-3F99CCEDAD7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C93D157-FA5F-46AF-99E4-3F99CCEDAD7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40BDA468-E0F3-4B6B-BD3F-5E40EC56CF56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40BDA468-E0F3-4B6B-BD3F-5E40EC56CF56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40BDA468-E0F3-4B6B-BD3F-5E40EC56CF56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40BDA468-E0F3-4B6B-BD3F-5E40EC56CF56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A531C44-C518-4C22-A6BB-02C337AFBEA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A531C44-C518-4C22-A6BB-02C337AFBEA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A531C44-C518-4C22-A6BB-02C337AFBEA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A531C44-C518-4C22-A6BB-02C337AFBEA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA7B4529-88D6-4F42-A0E3-B467FC76D961}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA7B4529-88D6-4F42-A0E3-B467FC76D961}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA7B4529-88D6-4F42-A0E3-B467FC76D961}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA7B4529-88D6-4F42-A0E3-B467FC76D961}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3693C804-2BFB-4420-A2B3-BAAF719C76F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3693C804-2BFB-4420-A2B3-BAAF719C76F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3693C804-2BFB-4420-A2B3-BAAF719C76F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3693C804-2BFB-4420-A2B3-BAAF719C76F7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {997C87DE-E339-4365-A411-2174277EBBDB}
+	EndGlobalSection
+EndGlobal

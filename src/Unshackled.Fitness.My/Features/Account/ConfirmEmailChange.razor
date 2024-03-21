@@ -1,0 +1,108 @@
+﻿@page "/account/confirm-email-change"
+
+@using System.Text
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.WebUtilities
+@using Microsoft.EntityFrameworkCore
+@using Unshackled.Fitness.Core.Data
+@using Unshackled.Fitness.Core.Data.Entities
+
+@inject UserManager<UserEntity> UserManager
+@inject SignInManager<UserEntity> SignInManager
+@inject IdentityRedirectManager RedirectManager
+@inject BaseDbContext db
+
+<PageTitle>Confirm email change</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-4">Confirm email change</MudText>
+
+<StatusMessage Message="@message" />
+
+@code {
+	private string? message;
+
+	[CascadingParameter]
+	private HttpContext HttpContext { get; set; } = default!;
+
+	[SupplyParameterFromQuery]
+	private string? UserId { get; set; }
+
+	[SupplyParameterFromQuery]
+	private string? Email { get; set; }
+
+	[SupplyParameterFromQuery]
+	private string? Code { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		if (UserId is null || Email is null || Code is null)
+		{
+			RedirectManager.RedirectToWithStatus(
+				"account/login", "Error: Invalid email change confirmation link.", HttpContext);
+		}
+
+		var user = await UserManager.FindByIdAsync(UserId);
+		if (user is null)
+		{
+			message = "Unable to find user with Id '{userId}'";
+			return;
+		}
+
+		string? oldEmail = user.Email;
+		var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(Code));
+
+		bool isValidToken = await UserManager.VerifyUserTokenAsync(
+			user,
+			UserManager.Options.Tokens.ChangeEmailTokenProvider,
+			UserManager<UserEntity>.GetChangeEmailTokenPurpose(Email),
+			code);
+
+		if(!isValidToken)
+		{
+			// RedirectManager.RedirectToWithStatus(
+			// 	"account/login", "Error: Invalid email change confirmation link.", HttpContext);
+			message = "Invalid Code.";
+			return;
+		}
+
+		bool emailExists = await db.Users
+			.Where(x => x.NormalizedEmail == Email.ToUpper())
+			.AnyAsync();
+
+		if (emailExists)
+		{
+			message = "A user with this email already exists.";
+			return;
+		}
+
+		var result = await UserManager.ChangeEmailAsync(user, Email, code);
+		if (!result.Succeeded)
+		{
+			message = "Error changing email.";
+			return;
+		}
+
+		// In our UI email and user name are one and the same, so when we update the email
+		// we need to update the user name.
+		var setUserNameResult = await UserManager.SetUserNameAsync(user, Email);
+		if (!setUserNameResult.Succeeded)
+		{
+			message = "Error changing user name.";
+			return;
+		}
+
+		// Update member email
+		int count = await db.Members
+			.Where(x => x.Email == oldEmail)
+			.UpdateFromQueryAsync(x => new MemberEntity { Email = Email });
+
+		if (count == 0)
+		{
+			message = "Error changing member email.";
+			return;
+		}
+
+        await SignInManager.RefreshSignInAsync(user);
+        message = "Thank you for confirming your email change.";
+    }
+}

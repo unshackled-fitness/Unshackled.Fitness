@@ -1,0 +1,25 @@
+﻿/// <reference path="./styles.scss" />
+
+.setting-item {
+	display: flex;
+	flex-direction: column;
+	padding: 1rem 0;
+
+	@media (min-width: $breakpoint-md-min) {
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.setting-label {
+		flex-grow: 1;
+	}
+
+	.setting-value {
+		min-width: 100%;
+
+		@media (min-width: $breakpoint-md-min) {
+			min-width: 50%;
+			justify-content: flex-end;
+		}
+	}
+}

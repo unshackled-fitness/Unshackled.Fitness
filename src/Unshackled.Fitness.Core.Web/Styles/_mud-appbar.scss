@@ -1,0 +1,10 @@
+﻿/// <reference path="styles.scss" />
+
+.mud-appbar {	
+	.mud-menu {
+		.mud-button-filled {
+			color: var(--mud-palette-appbar-text);
+			background-color: var(--mud-palette-appbar-background);
+		}
+	}
+}

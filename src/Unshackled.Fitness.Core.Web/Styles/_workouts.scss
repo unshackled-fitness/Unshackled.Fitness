@@ -1,0 +1,90 @@
+﻿/// <reference path="./styles.scss" />
+.workout-summary {
+	font-size: .8rem;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-around;
+
+	@media (min-width: $breakpoint-lg-min) {
+		font-size: .9rem;
+	}
+
+	.summary-item {
+		padding: 1em;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		flex-basis: 50%;
+
+		@media (min-width: $breakpoint-sm-min) {
+			padding: 1.5em;
+		}
+
+		.summary-label {
+			font-size: 1em;
+		}
+
+		.summary-value {
+			font-size: 1.5em;
+
+			@media (min-width: $breakpoint-sm-min) {
+				font-size: 2em;
+			}
+
+			@media (min-width: $breakpoint-md-min) {
+				font-size: 2.25em;
+			}
+		}
+
+		.summary-caption {
+			font-size: .8em;
+		}
+	}
+}
+
+.result {
+	display: inline-block;
+
+	.multiply-by {	
+		display: inline-block;
+		opacity: 0.9;
+		margin: 0 .25em;
+		font-size: 0.8em;
+		color: $tertiary;
+	}
+
+	.pre-result-label {
+		font-size: .8em;
+		color: $tertiary;
+	}
+
+	.post-result-label {
+		display: inline-block;
+		font-size: .8em;
+		margin: 0 0 0 .25em;
+		color: $tertiary;
+	}
+}
+
+.hide-complete {
+	.set-group-complete {
+		display: none !important;
+	}
+
+	.set-complete {
+		display: none !important;
+	}
+}
+
+.split-basis-weighted {
+	flex: 0 0 100%;
+
+	@media (min-width: $breakpoint-sm-min) {
+		flex: 0 0 50%;
+	}
+}
+
+.split-basis-solo {
+	flex: 0 0 50%;
+}

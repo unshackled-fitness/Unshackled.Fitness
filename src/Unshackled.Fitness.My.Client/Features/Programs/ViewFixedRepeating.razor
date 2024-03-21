@@ -1,0 +1,86 @@
+﻿@inherits ViewFixedRepeatingBase
+
+@if (!IsEditing)
+{
+	@for (int w = 0; w < Program.LengthWeeks; w++)
+	{
+		int week = w;
+		<MudText Typo="Typo.subtitle1" Color="Color.Tertiary" Class="mt-6 mb-2">Week @(week + 1)</MudText>
+		<MudGrid Spacing="1">
+			@for (int d = 0; d < 7; d++)
+			{
+				int day = d;
+				<MudItem xs="12" sm="6" md="3">
+					<MudPaper Outlined="true" Class="no-background pa-4">
+						<MudText Typo="Typo.subtitle1" Class="mb-2">@((DayOfWeek)day)</MudText>
+						<ListView TItem="ProgramTemplateModel" Items="@GetDayTemplates(week, day)" UseDividers="false">
+							<ItemRenderer>
+								<div class="d-flex flex-row gap-2">
+									<MudText Typo="Typo.body2" Color="Color.Tertiary">@(context.RowIndex + 1).</MudText>
+									<MudLink Typo="Typo.body2" Color="Color.Secondary" Class="d-block flex-grow-1" Href="@($"/templates/{context.Item.WorkoutTemplateSid}")">@context.Item.WorkoutTemplateName</MudLink>
+								</div>
+							</ItemRenderer>
+							<EmptyListRenderer>
+								<MudText Typo="Typo.body2" Color="Color.Tertiary">Rest Day</MudText>
+							</EmptyListRenderer>
+						</ListView>
+					</MudPaper>
+				</MudItem>
+			}
+		</MudGrid>
+	}
+}
+else
+{
+	<MudToolBar Dense="true" DisableGutters="true" Class="my-4">
+		<MudButton StartIcon="@Icons.Material.Filled.AddCircle" OnClick="@(() => HandleAddWeekClicked())">Add Week</MudButton>
+	</MudToolBar>
+
+	@for (int w = 0; w < FormModel.LengthWeeks; w++)
+	{
+		int week = w;
+		<div class="d-flex flex-row gap-2 align-center mt-6 mb-2">
+			<MudText Typo="Typo.subtitle1" Color="Color.Tertiary" Class="flex-grow-1">Week @(week + 1)</MudText>
+			@if (FormModel.LengthWeeks > 1)
+			{
+				<div>
+					<MudIconButton Icon="@Icons.Material.Filled.Delete" Disabled="@IsSaving" OnClick="@(() => HandleDeleteWeekClicked(week))" />
+				</div>
+			}
+		</div>
+		<MudGrid Spacing="1">
+			@for (int d = 0; d < 7; d++)
+			{
+				int day = d;
+				<MudItem xs="12" sm="6" md="3">
+					<MudPaper Outlined="true" Class="no-background pa-4 h-100">
+						<div class="d-flex flex-column h-100">
+							<div class="flex-grow-1">
+								<MudText Typo="Typo.body1" Class="mb-2">@((DayOfWeek)day)</MudText>
+								<ListView TItem="FormProgramTemplateModel" Items="@GetFormDayTemplates(week, day)" UseDividers="false">
+									<ItemRenderer>
+										<div class="d-flex flex-row gap-2">
+											<MudText Typo="Typo.body2" Color="Color.Tertiary" Class="mt-1">@(context.RowIndex + 1).</MudText>
+											<MudText Typo="Typo.body2" Color="Color.Tertiary" Class="mt-1 flex-grow-1">@context.Item.WorkoutTemplateName</MudText>
+											<div>
+												<MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => HandleDeleteTemplateClicked(context.Item.Sid))" />
+											</div>
+										</div>
+									</ItemRenderer>
+									<EmptyListRenderer>
+										<MudText Typo="Typo.body2" Color="Color.Tertiary">Rest Day</MudText>
+									</EmptyListRenderer>
+								</ListView>
+							</div>
+							<MudToolBar Dense="true" DisableGutters="true">
+								<MudSpacer />
+								<MudIconButton Icon="@Icons.Material.Filled.AddCircle" Disabled="@IsSaving" OnClick="@(() => HandleAddTemplateClicked(week, day))" />
+								<MudSpacer />
+							</MudToolBar>
+						</div>
+					</MudPaper>
+				</MudItem>
+			}
+		</MudGrid>
+	}
+}

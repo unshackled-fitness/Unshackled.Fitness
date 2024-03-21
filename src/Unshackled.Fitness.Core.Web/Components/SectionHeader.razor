@@ -1,0 +1,155 @@
+﻿@using MudBlazor.Utilities
+
+<div class="@CssClass">
+	<div class="@TitleClass">
+		@if (IsEditing && !string.IsNullOrEmpty(EditingTitle))
+		{
+			<MudText Typo="@Typo" Color="@Color">@EditingTitle</MudText>
+		}
+		else
+		{
+			@if (TitleContent != null)
+			{
+				@TitleContent
+			}
+			else
+			{
+				<MudText Typo="@Typo" Color="@Color">@Title</MudText>		
+				if (!string.IsNullOrEmpty(SubTitle))
+				{
+					<MudText Typo="Typo.body2" Color="Color.Tertiary">@SubTitle</MudText>
+				}
+			}
+		}
+	</div>
+	@if (IsEditMode && !IsEditing)
+	{
+		@if(EditModeToolbar != null)
+		{
+			<div class="@ToolbarClass">
+				<div class="section-tools">
+					@EditModeToolbar
+				</div>
+			</div>
+		}
+	}
+	else if (IsEditing)
+	{
+		<div class="@ToolbarClass">
+			<div class="section-tools">
+				@if (EditingToolbar != null)
+				{
+					@EditingToolbar
+				}
+				else
+				{
+					@if (string.IsNullOrEmpty(FormId))
+					{
+						<MudIconButton Icon="@Icons.Material.Filled.Save" Color="Color.Inherit" Disabled="@DisableControls" OnClick="@(() => HandleSaveClicked())" />
+					}
+					else
+					{
+						<MudIconButton Icon="@Icons.Material.Filled.Save" Color="Color.Inherit" Disabled="@DisableControls" ButtonType="ButtonType.Submit" form="@FormId" />
+					}
+					<MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Inherit" Disabled="@DisableControls" OnClick="@(() => HandleCancelClicked())" />
+				}
+			</div>
+		</div>
+	}
+	else
+	{
+		@if (DefaultToolbar != null && !HideDefaultToolbar)
+		{
+			<div class="@ToolbarClass">
+				<div class="section-tools">
+					@DefaultToolbar
+				</div>
+			</div>
+		}
+	}
+</div>
+
+@code {
+	[Parameter] public string Class { get; set; } = string.Empty; 
+	[Parameter] public string EditingClass { get; set; } = string.Empty;
+	[Parameter] public Color Color { get; set; } = Color.Default;
+	[Parameter] public bool IsEditMode { get; set; }
+	[Parameter] public bool IsEditing { get; set; }
+	[Parameter] public bool DisableControls { get; set; }
+	[Parameter] public bool HideDefaultToolbar { get; set; }
+	[Parameter] public string Title { get; set; } = string.Empty;
+	[Parameter] public string? SubTitle { get; set; }
+	[Parameter] public string EditingTitle { get; set; } = string.Empty;
+	[Parameter] public RenderFragment? TitleContent { get; set; }
+	[Parameter] public RenderFragment? DefaultToolbar { get; set; }
+	[Parameter] public RenderFragment? EditModeToolbar { get; set; }
+	[Parameter] public RenderFragment? EditingToolbar { get; set; }
+	[Parameter] public string FormId { get; set; } = string.Empty;
+	[Parameter] public Typo Typo { get; set; } = Typo.h4;
+	[Parameter] public Breakpoint Breakpoint { get; set; } = Breakpoint.None;
+	[Parameter] public EventCallback OnCancelClicked { get; set; }
+	[Parameter] public EventCallback OnSaveClicked { get; set; }
+
+	private string bpt = "sm";
+
+	protected override void OnParametersSet()
+	{
+		base.OnParametersSet();
+		switch (Breakpoint)
+		{
+			case Breakpoint.None:
+			case Breakpoint.Xs:
+				bpt = "xs";
+				break;
+			case Breakpoint.Sm:
+			case Breakpoint.SmAndDown:
+			case Breakpoint.SmAndUp:
+				bpt = "sm";
+				break;
+			case Breakpoint.Md:
+			case Breakpoint.MdAndDown:
+			case Breakpoint.MdAndUp:
+				bpt = "md";
+				break;
+			case Breakpoint.Lg:
+			case Breakpoint.LgAndDown:
+			case Breakpoint.LgAndUp:
+				bpt = "lg";
+				break;
+			case Breakpoint.Xl:
+			case Breakpoint.XlAndDown:
+			case Breakpoint.XlAndUp:
+				bpt = "xl";
+				break;
+			case Breakpoint.Xxl:
+				bpt = "xxl";
+				break;
+			default:
+				bpt = "sm";
+				break;
+		}
+	}
+
+	private string CssClass => new CssBuilder($"d-flex gap-2")
+		.AddClass(bpt != "xs" ? $"flex-column-reverse flex-{bpt}-row align-{bpt}-start" : "flex-row")
+		.AddClass(IsEditing ? EditingClass : Class)
+		.Build();
+
+	private string TitleClass => new CssBuilder("flex-grow-1")
+		.AddClass(bpt != "xs" ? $"align-self-{bpt}-center" : "align-self-center")
+		.Build();
+
+	private string ToolbarClass => new CssBuilder("section-toolbar d-flex justify-end")
+		.AddClass(bpt != "xs" ? $"pos-relative pos-{bpt}-absolute" : "pos-absolute")
+		.Build();
+
+	private async Task HandleCancelClicked()
+	{
+		await OnCancelClicked.InvokeAsync();
+	}
+
+	private async Task HandleSaveClicked()
+	{
+		await OnSaveClicked.InvokeAsync();
+	}
+}

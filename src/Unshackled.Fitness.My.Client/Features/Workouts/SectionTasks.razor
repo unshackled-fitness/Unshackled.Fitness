@@ -1,0 +1,36 @@
+﻿@inherits SectionTasksBase
+
+@if (IsMemberActive || FilteredTasks.Any())
+{
+	<div class="mb-6">
+		@if (FilteredTasks.Any())
+		{
+			<MudText Typo="Typo.h5" Class="mb-2">@($"{TaskType.Title()} Checklist")</MudText>
+			<div class="mb-4">
+				@foreach (var task in FilteredTasks)
+				{
+					<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+					<div class="d-flex flex-row gap-3 align-center">
+						@if (IsMemberActive)
+						{
+							<div>
+								<MudCheckBox Size="Size.Medium" Color="Color.Primary" Disabled="@DisableControls" @bind-Value="task.Completed"></MudCheckBox>
+							</div>
+						}
+						<div class="flex-grow-1">
+							<MudText Typo="Typo.subtitle1">@task.Text</MudText>
+							</div>
+						</div>
+				}
+				<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+			</div>
+		}
+		@if (IsMemberActive)
+		{
+			<div class="d-flex flex-row gap-2 justify-center">
+				<ProgressButton Variant="Variant.Filled" Color="Color.Secondary" Disabled="@DisableButton" IsWorking="@IsWorking" WorkingText="@WorkingButtonText"
+				OnClick="@(() => HandleButtonClicked())">@ButtonText</ProgressButton>
+				</div>
+		}
+	</div>
+}

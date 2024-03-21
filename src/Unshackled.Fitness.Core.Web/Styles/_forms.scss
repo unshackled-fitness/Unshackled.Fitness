@@ -1,0 +1,39 @@
+﻿/// <reference path="./styles.scss" />
+
+.valid.modified:not([type=checkbox]) {
+	outline: 1px solid $success;
+}
+
+.invalid {
+	outline: 1px solid $error;
+}
+
+.validation-message {
+	color: $error;
+}
+
+.mud-input-helper-text .ms-auto {
+	min-width: 45px;
+}
+
+.mud-shrink~label.mud-input-label.mud-input-label-inputcontrol {
+    color: var(--mud-palette-text-secondary);
+	white-space: nowrap;
+}
+
+.mud-simple-table.mud-table-striped .mud-table-container table tbody tr:nth-of-type(odd) {
+	.mud-shrink~label.mud-input-label.mud-input-label-inputcontrol {
+		background-color: var(--mud-palette-table-striped);
+	}
+}
+
+.input-no-underline .mud-input.mud-input-filled.mud-input-underline:before,
+.input-no-underline .mud-input.mud-input-filled.mud-input-underline:after {
+	border-bottom: 0;
+}
+
+.mud-input-control.mud-input-control-boolean-input.align-start {
+	.mud-checkbox {
+		align-items: flex-start !important;
+	}
+}

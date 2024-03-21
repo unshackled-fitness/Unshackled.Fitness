@@ -1,0 +1,32 @@
+﻿<MudButton Disabled="@(IsWorking || Disabled)" OnClick="@HandleClicked" Class="@Class" Variant="@Variant" Color="@Color" Size="@Size" FullWidth="@FullWidth" ButtonType="@ButtonType" title="@Title"
+		   StartIcon="@(IsWorking ? string.Empty : StartIcon)">
+	@if (IsWorking)
+	{
+		<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+		<MudText Class="ms-2">@WorkingText</MudText>
+	}
+	else
+	{
+		@ChildContent
+	}
+</MudButton>
+@code {
+	[Parameter] public ButtonType ButtonType { get; set; } = ButtonType.Button;
+	[Parameter] public Variant Variant { get; set; } = Variant.Text;
+	[Parameter] public Color Color { get; set; } = Color.Default;
+	[Parameter] public Size Size { get; set; } = Size.Medium;
+	[Parameter] public string Class { get; set; } = string.Empty;
+	[Parameter] public string Title { get; set; } = string.Empty;
+	[Parameter] public string StartIcon { get; set; } = string.Empty;
+	[Parameter] public bool FullWidth { get; set; } = false;
+	[Parameter] public bool Disabled { get; set; } = false;
+	[Parameter] public bool IsWorking { get; set; } = false;
+	[Parameter] public string WorkingText { get; set; } = "Working";
+	[Parameter] public RenderFragment ChildContent { get; set; } = default!;
+	[Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+	protected async Task HandleClicked(MouseEventArgs evt)
+	{
+		await OnClick.InvokeAsync(evt);
+	}
+}

@@ -1,0 +1,35 @@
+﻿/// <reference path="./styles.scss" />
+
+.mud-drawer.mud-drawer-temporary.mud-drawer-pos-right.details-drawer {
+	--mud-drawer-width: 100%;
+
+	@media (min-width: $breakpoint-sm-min) {
+		--mud-drawer-width: 600px;
+	}
+
+	.mud-drawer-content {
+		position: relative;
+
+		.mud-drawer-header {
+			position: sticky;
+			background-color: var(--mud-palette-drawer-background);
+			position: sticky;
+			height: 64px;
+			left: 0;
+			right: 0;
+			top: 0;
+			z-index: 1;
+		}
+	}
+}
+
+.mud-drawer-content {	
+	.mud-nav-item {
+		padding: 1px .5rem;
+
+		.mud-nav-link {
+			border-radius: .5rem;
+			padding: .4rem 1rem;
+		}
+	}
+}

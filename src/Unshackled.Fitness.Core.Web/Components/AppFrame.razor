@@ -1,0 +1,107 @@
+﻿@inherits AppFrameBase
+
+<MudThemeProvider @ref="@ThemeProvider" IsDarkMode="@GetThemeIsDark()" Theme="@CustomTheme" />
+<MudDialogProvider DisableBackdropClick="true" Position="DialogPosition.Center" MaxWidth="MaxWidth.Medium" />
+<MudSnackbarProvider />
+
+@if (State.IsServerError)
+{
+	<MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center" Variant="Variant.Outlined">An unexpected error occurred on the server. Please reload and try again.</MudAlert>
+}
+else if (!IsLoading)
+{
+	<CascadingValue Name="@ParameterThemeProvider" Value="@ThemeProvider">
+		<MudLayout Class="app-frame">
+			<MudAppBar Elevation="1">
+				<MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" Class="me-2" OnClick="@ToggleDrawer" />
+				@if (AppBarContent != null)
+				{
+					@AppBarContent
+				}
+				else
+				{
+					<MudText Typo="Typo.h5" Class="app-title">@Title</MudText>
+				}
+				<MudSpacer />
+				<MudMenu StartIcon="@GetThemeIcon()" EndIcon="@Icons.Material.Filled.KeyboardArrowDown" Variant="Variant.Filled" title="Theme Selector"
+							AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+					<MudMenuItem OnClick="@(() => HandleThemeSwitch(Themes.System))" OnTouch="@(() => HandleThemeSwitch(Themes.System))">
+						<div class="d-flex flex-row align-center">
+							<MudIcon Size="Size.Small" Icon="@(SystemIsDark ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.LightMode)" Class="me-2" />
+							<div>OS Detected</div>
+						</div>
+					</MudMenuItem>
+					<MudMenuItem Class="d-flex flex-row align-center" OnClick="@(() => HandleThemeSwitch(Themes.Dark))" OnTouch="@(() => HandleThemeSwitch(Themes.Dark))">
+						<div class="d-flex flex-row align-center">
+							<MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.DarkMode" Class="me-2" />
+							<div>Dark</div>
+						</div>
+					</MudMenuItem>
+					<MudMenuItem Class="d-flex flex-row align-center" OnClick="@(() => HandleThemeSwitch(Themes.Light))" OnTouch="@(() => HandleThemeSwitch(Themes.Light))">
+						<div class="d-flex flex-row align-center">
+							<MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.LightMode" Class="me-2" />
+							<div>Light</div>
+						</div>
+					</MudMenuItem>
+				</MudMenu>
+				<MudMenu title="My Account" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" Class="ms-2">
+					<ActivatorContent>
+						<Gravatar Hash="@State.ActiveMember.EmailHash" Size="Size.Small" UseGravatar="@State.ActiveMember.Settings.UseGravatar" />
+					</ActivatorContent>
+					<ChildContent>
+						<MudMenuItem OnClick="@(() => HandleReloadAppClicked())" OnTouch="@(() => HandleReloadAppClicked())">
+							<div class="d-flex flex-row align-center">
+								<MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.Refresh" Class="me-2" />
+								<div>Reload App</div>
+							</div>
+						</MudMenuItem>
+						<MudMenuItem Href="/account/logout" ForceLoad="true">
+							<div class="d-flex flex-row align-center">
+								<MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.Logout" Class="me-2" />
+								<div>Logout</div>
+							</div>
+						</MudMenuItem>
+					</ChildContent>
+				</MudMenu>
+			</MudAppBar>
+			<MudDrawer @bind-Open="@Open" Elevation="1" ClipMode="DrawerClipMode.Docked" Width="300px" Breakpoint="Breakpoint.Lg">
+				<div class="d-flex flex-column flex-grow-1 pt-4">
+					@if (NavTopContent != null)
+					{
+						@NavTopContent
+					}
+					<MudSpacer />
+					@if (NavBottomContent != null)
+					{
+						<div class="mb-2">
+							<MudDivider Class="my-2" />
+							@NavBottomContent
+						</div>
+					}
+				</div>
+			</MudDrawer>
+			<MudMainContent Style="min-height:100%">
+				<MudScrollToTop>
+					<MudFab Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" />
+				</MudScrollToTop>
+				<MudContainer Class="pt-6" MaxWidth="MaxWidth.Large">
+					@if(BodyContent != null)
+					{
+						@BodyContent
+					}
+				</MudContainer>
+			</MudMainContent>
+		</MudLayout>
+	</CascadingValue>
+}
+else
+{
+	<div class="app-loading">
+		@if (LogoContent != null)
+		{
+			@LogoContent
+		}
+		<div Class="logo-lg-text mb-4">Loading Your Profile</div>
+		<MudProgressCircular Class="mx-auto" Color="Color.Inherit" Indeterminate="true" />
+	</div>
+}

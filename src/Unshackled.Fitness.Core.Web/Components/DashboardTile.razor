@@ -1,0 +1,13 @@
+﻿<MudPaper Class="d-flex flex-column align-center justify-center dashboard-tile">
+	<MudLink Href="@Href" Class="d-block d-flex flex-column align-center" Target="@Target" Style="text-decoration: none;">
+		<MudIcon Icon="@Icon" Class="mb-2" Size="Size.Large" />
+		<MudText Align="Align.Center">@Title</MudText>
+	</MudLink>
+</MudPaper>
+
+@code {
+	[Parameter] public string Title { get; set; } = string.Empty;
+	[Parameter] public string Icon { get; set; } = string.Empty;
+	[Parameter] public string Href { get; set; } = string.Empty;
+	[Parameter] public string Target { get; set; } = string.Empty;
+}

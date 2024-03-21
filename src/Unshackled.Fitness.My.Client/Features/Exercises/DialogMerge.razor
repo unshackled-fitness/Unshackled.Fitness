@@ -1,0 +1,46 @@
+﻿<MudDialog Class="pb-2">
+	<DialogContent>
+		<MudText Typo="Typo.body1" Class="mb-6">
+			Choose the exercise to keep. The unselected (deleted) exercise will be replaced by the selected exercise 
+			in templates and workouts. Recorded workout results for the unselected (deleted) exercise will be changed to 
+			results for the selected exercise.
+		</MudText>
+		@if (IsLoading)
+		{
+			<DefaultProgress />
+		}
+		else
+		{
+			<MudRadioGroup T="string" @bind-Value="@SelectedSid" Class="d-flex flex-column align-start mb-sm-6">
+				@foreach (var item in Exercises)
+				{
+					<MudRadio Value="@item.Sid" Class="mb-4">
+						<div class="border-l border-solid mud-border-tertiary ps-2">
+							<div class="d-flex flex-row gap-2">
+								<MudText Typo="Typo.subtitle1">@item.Title</MudText>
+								@if (!item.MatchId.HasValue)
+								{
+									<MudChip Text="Custom" Color="Color.Tertiary" Class="mud-chip-size-tiny" />
+								}
+							</div>
+							<MudText Typo="Typo.body1" Color="Color.Tertiary">@item.Equipment.Titles()</MudText>
+							<MudText Typo="Typo.caption" Class="d-block">Added @item.DateCreatedUtc.ToLocalTime().ToString("F"))</MudText>
+						</div>
+					</MudRadio>
+				}
+			</MudRadioGroup>
+			@if(!string.IsNullOrEmpty(SelectedSid))
+			{
+				<MudText Typo="Typo.body1" Class="mb-6">
+					Merging exercises cannot be undone. Please confirm your choice by typing the exact name of the selected exercise: <strong>@SelectedExercise</strong>
+				</MudText>
+				<MudTextField Variant="Variant.Outlined" FullWidth="true" Immediate="true" @bind-Value="ConfirmSelected" Validation="@(new Func<string?, string?>(IsMatch))" OnlyValidateIfDirty="true" />
+			}
+		}
+	</DialogContent>
+	<DialogActions>
+		<MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(string.IsNullOrEmpty(SelectedSid) || ConfirmSelected != SelectedExercise)"
+				   OnClick="Submit">Merge</MudButton>
+		<MudButton OnClick="Cancel">Cancel</MudButton>
+	</DialogActions>
+</MudDialog>

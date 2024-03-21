@@ -1,0 +1,49 @@
+﻿@page "/calendar"
+@inherits IndexBase
+
+<MudBreadcrumbs Items="@Breadcrumbs" />
+
+<DynamicPageTitle IsLoading="@IsLoading" LoadingTitle="@("Loading Calendar...")" Title="Calendar" />
+
+<MudText Typo="Typo.h4" Class="mb-6">Calendar</MudText>
+
+<SearchForm T="FormSearchModel" Model="@FormModel" Class="mb-2" ResetClicked="@HandleResetClicked" SearchClicked="@HandleSearchClicked" Disable="@DisableControls">
+	<SearchFields>
+		<MudGrid Spacing="1" Class="flex-grow-1">
+			<MudItem xs="12" sm="6">
+				<MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense" Label="End Month" Disabled="@DisableControls"
+							   @bind-Date="FormModel.EndDate" OpenTo="OpenTo.Month" FixDay="1" DateFormat="MM/yyyy" />
+			</MudItem>
+			<MudItem xs="12" sm="6">
+				<MudSelect Variant="Variant.Outlined" Margin="Margin.Dense" Label="Previous Months" Disabled="@DisableControls"
+						   @bind-Value="@FormModel.NumberOfMonths">
+					@for (int i = 0; i < 12; i++)
+					{
+						var num = i;
+						<MudSelectItem Value="@num">@GetMonthDisplay(num)</MudSelectItem>
+					}
+				</MudSelect>
+			</MudItem>
+		</MudGrid>
+	</SearchFields>
+</SearchForm>
+
+@if (IsLoading)
+{
+	<DefaultProgress />
+}
+else
+{
+	<MudToolBar DisableGutters="true">
+		<MudButton StartIcon="@Icons.Material.Filled.Visibility" OnClick="@(() => HandleShowVisibilityClicked())">Visibility</MudButton>
+	</MudToolBar>
+	<Calendar Model="@CalendarModel">
+		<MudText Typo="Typo.subtitle1">@CalendarModel.FromDate.ToString("MMM yyyy") - @CalendarModel.ToDate.ToString("MMM yyyy")</MudText>
+	</Calendar>
+}
+
+<SideDrawer @bind-Open="IsDrawerOpen" Icon="@Icons.Material.Filled.Visibility" Title="Metric Visibility">
+	<DrawerVisibility FilterGroups="@CalendarModel.BlockFilterGroups" Filters="@CalendarModel.BlockFilters" Presets="@Presets"
+					  FiltersChanged="@HandleFiltersChanged" PresetAdded="@HandlePresetAdded" PresetApplied="@HandlePresetApplied"
+					  PresetDeleted="@HandlePresetDeleted" PresetUpdated="@HandlePresetUpdated" />
+</SideDrawer>

@@ -1,0 +1,113 @@
+﻿@page "/programs"
+@inherits IndexBase
+
+<DynamicPageTitle  IsLoading="@IsLoading" LoadingTitle="Loading Programs..." Title="Programs" />
+
+<MudBreadcrumbs Items="@Breadcrumbs" />
+
+<MudText Typo="Typo.h4" Class="mb-6">Programs</MudText>
+
+@if (!IsAdding)
+{
+	<div class="mb-6">
+		<SearchForm @bind-Model="@SearchModel" Class="mb-6" SearchClicked="@(() => DoSearch(1))" ResetClicked="@HandleResetClicked" Disable="@IsLoading">
+			<SearchFields>
+				<MudGrid Spacing="1">
+					<MudItem xs="12" sm="4">
+						<ProgramTypeSelect AllOption="true" Margin="Margin.Dense" @bind-Value="@SearchModel.ProgramType" Disabled="@DisableControls" />
+					</MudItem>
+					<MudItem xs="12" sm="8">
+						<MudTextField Label="Title" Variant="Variant.Outlined" FullWidth="true" Margin="Margin.Dense"
+									  T="string" @bind-Value="@SearchModel.Title" Disabled="@IsLoading" />
+					</MudItem>
+				</MudGrid>
+			</SearchFields>
+		</SearchForm>
+		@if (IsMemberActive)
+		{
+			<MudToolBar Class="mb-2" DisableGutters="true" Dense="true">
+				<ProgressButton StartIcon="@Icons.Material.Filled.AddCircle" Disabled="@DisableControls" IsWorking="@IsWorking" WorkingText="Opening"
+								OnClick="@(() => HandleAddClicked())">New</ProgressButton>
+				<MudMenu Label="Sort" StartIcon="@Icons.Material.Filled.Sort" Class="ms-2">
+					<MudMenuItem OnClick="@(() => HandleSortByClicked(0, nameof(ProgramListModel.Title)))"
+								 OnTouch="@(() => HandleSortByClicked(0, nameof(ProgramListModel.Title)))">Title (Asc)</MudMenuItem>
+					<MudMenuItem OnClick="@(() => HandleSortByClicked(1, nameof(ProgramListModel.Title)))"
+								 OnTouch="@(() => HandleSortByClicked(1, nameof(ProgramListModel.Title)))">Title (Desc)</MudMenuItem>
+				</MudMenu>
+			</MudToolBar>
+		}
+		<ListView Class="mb-6" Items="@SearchResults.Data" PageSize="@SearchResults.PageSize" Page="@SearchModel.Page" TotalItems="@SearchResults.Total" IsLoading="@IsLoading"
+				  PageSelected="@HandlePageSelected">
+			<ItemRenderer>
+				<MudGrid Spacing="2" Class="align-center">
+					<MudItem xs="12" sm="8">
+						<div class="d-flex flex-row gap-4 align-center">
+							<div>
+								<MudIcon Icon="@(context.Item.DateStarted.HasValue ? Icons.Material.Filled.CheckCircle : Icons.Material.Outlined.Circle)"
+										 Title="@(context.Item.DateStarted.HasValue ? "Active" : "Inactive")"
+										 Color="@(context.Item.DateStarted.HasValue ? Color.Secondary : Color.Default)" />
+							</div>
+							<div class="flex-grow-1">
+								<MudLink Typo="Typo.subtitle1" Href="@($"/programs/{context.Item.Sid}")">@context.Item.Title</MudLink>
+								<MudText Typo="Typo.caption" Color="Color.Tertiary">@context.Item.ProgramType.Title()</MudText>
+							</div>
+						</div>
+					</MudItem>
+					<MudItem xs="6" sm="2">
+						<CaptionedProperty Align="Align.Center" Title="Weeks" Value="@(context.Item.ProgramType == ProgramTypes.FixedRepeating ? context.Item.LengthWeeks.ToString() : "--")" />
+					</MudItem>
+					<MudItem xs="6" sm="2">
+						<CaptionedProperty Align="Align.Center" Title="Workouts" Value="@context.Item.Workouts.ToString()" />
+					</MudItem>
+				</MudGrid>
+			</ItemRenderer>
+			<EmptyListRenderer>
+				<MudText Align="Align.Center" Class="mt-4">No programs matched your search.</MudText>
+			</EmptyListRenderer>
+		</ListView>
+	</div>
+}
+else
+{
+	<div class="mb-6">
+		<EditForm Model="@FormAddModel" OnValidSubmit="HandleFormSubmitted">
+			<FluentValidationValidator Validator="FormValidator"></FluentValidationValidator>
+			<MudGrid Spacing="2" Class="mb-3">
+				<MudItem xs="12">
+					<MudTextField Label="Title" Variant="Variant.Outlined" Margin="Margin.Dense" Immediate="true" Disabled="@DisableControls"
+								  FullWidth="true" For="@(() => FormAddModel.Title)" @bind-Value="@FormAddModel.Title" />
+				</MudItem>
+				<MudItem xs="12">
+					<MudTextField Label="Short Description" Lines="5" Variant="Variant.Outlined" Margin="Margin.Dense"
+								  FullWidth="true" Disabled="@DisableControls"
+								  For="@(() => FormAddModel.Description)" @bind-Value="@FormAddModel.Description" />
+				</MudItem>
+				<MudItem xs="12">
+					<MudText Typo="Typo.subtitle1">Choose A Program Type</MudText>
+				</MudItem>
+				<MudItem xs="12">
+					<MudRadioGroup T="ProgramTypes" @bind-SelectedOption="@FormAddModel.ProgramType" Disabled="@DisableControls">
+						<MudRadio Option="@ProgramTypes.FixedRepeating">
+							<MudText Color="Color.Tertiary">@ProgramTypes.FixedRepeating.Title()</MudText>
+							<MudText Class="mb-4">
+								Workouts are done on specific days of a week or over multiple weeks. Missed workouts are skipped.
+							</MudText>
+						</MudRadio>
+						<MudRadio Option="@ProgramTypes.Sequential">
+							<MudText Color="Color.Tertiary">@ProgramTypes.Sequential.Title()</MudText>
+							<MudText>
+								Workouts are done in order regardless of the day of week or number of days between workouts.
+							</MudText>
+						</MudRadio>
+					</MudRadioGroup>
+				</MudItem>
+			</MudGrid>
+			<MudToolBar DisableGutters="true">
+				<MudSpacer />
+				<MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" Disabled="@DisableControls">Create</MudButton>
+				<MudButton Variant="Variant.Filled" Disabled="@DisableControls" OnClick="@(() => HandleCancelAddClicked())">Cancel</MudButton>
+				<MudSpacer />
+			</MudToolBar>
+		</EditForm>
+	</div>
+}

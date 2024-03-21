@@ -1,0 +1,232 @@
+﻿<MudPaper Class="d-flex flex-column gap-4 align-center justify-space-between mx-0" Height="100%">
+	<div class="d-flex flex-column gap-2 align-center" style="width:100%;">
+		<MudElement HtmlTag="div" Style="@PanelStyle()"></MudElement>
+		<MudText Typo="Typo.body1" Align="Align.Center">@Title</MudText>
+		@if(!string.IsNullOrEmpty(SubTitle))
+		{
+			<MudText Typo="Typo.body2" Color="Color.Tertiary" Align="Align.Center">@SubTitle</MudText>
+		}
+	</div>
+	@if (MetricType == MetricTypes.ExactValue)
+	{
+		@if (IsEditing)
+		{
+			<MudNumericField Variant="Variant.Outlined" T="decimal" FullWidth="true" AutoFocus="@AutoFocus" Min="0M" HideSpinButtons="true" Disabled="@Disabled" Format="#.###" @bind-Value="@metricValue" />
+		}
+		else
+		{
+			<MudText Typo="Typo.h4" Align="Align.Center">@(Value == 0 ? "--" : Value.ToString("#.###"))</MudText>
+		}
+	}
+	else if(MetricType == MetricTypes.Toggle)
+	{
+		@if (IsEditing)
+		{
+			<MudToggleIconButton Icon="@Icons.Material.Filled.CheckBoxOutlineBlank" ToggledIcon="@Icons.Material.Filled.CheckBox" Disabled="@Disabled"
+								 Size="Size.Large" ToggledSize="Size.Large" Toggled="@(metricValue > 0M)" ToggledChanged="@HandleToggleChanged" />
+		}
+		else
+		{
+			@if(Value > 0M)
+			{
+				<MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.CheckCircle" Style="@ToggleStyle()"/>
+			}
+			else
+			{
+				<MudText Typo="Typo.h4" Align="Align.Center">--</MudText>
+			}
+		}
+	}
+	else if (MetricType == MetricTypes.Counter)
+	{
+		@if (IsEditing)
+		{
+			<div class="d-flex flex-row gap-4 align-center">
+				<MudIconButton Icon="@Icons.Material.Filled.RemoveCircleOutline" Size="Size.Small" Disabled="@Disabled" OnClick="@(() => HandleCounterSubtractClicked())" />
+				<MudText Typo="Typo.h4">@(metricValue == 0 ? "--" : metricValue.ToString("#"))</MudText>
+				<MudIconButton Icon="@Icons.Material.Filled.AddCircleOutline" Size="Size.Small" Disabled="@Disabled" OnClick="@(() => HandleCounterAddClicked())" />
+			</div>
+		}
+		else
+		{
+			<MudText Typo="Typo.h4" Align="Align.Center">@(Value == 0 ? "--" : Value.ToString("#"))</MudText>
+		}
+	}
+	else if (MetricType == MetricTypes.Range)
+	{
+		@if (IsEditing)
+		{
+			<MudSlider Min="0" Max="@MaxValue" Size="Size.Small" @bind-Value="@metricValue" Color="Color.Default" TickMarks="true"
+					   Variant="Variant.Filled" Class="ma-4" TickMarkLabels="@TickLabels()" Disabled="@Disabled" />
+		}
+		else
+		{
+			<MudText Typo="Typo.h4" Align="Align.Center">@(Value == 0 ? "--" : $"{Value.ToString("#")} / {MaxValue.ToString("#")}")</MudText>
+		}
+	}
+	@if(DisplayToolbar != null && !IsEditing)
+	{
+		<MudToolBar DisableGutters="true" Dense="true" Class="mt-2">
+			@DisplayToolbar
+		</MudToolBar>
+	}
+	@if (IsEditing)
+	{
+		<MudToolBar DisableGutters="true" Dense="true" Class="mt-2">
+			@if (EditingToolbar != null)
+			{
+				@EditingToolbar
+			}
+			else
+			{
+				<div>
+					<ProgressIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Save" Title="Save" OnClick="@(() => HandleSaveClicked())" Disabled="@Disabled" IsWorking="IsSaving" />
+				</div>
+				<div>
+					<MudIconButton Icon="@Icons.Material.Filled.Cancel" Title="Cancel" OnClick="@(() => HandleCancelClicked())" Disabled="@(Disabled || IsSaving)" />
+				</div>
+			}
+		</MudToolBar>
+	}
+</MudPaper>
+
+@code {
+	[Parameter]
+	public bool AutoFocus { get; set; } = true;
+
+	[Parameter]
+	public bool Disabled { get; set; }
+
+	[Parameter]
+	public RenderFragment? DisplayToolbar { get; set; }
+
+	[Parameter]
+	public RenderFragment? EditingToolbar { get; set; }
+
+	[Parameter]
+	public string HighlightColor { get; set; } = string.Empty;
+
+	[Parameter]
+	public bool IsEditing { get; set; }
+
+	[Parameter]
+	public EventCallback<bool> IsEditingChanged { get; set; }
+
+	[Parameter]
+	public decimal MaxValue { get; set; } = decimal.MaxValue;
+
+	[Parameter]
+	public MetricTypes MetricType { get; set; }
+
+	[Parameter]
+	public string? SubTitle { get; set; }
+
+	[Parameter]
+	public string Title { get; set; } = string.Empty;
+
+	[Parameter]
+	public decimal Value { get; set; }
+
+	[Parameter]
+	public EventCallback<decimal> ValueChanged { get; set; }
+
+	private AppTheme Theme = new AppTheme();
+
+	private decimal metricValue;
+	private bool IsSaving;
+
+	protected override void OnParametersSet()
+	{
+		base.OnParametersSet();
+
+		if (MetricType == MetricTypes.Range)
+		{
+			if (MaxValue > 10)
+				MaxValue = 10;
+		}
+	}
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+		metricValue = Value;
+	}
+
+	private async Task HandleCancelClicked()
+	{
+		IsEditing = false;
+		await IsEditingChanged.InvokeAsync(IsEditing);
+	}
+
+	private void HandleCounterSubtractClicked()
+	{
+		if(metricValue > 0)
+		{
+			metricValue--;
+		}
+	}
+
+	private void HandleCounterAddClicked()
+	{
+		if (MaxValue == 0 || metricValue < MaxValue)
+		{
+			metricValue++;
+		}
+	}
+
+	private async Task HandleSaveClicked()
+	{
+		IsSaving = true;
+		if (Value != metricValue)
+		{
+			Value = metricValue;
+			await ValueChanged.InvokeAsync(metricValue);
+		}
+		IsEditing = false;
+		await IsEditingChanged.InvokeAsync(IsEditing);
+		IsSaving = false;
+	}
+
+	private void HandleToggleChanged(bool value)
+	{
+		if(value && metricValue == 0M)
+		{
+			metricValue = 1M;
+		}
+		else if(!value && metricValue == 1M)
+		{
+			metricValue = 0M;
+		}
+	}
+
+	public string PanelStyle()
+	{
+		if (!string.IsNullOrEmpty(HighlightColor))
+		{
+			return $"width:100%;height:1em;background-color:{HighlightColor};border-radius:.5em;";
+		}
+		return string.Empty;
+	}
+
+	private string[] TickLabels()
+	{
+		List<string> labels = new();
+		for (int i = 0; i <= Math.Min(10, MaxValue); i++)
+		{
+			labels.Add(i.ToString());
+		}
+		return labels.ToArray();
+	}
+
+	public string ToggleStyle()
+	{
+		if (!string.IsNullOrEmpty(HighlightColor))
+		{
+			return $"color:{HighlightColor}";
+		}
+		else
+		{
+			return $"color:{Theme.Palette.Success}";
+		}
+	}
+}

@@ -1,0 +1,39 @@
+﻿<MudDrawer Open="@Open" Class="details-drawer" Anchor="@Anchor.End" Elevation="1" Variant="@DrawerVariant.Temporary" Color="@Color" >
+	<MudDrawerHeader Class="flex-column pa-0">
+		<div class="d-flex flex-row gap-2 align-center py-2 ps-4 pe-1">
+			@if (!string.IsNullOrEmpty(Icon))
+			{
+				<MudIcon Icon="@Icon" Class="mr-2" />
+			}
+			<MudText Typo="Typo.subtitle1" Class="flex-grow-1">@Title</MudText>
+			<div>
+				<MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@(() => HandleCloseDrawerClicked())" />
+			</div>
+		</div>
+		<MudDivider DividerType="DividerType.FullWidth" />
+	</MudDrawerHeader>
+	<MudDrawerContainer Class="px-6 py-4 flex-grow-1">
+		@if(ChildContent != null)
+		{
+			@ChildContent
+		}
+	</MudDrawerContainer>
+</MudDrawer>
+
+@code {
+	[Inject] public AppState State { get; set; } = default!;
+	[Parameter] public string? Icon { get; set; }
+	[Parameter] public string Title { get; set; } = string.Empty;
+	[Parameter] public RenderFragment? ChildContent { get; set; }
+	[Parameter] public bool Open { get; set; }
+	[Parameter] public EventCallback<bool> OpenChanged { get; set; }
+	[Parameter] public Color Color { get; set; } = Color.Surface;
+
+	protected async Task HandleCloseDrawerClicked()
+	{
+		if(Open)
+		{
+			await OpenChanged.InvokeAsync(false);
+		}
+	}
+}

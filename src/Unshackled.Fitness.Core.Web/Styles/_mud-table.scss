@@ -1,0 +1,17 @@
+﻿/// <reference path="./styles.scss" />
+
+.mud-table-root {
+	.mud-table-cell:not(.expand) {
+		white-space: nowrap;
+	}
+
+	.mud-table-cell.expand {
+		width: 100%;
+	}
+}
+
+.mud-table-cell {
+	.mud-badge.mud-badge-center.right {
+		left: calc(100% + 4px);
+	}
+}

@@ -1,0 +1,53 @@
+﻿@inherits ViewLibraryBase
+
+
+<div class="mb-6">
+	<SectionHeader Title="Find An Exercise" Class="mb-6" OnCancelClicked="@(() => HandleCancelClicked())">
+		<DefaultToolbar>
+			<MudIconButton Icon="@Icons.Material.Filled.Close" Disabled="@DisableControls" OnClick="@(() => HandleCancelClicked())" />
+		</DefaultToolbar>
+	</SectionHeader>
+
+	<SearchForm @bind-Model="@SearchModel" Class="mb-6" SearchClicked="@(() => DoSearch(1))" ResetClicked="@HandleResetClicked" Disable="@IsLoading" VerticalButtons="Breakpoint.Sm">
+		<SearchFields>
+			<MudGrid Spacing="1">
+				<MudItem xs="12" sm="6" md="4">
+					<MuscleTypeSelect AllOption="true" Margin="Margin.Dense" Disabled="@DisableControls" Value="@SearchModel.MuscleType" ValueChanged="@HandleMuscleTypeChanged" />
+				</MudItem>
+				<MudItem xs="12" sm="6" md="4">
+					<EquipmentTypeSelect AllOption="true" Margin="Margin.Dense" Disabled="@DisableControls" Value="@SearchModel.EquipmentType" ValueChanged="@HandleEquipmentTypeChanged" />
+				</MudItem>
+				<MudItem xs="12" md="4">
+					<MudTextField Label="Title" Variant="Variant.Outlined" Margin="Margin.Dense" FullWidth="true"
+					Disabled="@DisableControls" @bind-Value="@SearchModel.Title" />
+				</MudItem>
+			</MudGrid>
+		</SearchFields>
+	</SearchForm>
+
+	<MudToolBar DisableGutters="true" Class="toolbar-xs-stacked">
+		<MudButton StartIcon="@Icons.Material.Filled.AddCircle" Disabled="@(!SelectedSids.Any() || DisableControls)" OnClick="@(() => HandleAddToMyExercisesClicked())">
+			Add @SelectedSids.Count() to Exercises
+		</MudButton>
+	</MudToolBar>
+
+	<ListView Class="mb-6" Items="@SearchResults.Data" PageSize="@SearchResults.PageSize" Page="@SearchModel.Page" TotalItems="@SearchResults.Total" IsLoading="@IsLoading"
+			  PageSelected="@HandlePageSelected">
+		<ItemRenderer>
+			<div class="d-flex flex-row gap-4 align-center">
+				<div>
+					<MudCheckBox T="bool" Disabled="@DisableCheckbox(context.Item.MatchId)"
+					Value="@SelectedSids.Contains(context.Item.MatchId)" ValueChanged="@((bool value) => HandleCheckboxChanged(value, context.Item.MatchId))" />
+				</div>
+				<div class="flex-grow-1">
+					<MudText Typo="Typo.body2" Color="Color.Secondary">@context.Item.Muscles.Titles()</MudText>
+					<MudText Typo="Typo.subtitle1">@context.Item.Title</MudText>
+					<MudText Typo="Typo.body1" Color="Color.Tertiary">@context.Item.Equipment.Titles()</MudText>
+				</div>
+			</div>
+		</ItemRenderer>
+		<EmptyListRenderer>
+			<MudText Align="Align.Center" Class="mt-4">No matches were found.</MudText>
+		</EmptyListRenderer>
+	</ListView>
+</div>

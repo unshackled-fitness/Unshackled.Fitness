@@ -1,0 +1,63 @@
+﻿/// <reference path="./styles.scss" />
+
+.mud-typography-caption {
+	display: block;
+}
+
+.word-break-all {
+	word-break: break-all !important;
+	white-space: normal !important;
+
+	&::before {
+		white-space: nowrap;
+	}
+}
+
+.frac {
+	font-size: 1.1em;
+}
+
+.strike-through {
+	text-decoration: line-through !important;
+}
+
+p {
+	ol, ul {
+		padding-left: 2rem;
+		margin: 1rem 0;
+
+		li {
+			margin-bottom: 0.5rem;
+		}
+	}
+
+	ul li {
+		list-style: disc;
+	}
+}
+
+
+@media (max-width: $breakpoint-xs-max) {
+	@for $i from 0 through 6 {
+		.mud-typography-h#{$i} {
+			font-size: calc(var(--mud-typography-h#{$i}-size) * .85);
+		}
+	}
+}
+
+@media (min-width: $breakpoint-sm-min) and (max-width: $breakpoint-sm-max) {
+	@for $i from 0 through 6 {
+		.mud-typography-h#{$i} {
+			font-size: calc(var(--mud-typography-h#{$i}-size) * .9);
+		}
+	}
+}
+
+
+@media (min-width: $breakpoint-md-min) and (max-width: $breakpoint-md-max) {
+	@for $i from 0 through 6 {
+		.mud-typography-h#{$i} {
+			font-size: calc(var(--mud-typography-h#{$i}-size) * .95);
+		}
+	}
+}

@@ -1,0 +1,33 @@
+﻿<MudDialog DisableSidePadding="true">
+	<DialogContent>
+		<MudContainer Class="mb-4" Style="min-width: 300px;">
+			<EditForm Model="@Title" OnSubmit="@HandleFormSubmitted">
+				<MudTextField Variant="Variant.Outlined" AutoFocus="true" Immediate="true" @bind-Value="Title" FullWidth="true" />
+				<MudToolBar DisableGutters="true">
+					<MudSpacer />
+					<MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Secondary" Disabled="@DisableSave()">Save</MudButton>
+					<MudButton Variant="Variant.Filled" OnClick="@HandleCancelClicked">Cancel</MudButton>
+					<MudSpacer />
+				</MudToolBar>
+			</EditForm>
+		</MudContainer>
+	</DialogContent>
+</MudDialog>
+
+@code {
+	[CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+
+	private string Title = string.Empty;
+
+	private bool DisableSave() => string.IsNullOrEmpty(Title);
+
+	private void HandleCancelClicked() => MudDialog.Cancel();
+
+	private void HandleFormSubmitted()
+	{
+		if (!string.IsNullOrEmpty(Title.Trim()))
+		{
+			MudDialog.Close(DialogResult.Ok(Title.Trim()));
+		}
+	}
+}

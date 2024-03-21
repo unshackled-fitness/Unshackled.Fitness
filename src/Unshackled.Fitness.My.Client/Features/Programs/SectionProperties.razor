@@ -1,0 +1,47 @@
+﻿@inherits SectionPropertiesBase
+
+<SectionComponent IsEditMode="@IsEditMode" IsEditing="@IsEditing" Class="mt-4 mb-6">
+
+	<SectionHeader Title="@GetSectionTitle()" SubTitle="@GetSectionSubTitle()" IsEditMode="@IsEditMode" IsEditing="@IsEditing" FormId="@FormId"
+				   Class="mb-4" EditingClass="mb-3" Breakpoint="Breakpoint.Sm" OnCancelClicked="HandleCancelClicked">
+		<DefaultToolbar>
+			@if (IsMemberActive)
+			{
+				@if (Program.DateStarted.HasValue)
+				{
+					<ProgressButton StartIcon="@Icons.Material.Filled.Stop" Variant="Variant.Filled" Color="Color.Error" IsWorking="@IsSaving" WorkingText="Removing"
+									OnClick="@(() => HandleStopProgramClicked())">Stop</ProgressButton>
+				}
+				else
+				{
+					<ProgressButton StartIcon="@Icons.Material.Filled.PlayArrow" Variant="Variant.Filled" Color="Color.Secondary" IsWorking="@IsSaving" WorkingText="Adding"
+									OnClick="@(() => HandleStartProgramClicked())">Start</ProgressButton>
+				}
+			}
+		</DefaultToolbar>
+		<EditModeToolbar>
+			<MudIconButton Icon="@Icons.Material.Filled.Edit" Disabled="@DisableSectionControls" Class="me-4"
+						   Title="Edit" OnClick="@(() => HandleEditClicked())" />
+			<MudIconButton Icon="@Icons.Material.Filled.ContentCopy" Disabled="@DisableSectionControls" Class="me-4"
+						   Title="Duplicate" OnClick="@(() => HandleDuplicateClicked())" />
+			<MudIconButton Icon="@Icons.Material.Filled.Delete" Disabled="@DisableSectionControls"
+						   Title="Delete" OnClick="@(() => HandleDeleteClicked())" />
+		</EditModeToolbar>
+	</SectionHeader>
+	@if (!IsEditing && !IsDuplicating)
+	{
+		@if (!string.IsNullOrEmpty(Program.Description))
+		{
+			<MudText Typo="Typo.body1" Class="mb-6">@Program.Description</MudText>
+		}
+	}
+	else if (IsEditing)
+	{
+		<FormProperties Model="@Model" FormId="@FormId" DisableFormControls="DisableControls" OnFormSubmitted="@HandleEditFormSubmitted" />
+	}
+	else if(IsDuplicating)
+	{
+		<FormProperties Model="@Model" FormId="@FormId" DisableFormControls="DisableControls" OnFormSubmitted="@HandleDuplicateFormSubmitted" />
+	}
+</SectionComponent>
+

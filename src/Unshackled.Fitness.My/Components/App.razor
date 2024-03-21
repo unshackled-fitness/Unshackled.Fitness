@@ -1,0 +1,70 @@
+﻿@using Unshackled.Fitness.Core
+@using Unshackled.Fitness.Core.Configuration
+@using Unshackled.Fitness.My.Utils
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<base href="/" />
+	
+	@if (RenderModeForPage == null)
+	{
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+	}
+	
+	<style type="text/css">
+		@StylesheetUtils.PrintRoot(SiteConfig.AppThemeColor)
+	</style>
+
+	<link rel="stylesheet" href="_content/MudBlazor/MudBlazor.min.css" />
+	<link rel="stylesheet" href="_content/Unshackled.Fitness.Core.Web/css/styles.min.css" />
+	<link rel="shortcut icon" href="favicon.ico">
+	@if (RenderModeForPage == InteractiveWebAssembly)
+	{
+		<link href="manifest.json" rel="manifest" />
+		<link rel="apple-touch-icon" sizes="512x512" href="maskable_icon_x512.png" />
+		<link rel="apple-touch-icon" sizes="192x192" href="maskable_icon_x192.png" />
+	}
+
+    <HeadOutlet @rendermode="RenderModeForPage" />
+</head>
+
+<body id="app">
+    <Routes @rendermode="RenderModeForPage" />
+
+	@if (RenderModeForPage == InteractiveWebAssembly)
+	{
+		<script src="_framework/blazor.web.js"></script>
+		<script src="service-worker.js"></script>
+		<script src="_content/MudBlazor/MudBlazor.min.js"></script>
+		<script src="js/interop-qrcode.js"></script>
+		<script src="js/qrcode.min.js"></script>
+	}
+	else
+	{
+		<script src="_framework/blazor.web.js" autostart="false"></script>
+		<script>
+		  Blazor.start({
+			ssr: { disableDomPreservation: true }
+		  });
+		</script>
+		<script src="js/interop-form.js"></script>
+	}
+</body>
+
+</html>
+
+@code {
+	[CascadingParameter]
+	private HttpContext HttpContext { get; set; } = default!;
+
+	[Inject]
+	private SiteConfiguration SiteConfig { get; set; } = default!;
+
+    private IComponentRenderMode? RenderModeForPage => HttpContext.Request.Path.StartsWithSegments(ServerGlobals.AccountUrlPrefix)
+        ? null
+		: InteractiveWebAssembly;
+}

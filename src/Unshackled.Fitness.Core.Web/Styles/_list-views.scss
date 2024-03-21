@@ -1,0 +1,21 @@
+﻿/// <reference path="./styles.scss" />
+
+.list-view {
+	
+	.list-group-title {
+		margin-top: 2rem;
+
+		&.first-group {
+			margin-top: 1rem;
+		}
+
+		&:empty {
+			margin-top: 0;
+			display: none;
+		}
+	}
+
+	.list-group-title:empty + .list-group-title {
+		margin-top: 1rem;
+	}
+}

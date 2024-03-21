@@ -1,0 +1,110 @@
+﻿@inherits SectionTasksBase
+
+@if(IsEditMode || Tasks.Any())
+{
+	<SectionComponent IsEditMode="@IsEditMode" IsEditing="@IsEditing">
+		<SectionHeader Typo="Typo.h5" Title="@($"{TaskType.Title()} Checklist")" IsEditMode="@IsEditMode" IsEditing="@IsEditing" DisableControls="@DisableControls" Class="mb-4" EditingClass="mb-4"
+					   OnCancelClicked="@HandleCancelEditClicked" OnSaveClicked="@HandleUpdateClicked">
+			<EditModeToolbar>
+				<MudIconButton Icon="@Icons.Material.Filled.Edit" Title="Edit" Disabled="@DisableSectionControls" OnClick="@(() => HandleEditClicked())" />
+			</EditModeToolbar>
+		</SectionHeader>
+
+		@if (!IsEditing)
+		{
+			@if (Tasks.Any())
+			{
+				@foreach (var task in Tasks)
+				{
+					<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+					<div class="d-flex flex-row gap-3 align-center">
+						<div>
+							<MudAvatar Variant="Variant.Outlined" Size="Size.Small">@(task.SortOrder + 1)</MudAvatar>
+						</div>
+						<div class="flex-grow-1">
+							<MudText Typo="Typo.subtitle1">@task.Text</MudText>
+						</div>
+					</div>
+				}
+				<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+			}
+			else
+			{
+				<MudAlert Severity="Severity.Normal" Icon="@Icons.Material.Filled.Info">You have not added any items.</MudAlert>
+			}
+		}
+		else
+		{
+			@if (!IsSorting)
+			{
+				<EditForm Model="@Model" OnValidSubmit="HandleFormSubmitted">
+					<FluentValidationValidator Validator="ModelValidator"></FluentValidationValidator>
+					<div class="d-flex flex-row gap-2 align-center mb-2">
+						<div class="flex-grow-1">
+							<MudTextField Label="Task" Variant="Variant.Outlined" Margin="Margin.Dense" Immediate="true"
+										  FullWidth="true" For="@(() => Model.Text)" @bind-Value="@Model.Text" />
+						</div>
+						<div>
+							<MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" Disabled="@IsWorking">Add</MudButton>
+						</div>
+					</div>
+				</EditForm>
+			}
+			@if (EditingTasks.Any())
+			{
+				@if (!IsSorting)
+				{
+					@foreach (var task in EditingTasks)
+					{
+						<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+						<div class="d-flex flex-row align-center gap-2 mb-3">
+							<MudAvatar Variant="Variant.Outlined" Size="Size.Small">
+								@(task.SortOrder + 1)
+							</MudAvatar>
+							<div class="flex-grow-1">
+								<MudText Typo="Typo.subtitle1">@task.Text</MudText>
+							</div>
+							<div>
+								<MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Remove" Disabled="@IsWorking" OnClick="@(() => HandleDeleteClicked(task))" />
+							</div>
+						</div>
+					}
+					<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+					<MudToolBar DisableGutters="true">
+						<MudSpacer />
+						<MudButton Variant="Variant.Text" Color="Color.Default" StartIcon="@Icons.Material.Filled.Sort" Disabled="@IsWorking"
+								   OnClick="@(() => HandleReorderClicked())">Sort</MudButton>
+						<MudSpacer />
+					</MudToolBar>
+				}
+				else
+				{
+					<SortableForm TItem="FormTemplateTaskModel" @bind-Items="@EditingTasks">
+						<ItemRenderer>
+							<MudPaper Elevation="2" Class="pa-4 my-4">
+								<div class="d-flex flex-row gap-4 align-center">
+									<div>
+										<MudIcon Icon="@Icons.Material.Filled.DragIndicator" />
+									</div>
+									<div>
+										<MudText>@context.Text</MudText>
+										</div>
+									</div>
+								</MudPaper>
+							</ItemRenderer>
+						</SortableForm>
+					<MudToolBar DisableGutters="true">
+						<MudSpacer />
+						<MudButton Variant="Variant.Text" Color="Color.Default" StartIcon="@Icons.Material.Filled.ArrowBack" Disabled="@IsWorking"
+								   OnClick="@(() => HandleBackClicked())">Back</MudButton>
+						<MudSpacer />
+					</MudToolBar>
+				}
+			}
+			else
+			{
+				<MudAlert Severity="Severity.Normal" Icon="@Icons.Material.Filled.Info">You have not added any items.</MudAlert>
+			}
+		}
+	</SectionComponent>
+}

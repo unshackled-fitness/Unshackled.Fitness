@@ -1,0 +1,48 @@
+﻿@typeparam TGroup
+@typeparam TItem
+@using Unshackled.Fitness.Core
+
+@if (IsLoading)
+{
+	<DefaultProgress />
+}
+else if (!IsLoading && Items.Any())
+{
+	<MudExpansionPanels Class="@ListClass" DisableBorders="@DisableBorders" Elevation="@Elevation" MultiExpansion="@MultiExpansion">
+		@foreach (var group in Groups)
+		{
+			var groupItems = Items.Where(x => x.ListGroupSid == group.Sid).ToArray();
+			<MudExpansionPanel>
+				<TitleContent>
+					@if (GroupRenderer != null)
+					{
+						@GroupRenderer(group)
+					}
+				</TitleContent>
+				<ChildContent>
+					<div class="@PanelClass">
+						@for (int i = 0; i < groupItems.Length; i++)
+						{
+							var item = groupItems[i];
+							@if (ItemRenderer != null)
+							{
+								@if (UseDividers)
+								{
+									<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+								}
+								@ItemRenderer(new RowContext<TItem>{ Item = item, RowIndex = i })
+							}
+						}
+					</div>
+				</ChildContent>
+			</MudExpansionPanel>
+		}
+	</MudExpansionPanels>
+}
+else
+{
+	@if (EmptyListRenderer != null)
+	{
+		@EmptyListRenderer
+	}
+}

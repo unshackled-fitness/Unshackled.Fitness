@@ -1,0 +1,42 @@
+﻿@inherits PageSectionBase
+
+<MudPaper Class="pa-6 mb-6">
+	<MudGrid Spacing="2" Class="mb-3">
+		<MudItem xs="11" sm="9">
+			<MudText Typo="Typo.h5">@Title</MudText>
+		</MudItem>
+		@if (IsEditMode)
+		{
+			@if (!Editing)
+			{
+				<MudItem xs="1" sm="3" Class="d-flex flex-row gap-2 justify-end">
+					<MudIconButton Icon="@Icons.Material.Filled.Edit" Title="Edit" Size="Size.Small" Disabled="@DisableSectionControls" OnClick="@(() => HandleEditClicked())" />
+				</MudItem>
+			}
+			else
+			{
+				<MudItem xs="12" sm="3" Class="d-flex flex-row gap-2 justify-end">
+					<ProgressButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@DisableControls" IsWorking="@IsWorking" WorkingText="Updating" 
+									OnClick="@(() => HandleUpdateClicked())">Update</ProgressButton>
+					<MudButton Variant="Variant.Outlined" Color="Color.Primary" Disabled="@DisableControls" OnClick="@(() => HandleCancelEditClicked())">Cancel</MudButton>
+				</MudItem>
+			}
+		}
+	</MudGrid>
+
+	@if (IsLoading)
+	{
+		<DefaultProgress />
+	}
+	else
+	{
+		@if(Editing)
+		{
+			@EditContent
+		}
+		else
+		{
+			@DisplayContent
+		}
+	}
+</MudPaper>

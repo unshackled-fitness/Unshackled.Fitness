@@ -1,0 +1,18 @@
+﻿@using MudBlazor.Utilities
+
+<div class="@CssClass">
+	@ChildContent
+</div>
+
+@code {
+	[Parameter] public RenderFragment? ChildContent { get; set; }
+	[Parameter] public bool IsEditMode { get; set; }
+	[Parameter] public bool IsEditing { get; set; }
+	[Parameter] public string? Class { get; set; }
+
+	private string CssClass => new CssBuilder("section")
+		.AddClass(IsEditMode ? $"mud-paper mud-elevation-1 section-edit-mode" : string.Empty)
+		.AddClass(IsEditing ? $"section-editing" : string.Empty)
+		.AddClass(string.IsNullOrEmpty(Class) ? "mb-6" : Class)
+		.Build();
+}

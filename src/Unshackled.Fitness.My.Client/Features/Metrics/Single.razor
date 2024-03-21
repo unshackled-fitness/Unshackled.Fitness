@@ -1,0 +1,31 @@
+﻿@page "/metrics/{Sid}"
+@inherits SingleBase
+
+<MudBreadcrumbs Items="@Breadcrumbs" />
+
+<DynamicPageTitle  IsLoading="@IsLoading" LoadingTitle="Loading Metric..." FallbackTitle="Metric" Title="@MetricDefinition.Title" />
+
+@if (IsLoading)
+{
+	<DefaultProgress />
+}
+else
+{
+	<MudPaper Class="mb-6">
+		<SectionHeader Title="@MetricDefinition.Title" SubTitle="@MetricDefinition.SubTitle" />
+	</MudPaper>
+
+	<MudPaper>
+		<Calendar Model="@CalendarModel">
+			<div>
+				<MudMenu Label="@LabelYear" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.KeyboardArrowDown" Size="Size.Small" Dense="true" Class="ms-1">
+					@foreach (var year in CalendarModel.YearsAvailable)
+					{
+						<MudMenuItem OnClick="@(() => HandleYearClicked(year))" OnTouch="@(() => HandleYearClicked(year))">@year</MudMenuItem>
+					}
+					<MudMenuItem OnClick="@(() => HandlePastYearClicked())" OnTouch="@(() => HandlePastYearClicked())">Past Year</MudMenuItem>
+				</MudMenu>
+			</div>
+		</Calendar>
+	</MudPaper>
+}

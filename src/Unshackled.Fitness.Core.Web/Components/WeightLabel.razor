@@ -1,0 +1,35 @@
+﻿<span class="result"><span class="weight">@weight.ShortLabel()</span>@DisplayLabel()</span>
+
+@code {
+	[Parameter] public decimal? WeightKg { get; set; }
+	[Parameter] public decimal? WeightLb { get; set; }
+	[Parameter] public UnitSystems UnitSystem { get; set; } = UnitSystems.Metric;
+
+	private WeightUnits weightUnit = WeightUnits.Any;
+	private decimal? weight;
+
+	protected override void OnParametersSet()
+	{
+		base.OnParametersSet();
+
+		if (UnitSystem == UnitSystems.Imperial)
+		{
+			weightUnit = WeightUnits.lb;
+			weight = WeightLb;
+		}
+		else if (UnitSystem == UnitSystems.Metric)
+		{
+			weightUnit = WeightUnits.kg;
+			weight = WeightKg;
+		}
+	}
+
+	MarkupString DisplayLabel()
+	{
+		if (weightUnit != WeightUnits.Any)
+		{
+			return (MarkupString)$"<span class=\"post-result-label\">{weightUnit.Label()}</span>";
+		}
+		return (MarkupString)string.Empty;
+	}
+}

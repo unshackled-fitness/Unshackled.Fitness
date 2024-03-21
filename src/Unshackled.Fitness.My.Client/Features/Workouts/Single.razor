@@ -1,0 +1,57 @@
+﻿@page "/workouts/{WorkoutSid}"
+@inherits SingleBase
+
+<DynamicPageTitle  IsLoading="@IsLoading" LoadingTitle="Loading Workout" Title="Workout" />
+
+<MudBreadcrumbs Items="Breadcrumbs"></MudBreadcrumbs>
+
+@if (IsLoading)
+{
+	<DefaultProgress />
+}
+else if(IsAddingTemplate)
+{
+	<SectionHeader Title="Add as Template" SubTitle="Enter a title for your new template." IsEditing="true" EditingClass="mb-4" 
+				   FormId="@FormId" OnCancelClicked="@HandleCancelAddClicked" />
+	<FormAddTemplate DisableFormControls="@IsWorking" Model="@AddTemplateModel" FormId="@FormId" OnFormSubmitted="@HandleAddTemplateSubmitted"/>
+}
+else
+{
+	@if (!string.IsNullOrEmpty(Workout.Sid))
+	{
+		@if (IsMemberActive)
+		{
+			<div class="d-flex flex-column-reverse flex-sm-row">
+				@if (Workout.DateCompletedUtc.HasValue)
+				{
+					<MudToolBar DisableGutters="true" Dense="true">
+						<ProgressButton StartIcon="@Icons.Material.Filled.Repeat" Disabled="@IsEditMode" IsWorking="@IsRepeating" WorkingText="Creating" Title="Repeat Workout"
+						OnClick="@(() => HandleRepeatWorkoutClicked())">Repeat</ProgressButton>
+						<ProgressButton StartIcon="@Icons.Material.Filled.SaveAs" Disabled="@IsEditMode" IsWorking="@IsAddingTemplate" WorkingText="Saving" Title="Save As Template"
+						OnClick="@(() => HandleAddTemplateClicked())">Template</ProgressButton>
+					</MudToolBar>
+				}
+				<MudToolBar DisableGutters="true" Dense="true" Class="flex-grow-1">
+					<MudSpacer />
+					<EditModeSwitch @bind-IsEditMode="@IsEditMode" Disabled="@IsEditing" />
+				</MudToolBar>
+			</div>
+		}
+
+		<SectionProperties @bind-Workout="@Workout" IsEditMode="@IsEditMode" DisableSectionControls="@DisableControls"
+				OnIsEditingSectionChange="@HandleIsEditingSectionChange" />
+
+		@if (!Workout.DateStartedUtc.HasValue)
+		{
+			<SectionTasks Tasks="@Workout.Tasks" TaskType="@WorkoutTaskTypes.PreWorkout" IsEditMode="@IsEditMode" DisableSectionControls="@DisableControls"
+				WorkoutStatusChanged="@HandleWorkoutStarted"/>
+		}
+		
+		<SectionSets Workout="@Workout" IsEditMode="@IsEditMode" DisableSectionControls="@DisableControls" WorkoutChanged="@HandleWorkoutCompleted"
+			OnIsEditingSectionChange="@HandleIsEditingSectionChange" SetSaved="@HandleSetSaved" />
+	}
+	else
+	{
+		<MudAlert Severity="Severity.Error" Dense="true">The workout was not found.</MudAlert>
+	}
+}

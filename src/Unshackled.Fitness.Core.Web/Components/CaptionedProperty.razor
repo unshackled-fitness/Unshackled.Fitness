@@ -1,0 +1,40 @@
+﻿@using MudBlazor.Utilities
+
+<div class="@CssClass" style="@Styles">
+	@if (TitleContent == null)
+	{
+		<MudText Typo="@Typo" Align="@Align" Color="@Color">@Title</MudText>
+	}
+	else
+	{
+		@TitleContent
+	}
+	@if(ChildContent != null)
+	{
+		@ChildContent
+	}
+	else if(!string.IsNullOrEmpty(Value))
+	{
+		<MudText Typo="Typo.body1" Align="@Align" Color="@ValueColor">@Value</MudText>
+	}
+</div>
+
+@code {
+	[Parameter] public Align Align { get; set; } = Align.Center;
+	[Parameter] public RenderFragment? TitleContent { get; set; }
+	[Parameter] public RenderFragment? ChildContent { get; set; }
+	[Parameter] public string Class { get; set; } = string.Empty;
+	[Parameter] public Color Color { get; set; } = Color.Tertiary;
+	[Parameter] public string Title { get; set; } = string.Empty;
+	[Parameter] public Typo Typo { get; set; } = Typo.caption;
+	[Parameter] public string? Value { get; set; }
+	[Parameter] public Color ValueColor { get; set; } = Color.Default;
+	[Parameter] public string? Styles { get; set; } = null;
+
+	protected string CssClass => new CssBuilder("d-flex flex-column")
+		.AddClass(Align == Align.Center ? "align-center" : string.Empty)
+		.AddClass(Align == Align.End || Align == Align.Right ? "align-end" : string.Empty)
+		.AddClass(Class)
+		.Build();
+
+}

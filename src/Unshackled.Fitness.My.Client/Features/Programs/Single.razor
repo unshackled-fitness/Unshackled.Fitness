@@ -1,0 +1,34 @@
+﻿@page "/programs/{ProgramSid}"
+@inherits SingleBase
+
+<DynamicPageTitle  IsLoading="@IsLoading" LoadingTitle="Loading Program" Title="Program" />
+
+<MudBreadcrumbs Items="Breadcrumbs"></MudBreadcrumbs>
+
+@if (IsLoading)
+{
+	<DefaultProgress />
+}
+else
+{
+	@if (!string.IsNullOrEmpty(ProgramSid))
+	{
+		@if (IsMemberActive)
+		{
+			<MudToolBar DisableGutters="true">
+				<MudSpacer />
+				<EditModeSwitch @bind-IsEditMode="@IsEditMode" Disabled="@(IsEditing || IsWorking)" />
+			</MudToolBar>
+		}
+
+		<SectionProperties @bind-Program="@Program" IsEditMode="@IsEditMode" DisableSectionControls="@DisableControls"
+						   OnIsEditingSectionChange="@HandleIsEditingSectionChange" />
+
+		<SectionTemplates Program="@Program" IsEditMode="@IsEditMode" DisableSectionControls="@DisableControls"
+						  OnIsEditingSectionChange="@HandleIsEditingSectionChange" ProgramUpdated="@HandleProgramUpdated" />
+	}
+	else
+	{
+		<MudAlert Severity="Severity.Error" Dense="true">The program was not found.</MudAlert>
+	}
+}

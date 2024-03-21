@@ -1,0 +1,204 @@
+﻿@typeparam TGroup
+@typeparam TItem
+
+<div class="@ListClass">
+	@if (!IsLoading && !IsReordering && Items.Any())
+	{
+		@if ((ToolbarPosition == ToolbarPositions.Top || ToolbarPosition == ToolbarPositions.Both) && (AllowSort || ListTools != null))
+		{
+			<MudToolBar DisableGutters="true">
+				@if (ToolbarAlignment == HorizontalAlignment.Center || ToolbarAlignment == HorizontalAlignment.End || ToolbarAlignment == HorizontalAlignment.Right)
+				{
+					<MudSpacer />
+				}
+
+				@if (ListTools != null)
+				{
+					@ListTools
+				}
+
+				@if (AllowSort)
+				{
+					<MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Sort" Disabled="@DisableSort" OnClick="@(() => HandleSortClicked())">Sort</MudButton>
+				}
+
+				@if (ToolbarAlignment == HorizontalAlignment.Center)
+				{
+					<MudSpacer />
+				}
+			</MudToolBar>
+		}
+
+		string currentGroupSid = string.Empty;
+		bool isFirstGroup = true;
+		@for (int i = 0; i < Items.Count; i++)
+		{
+			var item = Items[i];
+			if (item.ListGroupSid != currentGroupSid)
+			{
+				currentGroupSid = item.ListGroupSid;
+				@if (ShowSingleGroupTitle || Groups.Count > 1)
+				{
+					var group = Groups.Where(x => x.Sid == item.ListGroupSid).SingleOrDefault();
+					if (group != null && GroupRenderer != null)
+					{
+						<div class="@(isFirstGroup ? "list-group-title first-group" : "list-group-title")">
+							@GroupRenderer(group)
+						</div>
+					}
+				}
+				@if (UseDividers)
+				{
+					<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+				}
+				isFirstGroup = false;
+			}
+			@if (ItemRenderer != null)
+			{
+				@ItemRenderer(new RowContext<TItem>{ Item = item, RowIndex = i })
+				@if (UseDividers)
+				{
+					<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+				}
+			}
+		}
+
+		@if ((ToolbarPosition == ToolbarPositions.Bottom || ToolbarPosition == ToolbarPositions.Both) && (AllowSort || ListTools != null))
+		{
+			<MudToolBar DisableGutters="true">
+				@if (ToolbarAlignment == HorizontalAlignment.Center || ToolbarAlignment == HorizontalAlignment.End || ToolbarAlignment == HorizontalAlignment.Right)
+				{
+					<MudSpacer />
+				}
+
+				@if (ListTools != null)
+				{
+					@ListTools
+				}
+
+				@if (AllowSort)
+				{
+					<MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Sort" OnClick="@(() => HandleSortClicked())">Sort</MudButton>
+				}
+
+				@if (ToolbarAlignment == HorizontalAlignment.Center)
+				{
+					<MudSpacer />
+				}
+			</MudToolBar>
+		}
+	}
+	else if (!IsLoading && IsReordering && SortingItems.Any())
+	{
+		@if (!IsReorderingGroups)
+		{
+			<MudDropContainer T="TItem" Items="@SortingItems" ItemsSelector="@((item,dropzone) => item.ListGroupSid.ToString() == dropzone)" ItemDropped="HandleItemDropped">
+				<ChildContent>
+					<MudToolBar DisableGutters="true" Class="mb-2">
+						<ProgressButton Color="Color.Primary" Disabled="@IsWorking" IsWorking="@IsWorking" WorkingText="Applying" StartIcon="@Icons.Material.Filled.Check"
+										OnClick="@(() => HandleUpdateSortClicked())">Apply Order</ProgressButton>
+						<MudButton StartIcon="@Icons.Material.Filled.Cancel" OnClick="@(() => HandleCancelSortClicked())">Cancel</MudButton>
+					</MudToolBar>
+					@foreach (var group in SortingGroups)
+					{
+						<MudDropZone T="TItem" Identifier="@group.Sid.ToString()" AllowReorder="true" Class="@ZoneClass" ItemDraggingClass="@ItemDraggingClass">
+							@if (SortingGroups.Count > 1)
+							{
+								<MudTextField Variant="Variant.Outlined" Label="Title" Class="my-4" @bind-Value="group.Title" FullWidth="true" />
+							}
+						</MudDropZone>
+					}
+					<MudDropZone T="TItem" Identifier="@NewDropZoneId" AllowReorder="true" Class="@ZoneClass">
+						@if (NewZoneRenderer != null)
+						{
+							@NewZoneRenderer
+						}
+					</MudDropZone>
+					@if (SortingGroups.Count > 1)
+					{
+						<MudToolBar DisableGutters="true" Dense="true">
+							<MudSpacer />
+							<MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Sort" OnClick="@(() => HandleSortGroupClicked())">Sort @GroupLabel</MudButton>
+							<MudSpacer />
+						</MudToolBar>
+					}
+				</ChildContent>
+				<ItemRenderer>
+					@if (DraggableItemRenderer != null)
+					{
+						@DraggableItemRenderer(context)
+					}
+				</ItemRenderer>
+			</MudDropContainer>
+		}
+		else
+		{
+			<MudToolBar DisableGutters="true" Class="mb-2">
+				<MudButton StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="@(() => HandleBackClicked())">Back</MudButton>
+			</MudToolBar>
+			<MudDropContainer T="TGroup" Items="@SortingGroups" ItemsSelector="@((item,dropzone) => true)" ItemDropped="HandleGroupDropped">
+				<ChildContent>
+					<MudDropZone T="TGroup" AllowReorder="true" Class="@ZoneClass" ItemDraggingClass="@ItemDraggingClass">
+					</MudDropZone>
+				</ChildContent>
+				<ItemRenderer>
+					@if (DraggableGroupRenderer != null)
+					{
+						@DraggableGroupRenderer(context)
+					}
+				</ItemRenderer>
+			</MudDropContainer>
+		}
+	}
+	else if (IsLoading)
+	{
+		<DefaultProgress />
+	}
+	else
+	{
+		@if ((ToolbarPosition == ToolbarPositions.Top || ToolbarPosition == ToolbarPositions.Both) && ListTools != null)
+		{
+			<MudToolBar DisableGutters="true">
+				@if (ToolbarAlignment == HorizontalAlignment.Center || ToolbarAlignment == HorizontalAlignment.End || ToolbarAlignment == HorizontalAlignment.Right)
+				{
+					<MudSpacer />
+				}
+
+				@if (ListTools != null)
+				{
+					@ListTools
+				}
+
+				@if (ToolbarAlignment == HorizontalAlignment.Center)
+				{
+					<MudSpacer />
+				}
+			</MudToolBar>
+		}
+
+		@if (EmptyListRenderer != null)
+		{
+			@EmptyListRenderer
+		}
+
+		@if ((ToolbarPosition == ToolbarPositions.Bottom || ToolbarPosition == ToolbarPositions.Both) && ListTools != null)
+		{
+			<MudToolBar DisableGutters="true">
+				@if (ToolbarAlignment == HorizontalAlignment.Center || ToolbarAlignment == HorizontalAlignment.End || ToolbarAlignment == HorizontalAlignment.Right)
+				{
+					<MudSpacer />
+				}
+
+				@if (ListTools != null)
+				{
+					@ListTools
+				}
+
+				@if (ToolbarAlignment == HorizontalAlignment.Center)
+				{
+					<MudSpacer />
+				}
+			</MudToolBar>
+		}
+	}
+</div>

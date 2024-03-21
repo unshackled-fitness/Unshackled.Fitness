@@ -1,0 +1,46 @@
+﻿<MudDialog DisableSidePadding="true">
+	<DialogContent>
+		<MudDatePicker PickerVariant="PickerVariant.Static" @bind-Date="@dateStart" IsDateDisabledFunc="@IsDateDisabled" Color="Color.Secondary" />
+	</DialogContent>
+	<DialogActions>
+		<MudSpacer />
+		<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit">Apply</MudButton>
+		<MudButton Variant="Variant.Filled" OnClick="Cancel">Cancel</MudButton>
+		<MudSpacer />
+	</DialogActions>
+</MudDialog>
+
+@code {
+	[CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+	[Parameter] public ProgramTypes ProgramType { get; set; }
+
+	private DateTime? dateStart;
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+
+		if (ProgramType == ProgramTypes.FixedRepeating)
+		{
+			if (DateTimeOffset.Now.Date.DayOfWeek == DayOfWeek.Sunday)
+				dateStart = DateTimeOffset.Now.Date;
+			else
+				dateStart = DateTimeOffset.Now.Date.AddDays(7 - (int)DateTimeOffset.Now.Date.DayOfWeek);
+		}
+		else
+		{
+			dateStart = DateTimeOffset.Now.Date;
+		}
+	}
+
+	bool IsDateDisabled(DateTime date)
+	{
+		if (ProgramType == ProgramTypes.FixedRepeating)
+			return (int)date.DayOfWeek > 0;
+		else
+			return false;
+	}
+
+	void Submit() => MudDialog.Close(DialogResult.Ok(dateStart));
+	void Cancel() => MudDialog.Cancel();
+}

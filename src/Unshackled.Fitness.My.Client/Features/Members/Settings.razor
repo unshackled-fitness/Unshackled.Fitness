@@ -1,0 +1,61 @@
+﻿@page "/member/app-settings"
+@inherits SettingsBase
+
+<DynamicPageTitle Title="App Settings" />
+
+<MudBreadcrumbs Items="@Breadcrumbs" />
+
+<MudText Typo="Typo.h4" Class="mb-6">App Settings</MudText>
+
+<SettingItem>
+	<LabelContent>Default Units</LabelContent>
+	<SettingContent>
+		<MudSelect T="UnitSystems" Variant="Variant.Outlined" FullWidth="true" @bind-Value="@Settings.DefaultUnits">
+			<MudSelectItem Value="@UnitSystems.Metric">@UnitSystems.Metric.Title()</MudSelectItem>
+			<MudSelectItem Value="@UnitSystems.Imperial">@UnitSystems.Imperial.Title()</MudSelectItem>
+		</MudSelect>
+	</SettingContent>
+</SettingItem>
+<SettingItem>
+	<LabelContent>Display Split Tracking</LabelContent>
+	<SettingContent>
+		<MudSelect T="int" Variant="Variant.Outlined" FullWidth="true" @bind-Value="@Settings.DisplaySplitTracking">
+			<MudSelectItem Value="0">Left/Right</MudSelectItem>
+			<MudSelectItem Value="1">Right/Left</MudSelectItem>
+		</MudSelect>
+	</SettingContent>
+</SettingItem>
+<SettingItem>
+	<LabelContent>Default Completed Set Visibility</LabelContent>
+	<SettingContent>
+		<MudSelect T="bool" Variant="Variant.Outlined" FullWidth="true" @bind-Value="@Settings.HideCompleteSets">
+			<MudSelectItem T="bool" Value="@false">Show</MudSelectItem>
+			<MudSelectItem T="bool" Value="@true">Hide</MudSelectItem>
+		</MudSelect>
+	</SettingContent>
+</SettingItem>
+<SettingItem>
+	<LabelContent>Avatar</LabelContent>
+	<DescriptionContent>
+		<MudText Typo="Typo.caption"><MudLink Typo="Typo.caption" Class="d-inline" Color="Color.Secondary" Href="https://gravatar.com" Target="_blank">Gravatar</MudLink> is an external service for globally-recognized avatars/profiles.</MudText>
+	</DescriptionContent>
+	<SettingContent>
+		<MudSelect T="bool" Variant="Variant.Outlined" FullWidth="true" @bind-Value="@Settings.UseGravatar">
+			<MudSelectItem T="bool" Value="@false">Use Default</MudSelectItem>
+			<MudSelectItem T="bool" Value="@true">Use Gravatar</MudSelectItem>
+		</MudSelect>
+	</SettingContent>
+</SettingItem>
+<div class="d-flex flex-row justify-end mt-9">
+	<MudButton Disabled="@Saving" Size="Size.Small" OnClick="@(() => HandleRestoreDefaultsClicked())">Restore Defaults</MudButton>
+</div>
+<MudDivider DividerType="DividerType.FullWidth" Class="mb-4" />
+<MudToolBar DisableGutters="true">
+	<MudSpacer />
+	<ProgressButton Color="Color.Secondary" Variant="Variant.Filled" Disabled="@Saving" IsWorking="@Saving" WorkingText="@("Saving...")" 
+					OnClick="@(() => HandleApplySettingsClicked())">
+		Apply Settings
+	</ProgressButton>
+	<MudButton Color="Color.Secondary" Variant="Variant.Outlined" Disabled="@Saving" Href="/member">Cancel</MudButton>
+	<MudSpacer />
+</MudToolBar>

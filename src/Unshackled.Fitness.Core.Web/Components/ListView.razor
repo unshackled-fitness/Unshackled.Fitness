@@ -1,0 +1,42 @@
+﻿@typeparam TItem
+
+<div class="@ListClass">
+	@if (!IsLoading && Items.Any())
+	{
+		@if (PagingPosition == PagingPositions.Top || PagingPosition == PagingPositions.Both)
+		{
+			<PagingComponent Page="@Page" PageSize="@PageSize" Total="@TotalItems" PageSelected="@HandlePageSelected" />
+		}
+		@if (UseDividers)
+		{
+			<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+		}
+		@for (int i = 0; i < Items.Count; i++)
+		{
+			var item = Items[i];
+			@if(ItemRenderer != null)
+			{
+				@ItemRenderer(new RowContext<TItem> { Item = item, RowIndex = i })
+			}
+			@if (UseDividers)
+			{
+				<MudDivider DividerType="DividerType.FullWidth" Class="my-2" />
+			}
+		}
+		@if (PagingPosition == PagingPositions.Bottom || PagingPosition == PagingPositions.Both)
+		{
+			<PagingComponent Page="@Page" PageSize="@PageSize" Total="@TotalItems" PageSelected="@HandlePageSelected" />
+		}
+	}
+	else if(IsLoading)
+	{
+		<DefaultProgress />
+	}
+	else
+	{
+		@if(EmptyListRenderer != null)
+		{
+			@EmptyListRenderer
+		}
+	}
+</div>

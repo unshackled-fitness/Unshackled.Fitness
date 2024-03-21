@@ -1,0 +1,54 @@
+﻿@using Unshackled.Fitness.Core.Configuration
+
+@if (IsLoading)
+{
+	<PageTitle>@GetTitle(LoadingTitle)</PageTitle>
+}
+else
+{
+	<PageTitle>
+		@if (!string.IsNullOrEmpty(Title))
+		{
+			@GetTitle(Title)
+		}
+		else
+		{
+			@GetTitle(FallbackTitle)
+		}
+	</PageTitle>
+}
+
+@code {
+	[Inject] protected ClientConfiguration ClientConfiguration { get; set; } = new();
+	[Parameter] public bool IsLoading { get; set; } = false;
+	[Parameter] public string LoadingTitle { get; set; } = string.Empty;
+	[Parameter] public string Separator { get; set; } = " - ";
+	[Parameter] public string? Title { get; set; }
+	[Parameter] public string? FallbackTitle { get; set; }
+
+	private string defaultTitle { get; set; } = string.Empty;
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+		defaultTitle = ClientConfiguration.SiteName ?? string.Empty;
+	}
+
+	private string GetTitle(string? title)
+	{
+		string display = string.Empty;
+		if (!String.IsNullOrEmpty(title))
+		{
+			display = title;
+		}
+		if (!String.IsNullOrEmpty(display))
+		{
+			display += Separator + defaultTitle;
+		}
+		else
+		{
+			display = defaultTitle;
+		}
+		return display;
+	}
+}

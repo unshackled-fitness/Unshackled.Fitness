@@ -1,0 +1,18 @@
+﻿@page "/member/2fa/reset-authenticator"
+@inherits ResetAuthenticatorBase
+
+<DynamicPageTitle Title="Reset Authenticator Key" />
+
+<MudBreadcrumbs Items="@Breadcrumbs" />
+
+<MudText Typo="Typo.h4" Class="mb-4">Reset Authenticator Key</MudText>
+
+<MudAlert Severity="Severity.Warning" Class="mb-4">
+	<MudText>
+		<strong>If you reset your authenticator key your authenticator app will not work until you reconfigure it.</strong>
+	</MudText>
+</MudAlert>
+<MudText Class="mb-4">
+	This process disables 2FA until you verify your authenticator app. If you do not complete your authenticator app configuration you may lose access to your account.
+</MudText>
+<MudButton Variant="Variant.Filled" Color="Color.Secondary" Disabled="@DisableControls" OnClick="@(() => HandleResetClicked())">Reset Authenticator Key</MudButton>

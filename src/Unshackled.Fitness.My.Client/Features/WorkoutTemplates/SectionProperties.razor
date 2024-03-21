@@ -1,0 +1,30 @@
+﻿@inherits SectionPropertiesBase
+
+<SectionComponent IsEditMode="@IsEditMode" IsEditing="@IsEditing">
+	<SectionHeader Title="@GetSectionTitle()" IsEditMode="@IsEditMode" IsEditing="@IsEditing" FormId="@FormId" EditingClass="mb-4" Breakpoint="Breakpoint.Md" OnCancelClicked="@HandleCancelClicked">
+		<EditModeToolbar>
+			<MudIconButton Icon="@Icons.Material.Filled.Edit" Disabled="@DisableSectionControls"
+						   Title="Edit" OnClick="@(() => HandleEditClicked())" />
+			<MudIconButton Icon="@Icons.Material.Filled.ContentCopy" Disabled="@DisableSectionControls"
+						   Title="Duplicate" OnClick="@(() => HandleDuplicateClicked())" />
+			<MudIconButton Icon="@Icons.Material.Filled.Delete" Disabled="@DisableSectionControls"
+						   Title="Delete" OnClick="@(() => HandleDeleteClicked())" />
+		</EditModeToolbar>
+	</SectionHeader>
+	@if (!IsEditing && !IsDuplicating)
+	{
+		@if (!string.IsNullOrEmpty(Template.Description))
+		{
+			<MudText Typo="Typo.body1" Class="mt-6">@Template.Description</MudText>
+		}
+	}
+	else if (IsEditing)
+	{
+		<FormProperties Model="@Model" FormId="@FormId" DisableFormControls="DisableControls" OnFormSubmitted="@HandleEditFormSubmitted" />
+	}
+	else if(IsDuplicating)
+	{
+		<FormProperties Model="@Model" FormId="@FormId" DisableFormControls="DisableControls" OnFormSubmitted="@HandleDuplicateFormSubmitted" />
+	}
+</SectionComponent>
+

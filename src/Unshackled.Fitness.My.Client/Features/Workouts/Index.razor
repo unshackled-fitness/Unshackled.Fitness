@@ -1,0 +1,88 @@
+﻿@page "/workouts"
+@inherits IndexBase
+
+<DynamicPageTitle  IsLoading="@IsLoading" LoadingTitle="Loading Workouts..." Title="Workouts" />
+
+<MudBreadcrumbs Items="@Breadcrumbs" />
+
+<MudText Typo="Typo.h4" Class="mb-6">Workouts</MudText>
+
+<div class="mb-6">
+	<SearchForm @bind-Model="@SearchModel" Class="mb-6" SearchClicked="@(() => DoSearch(1))" ResetClicked="@HandleResetClicked" VerticalButtons="Breakpoint.Sm" Disable="@IsLoading">
+		<SearchFields>
+			<MudGrid Spacing="1">
+				<MudItem xs="12" md="4">
+					<MudDateRangePicker Label="Date Range" Variant="Variant.Outlined" Margin="Margin.Dense" DateRange="@DateRangeSearch" DateRangeChanged="@HandleDateRangeChanged" Clearable="true" />
+				</MudItem>
+				<MudItem xs="12" sm="6" md="4">
+					<MuscleTypeSelect AllOption="true" Margin="Margin.Dense" @bind-Value="@SearchModel.MuscleType" Disabled="@DisableControls" />
+				</MudItem>
+				<MudItem xs="12" sm="6" md="4">
+					<MudTextField Label="Title" Variant="Variant.Outlined" FullWidth="true" Margin="Margin.Dense"
+								  T="string" @bind-Value="@SearchModel.Title" Disabled="@IsLoading" />
+				</MudItem>
+			</MudGrid>
+		</SearchFields>
+	</SearchForm>
+	@if (IsMemberActive)
+	{
+		<MudToolBar Class="mb-2" DisableGutters="true" Dense="true">
+			<ProgressButton StartIcon="@Icons.Material.Filled.AddCircle" Disabled="@DisableControls" IsWorking="@IsWorking" WorkingText="Opening"
+							OnClick="@(() => HandleAddWorkoutClicked())">New</ProgressButton>
+			<MudMenu Label="Sort" StartIcon="@Icons.Material.Filled.Sort" Class="ms-2">
+				<MudMenuItem OnClick="@(() => HandleSortByClicked(0, nameof(WorkoutListModel.DateStartedUtc), nameof(WorkoutListModel.DateCompletedUtc)))"
+							 OnTouch="@(() => HandleSortByClicked(0, nameof(WorkoutListModel.DateStartedUtc), nameof(WorkoutListModel.DateCompletedUtc)))">Workout Date (Asc)</MudMenuItem>
+				<MudMenuItem OnClick="@(() => HandleSortByClicked(1, nameof(WorkoutListModel.DateStartedUtc), nameof(WorkoutListModel.DateCompletedUtc)))"
+							 OnTouch="@(() => HandleSortByClicked(1, nameof(WorkoutListModel.DateStartedUtc), nameof(WorkoutListModel.DateCompletedUtc)))">Workout Date (Desc)</MudMenuItem>
+			</MudMenu>
+		</MudToolBar>
+	}
+	<ListView Class="mb-6" Items="@SearchResults.Data" PageSize="@SearchResults.PageSize" Page="@SearchModel.Page" TotalItems="@SearchResults.Total" IsLoading="@IsLoading"
+			  PageSelected="@HandlePageSelected">
+		<ItemRenderer>
+			<MudGrid Spacing="2" Class="align-center my-2">
+				<MudItem xs="12" md="7" lg="8">
+					<div class="d-flex flex-row gap-4 align-center">
+						<div>
+							<MudIcon Icon="@GetStatusIcon(context.Item)" Color="@GetStatusColor(context.Item)" />
+						</div>
+						<div>
+							@if (context.Item.DateStartedUtc.HasValue)
+							{
+								<MudText Typo="Typo.caption">
+									@context.Item.DateStartedUtc.Value.ToLocalTime().ToString("d")
+								</MudText>
+							}
+							<MudLink Typo="Typo.subtitle1" Href="@($"/workouts/{context.Item.Sid}")">@context.Item.Title</MudLink>
+						</div>
+					</div>
+				</MudItem>
+				<MudItem xs="12" md="5" lg="4">
+					<MudGrid Spacing="2">
+						<MudItem xs="3">
+							<MudText Typo="Typo.caption" Color="Color.Tertiary" Align="Align.Center">Exercises</MudText>
+							<MudText Typo="Typo.body1" Align="Align.Center">@context.Item.ExerciseCount</MudText>
+						</MudItem>
+						<MudItem xs="3">
+							<MudText Typo="Typo.caption" Color="Color.Tertiary" Align="Align.Center">Reps</MudText>
+							<MudText Typo="Typo.body1" Align="Align.Center">@context.Item.RepCount</MudText>
+						</MudItem>
+						<MudItem xs="3">
+							<MudText Typo="Typo.caption" Color="Color.Tertiary" Align="Align.Center">Volume</MudText>
+							<MudText Typo="Typo.body1" Align="Align.Center">
+								<WeightLabel WeightKg="@context.Item.VolumeKg" WeightLb="@context.Item.VolumeLb" UnitSystem="@State.ActiveMember.Settings.DefaultUnits" />
+							</MudText>
+						</MudItem>
+						<MudItem xs="3">
+							<MudText Typo="Typo.caption" Color="Color.Tertiary" Align="Align.Center">Time</MudText>
+							<MudText Typo="Typo.body1" Align="Align.Center">@context.Item.TotalTime.ToString(@"hh\:mm")</MudText>
+						</MudItem>
+					</MudGrid>
+				</MudItem>
+			</MudGrid>
+		</ItemRenderer>
+		<EmptyListRenderer>
+			<MudText Align="Align.Center" Class="mt-4">No workouts matched your search.</MudText>
+		</EmptyListRenderer>
+	</ListView>
+</div>

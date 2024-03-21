@@ -1,0 +1,97 @@
+﻿@inherits SectionResultsBase
+
+<div class="mb-12">
+	<SectionHeader Title="History" Typo="Typo.h5" Class="mb-4" />
+	<SearchForm @bind-Model="@SearchModel" Class="mb-6" SearchClicked="@(() => DoSearch(1))" ResetClicked="@HandleResetClicked" Disable="@IsLoading">
+		<SearchFields>
+			<MudGrid Spacing="1">
+				<MudItem xs="12" sm="4">
+					<MudDateRangePicker Label="Date Range" Variant="Variant.Outlined" Margin="Margin.Dense" DateRange="@DateRangeSearch" DateRangeChanged="@HandleDateRangeChanged" Clearable="true" />
+				</MudItem>
+				@if (SearchModel.SetMetricType.HasReps())
+				{
+					<MudItem xs="12" sm="4">
+						<WorkoutSetTypeSelect Margin="Margin.Dense" @bind-Value="@SearchModel.SetType" Disabled="@DisableControls" />
+					</MudItem>
+					<MudItem xs="12" sm="4">
+						<MudNumericField T="int?" Label="Target Reps" FullWidth="true" Variant="Variant.Outlined" Immediate="true"
+										 Margin="Margin.Dense" Disabled="@DisableControls" Min="0" Clearable="true" Step="1"
+										 @bind-Value="@SearchModel.RepsTarget" />
+					</MudItem>
+				}
+				else
+				{
+					<MudItem xs="12" sm="8">
+						<SecondsTimePicker Variant="Variant.Outlined" OpenTo="SecondsTimePicker.OpenToView.Minutes" Margin="Margin.Dense" Color="Color.Secondary"
+										   Disabled="@DisableControls" @bind-Time="SearchModel.TimeSeconds" Label="Target Time" Clearable="true" />
+					</MudItem>
+				}
+			</MudGrid>
+		</SearchFields>
+	</SearchForm>
+	<GroupedList Class="mb-6" Groups="@Groups" Items="@SearchResults.Data" IsLoading="@IsLoading" ShowSingleGroupTitle="true"
+				 PageSize="@SearchResults.PageSize" Page="@SearchModel.Page" TotalItems="@SearchResults.Total" PageSelected="@HandlePageSelected">
+		<GroupRenderer>
+			<MudText Typo="Typo.body1" Class="mt-4">@context.Title</MudText>
+		</GroupRenderer>
+		<ItemRenderer>
+			<MudGrid Spacing="1" Class="align-center">
+				<MudItem xs="4" sm="5" md="6">
+					<MudText Typo="Typo.caption" Class="d-block" Color="@context.Item.SetType.DisplayColor()">@($"{context.Item.SetType.Title()} Set")</MudText>
+					<MudText Typo="Typo.caption" Class="d-block">@context.Item.RepMode.Label(context.Item.RepsTarget)</MudText>
+				</MudItem>
+				<MudItem xs="8" sm="7" md="6">
+					@if (context.Item.SetMetricType.HasReps())
+					{
+						<MudGrid Spacing="1">
+							<MudItem xs="6">
+								<MudText Typo="Typo.caption" Color="Color.Tertiary" Class="d-block" Align="Align.Center">Weight x Reps</MudText>
+								<MudText Align="Align.Center">
+									<WeightRepsLabel IsTrackingSplit="@context.Item.IsTrackingSplit" SplitOrder="State.ActiveMember.Settings.DisplaySplitTracking"
+													 IsRepsOnly="@(context.Item.SetMetricType == SetMetricTypes.RepsOnly)" Reps="@context.Item.Reps"
+													 RepsLeft="@context.Item.RepsLeft" RepsRight="@context.Item.RepsRight" WeightKg="@context.Item.WeightKg"
+													 WeightLb="@context.Item.WeightLb" UnitSystem="@State.ActiveMember.Settings.DefaultUnits" />
+								</MudText>
+							</MudItem>
+							<MudItem xs="6">
+								<MudText Typo="Typo.caption" Color="Color.Tertiary" Class="d-block" Align="Align.End">Volume</MudText>
+								<MudText Align="Align.End">
+									<WeightLabel WeightKg="@context.Item.VolumeKg" WeightLb="@context.Item.VolumeLb" UnitSystem="@State.ActiveMember.Settings.DefaultUnits" />
+								</MudText>
+							</MudItem>
+						</MudGrid>
+					}
+					else if (context.Item.SetMetricType == SetMetricTypes.WeightTime)
+					{
+						<MudGrid Spacing="1">
+							<MudItem xs="6">
+								<MudText Typo="Typo.caption" Color="Color.Tertiary" Class="d-block" Align="Align.Center">Weight</MudText>								
+								<MudText Align="Align.Center">
+									<WeightLabel WeightKg="@context.Item.WeightKg" WeightLb="@context.Item.WeightLb" UnitSystem="@State.ActiveMember.Settings.DefaultUnits" />
+								</MudText>
+							</MudItem>
+							<MudItem xs="6">
+								<MudText Typo="Typo.caption" Color="Color.Tertiary" Class="d-block" Align="Align.End">Time</MudText>
+								<MudText Align="Align.End">
+									<TimeLabel DisplaySplitTracking="@State.ActiveMember.Settings.DisplaySplitTracking" IsTrackingSplit="@context.Item.IsTrackingSplit"
+											   Seconds="@context.Item.Seconds" SecondsLeft="@context.Item.SecondsLeft" SecondsRight="@context.Item.SecondsRight" />
+								</MudText>
+							</MudItem>
+						</MudGrid>
+					}
+					else
+					{
+						<MudText Typo="Typo.caption" Color="Color.Tertiary" Class="d-block" Align="Align.End">Time</MudText>
+						<MudText Align="Align.End">
+							<TimeLabel DisplaySplitTracking="@State.ActiveMember.Settings.DisplaySplitTracking" IsTrackingSplit="@context.Item.IsTrackingSplit"
+									   Seconds="@context.Item.Seconds" SecondsLeft="@context.Item.SecondsLeft" SecondsRight="@context.Item.SecondsRight" />
+						</MudText>
+					}
+				</MudItem>
+			</MudGrid>
+		</ItemRenderer>
+		<EmptyListRenderer>
+			<MudText Align="Align.Center" Class="mt-4">No workouts matched your search.</MudText>
+		</EmptyListRenderer>
+	</GroupedList>
+</div>

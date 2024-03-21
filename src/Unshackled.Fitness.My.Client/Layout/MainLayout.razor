@@ -1,0 +1,58 @@
+﻿@using MediatR
+@inherits LayoutComponentBase
+
+@inject Unshackled.Fitness.Core.Configuration.ClientConfiguration config;
+@inject ISnackbar Snackbar;
+@inject IMediator Mediator;
+
+<AuthorizeView>
+	<Authorized>
+		<AppFrame CustomTheme="@CustomTheme" IsLoading="@IsLoading" 
+				  IntializationCompleted="@HandleInitializationCompleted" ThemeSwitched="@HandleThemeSwitched">
+			<AppBarContent>
+				<LogoLayout Layout="LogoLayouts.NoIcon" Href="/" Height="32px" />
+			</AppBarContent>
+			<BodyContent>
+				@Body
+			</BodyContent>
+			<NavTopContent>
+				<NavTopMenu />
+			</NavTopContent>
+			<NavBottomContent>
+				<NavBottomMenu />
+			</NavBottomContent>
+			<LogoContent>
+				<LogoLayout Width="150px" Layout="LogoLayouts.NoText" />
+			</LogoContent>
+		</AppFrame>
+	</Authorized>
+	<NotAuthorized>
+		<div class="app-default">
+			@Body
+		</div>
+	</NotAuthorized>
+</AuthorizeView>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code {
+	AppTheme CustomTheme = new();
+	bool IsLoading = true;
+
+	protected async Task HandleInitializationCompleted()
+	{
+		await Mediator.GetActiveMember();
+		IsLoading = false;
+	}
+
+	protected async Task HandleThemeSwitched(Themes theme)
+	{
+		var result = await Mediator.SetTheme(theme);
+		if (!result.Success)
+			Snackbar.Add(result.Message, Severity.Error);
+	}
+}

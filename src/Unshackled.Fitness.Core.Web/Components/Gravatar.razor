@@ -1,0 +1,41 @@
+﻿<MudAvatar Size="@Size">
+	@if (UseGravatar)
+	{
+		<MudImage Src="@($"https://gravatar.com/avatar/{Parameters()}")" />
+	}
+	else
+	{
+		<MudImage Src="@($"/icon_x72.png")" />
+	}
+</MudAvatar>
+
+@code {
+	[Parameter]
+	public bool UseGravatar { get; set; }
+
+	[Parameter] 
+	public string Hash { get; set; } = string.Empty;
+
+	[Parameter]
+	public Size Size { get; set; } = Size.Medium;
+
+	private int sizePixels => Size switch
+	{
+		Size.Small => 24,
+		Size.Medium => 40,
+		Size.Large => 56,
+		_ => 0
+	};
+
+	private string Parameters()
+	{
+		string output = $"{Hash}?d=mp";
+
+		if (sizePixels > 0)
+		{
+			output += $"&s={sizePixels}";
+		}
+
+		return output;
+	}
+}
