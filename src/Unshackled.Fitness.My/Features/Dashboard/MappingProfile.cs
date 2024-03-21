@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Unshackled.Fitness.My.Client.Features.Dashboard.Models;
 using Unshackled.Fitness.Core.Data.Entities;
+using Unshackled.Fitness.My.Client.Features.Dashboard.Models;
 
 namespace Unshackled.Fitness.My.Features.Dashboard;
 
