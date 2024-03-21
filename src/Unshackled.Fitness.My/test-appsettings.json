@@ -33,8 +33,6 @@
 		"Host": "smtp.host.domain",
 		"Port": 587,
 		"UseSSL": true,
-		"DefaultReplyTo": "email@domain.com",
-		"Username": "",
-		"Password": ""
+		"DefaultReplyTo": "email@domain.com"
 	}
 }
