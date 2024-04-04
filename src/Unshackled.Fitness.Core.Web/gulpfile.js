@@ -1,8 +1,9 @@
-var gulp = require('gulp')
+var postcss = require('gulp-postcss');
+var gulp = require('gulp');
 var sass = require('gulp-sass')(require('node-sass'));
-var autoprefixer = require('gulp-autoprefixer')
-var minCss = require('gulp-minify-css')
-var rename = require('gulp-rename')
+var autoprefixer = require('autoprefixer');
+var cssnano = require('cssnano');
+const rename = require('gulp-rename');
 
 var config = {
     srcWatch: 'Styles/**/*.scss',
@@ -10,18 +11,21 @@ var config = {
     destCss: 'wwwroot/css'
 }
 
+var plugins = [
+	autoprefixer(),
+	cssnano(),
+];
+
 gulp.task('sass', function (cb) {
     gulp.src(config.srcScss)
 
         // output non-minified CSS file
         .pipe(sass({
             outputStyle: 'expanded'
-        }).on('error', sass.logError))
-        .pipe(autoprefixer())
-        .pipe(gulp.dest(config.destCss))
-
-        // output the minified version
-        .pipe(minCss())
+		}).on('error', sass.logError))
+		.pipe(postcss([autoprefixer()]))
+		.pipe(gulp.dest(config.destCss))
+		.pipe(postcss([cssnano()]))
         .pipe(rename({ extname: '.min.css' }))
         .pipe(gulp.dest(config.destCss))
 
