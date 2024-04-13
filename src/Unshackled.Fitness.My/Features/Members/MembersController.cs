@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
-using Unshackled.Fitness.Core;
 using Unshackled.Fitness.Core.Enums;
+using Unshackled.Fitness.Core.Models;
 using Unshackled.Fitness.My.Client.Features.Members.Models;
 using Unshackled.Fitness.My.Extensions;
 using Unshackled.Fitness.My.Features.Members.Actions;

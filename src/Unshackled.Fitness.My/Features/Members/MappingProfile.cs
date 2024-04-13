@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Unshackled.Fitness.Core;
 using Unshackled.Fitness.Core.Data.Entities;
+using Unshackled.Fitness.Core.Models;
 using Unshackled.Fitness.My.Extensions;
 
 namespace Unshackled.Fitness.My.Features.Members;

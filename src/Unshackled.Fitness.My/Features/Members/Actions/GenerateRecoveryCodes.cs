@@ -2,9 +2,9 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Unshackled.Fitness.Core;
 using Unshackled.Fitness.Core.Data;
 using Unshackled.Fitness.Core.Data.Entities;
+using Unshackled.Fitness.Core.Models;
 using Unshackled.Fitness.My.Client.Features.Members.Models;
 
 namespace Unshackled.Fitness.My.Features.Members.Actions;

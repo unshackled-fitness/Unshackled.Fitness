@@ -8,9 +8,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Unshackled.Fitness.Core.Data\Unshackled.Fitness.Core.Data.csproj" />
-		<ProjectReference Include="..\Unshackled.Fitness.Core.Web\Unshackled.Fitness.Core.Web.csproj" />
 		<ProjectReference Include="..\Unshackled.Fitness.Core\Unshackled.Fitness.Core.csproj" />
+		<ProjectReference Include="..\Unshackled.Fitness.Core.Data\Unshackled.Fitness.Core.Data.csproj" />
 		<ProjectReference Include="..\Unshackled.Fitness.My.Client\Unshackled.Fitness.My.Client.csproj" />
 		<PackageReference Include="AutoMapper" Version="13.0.1" />
 		<PackageReference Include="Azure.Storage.Queues" Version="12.17.1" />

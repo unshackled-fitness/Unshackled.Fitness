@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Unshackled.Fitness.Core.Web.Components;
+using Unshackled.Fitness.Core.Components;
 using Unshackled.Fitness.My.Client.Features.Programs.Actions;
 using Unshackled.Fitness.My.Client.Features.Programs.Models;
 

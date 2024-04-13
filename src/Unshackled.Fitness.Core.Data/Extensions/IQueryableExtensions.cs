@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using Unshackled.Fitness.Core;
+using Unshackled.Fitness.Core.Models;
 
 namespace Unshackled.Fitness.Core.Data.Extensions;
 

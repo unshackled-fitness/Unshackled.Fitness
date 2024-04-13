@@ -22,7 +22,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Unshackled.Fitness.Core.Web\Unshackled.Fitness.Core.Web.csproj" />
 	  <ProjectReference Include="..\Unshackled.Fitness.Core\Unshackled.Fitness.Core.csproj" />
 	</ItemGroup>
 

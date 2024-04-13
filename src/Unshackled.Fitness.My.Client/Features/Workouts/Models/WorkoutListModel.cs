@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using Unshackled.Fitness.Core;
+using Unshackled.Fitness.Core.Models;
 using Unshackled.Fitness.Core.Utils;
 
 namespace Unshackled.Fitness.My.Client.Features.Workouts.Models;

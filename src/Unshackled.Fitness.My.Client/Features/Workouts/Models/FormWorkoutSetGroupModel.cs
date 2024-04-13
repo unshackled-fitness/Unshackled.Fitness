@@ -1,4 +1,4 @@
-﻿using Unshackled.Fitness.Core;
+﻿using Unshackled.Fitness.Core.Models;
 
 namespace Unshackled.Fitness.My.Client.Features.Workouts.Models;
 

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Unshackled.Fitness.Core;
 using Unshackled.Fitness.Core.Data;
 using Unshackled.Fitness.Core.Enums;
+using Unshackled.Fitness.Core.Models.Calendars;
 using Unshackled.Fitness.My.Client.Features.Calendar.Models;
 using Unshackled.Fitness.My.Extensions;
 

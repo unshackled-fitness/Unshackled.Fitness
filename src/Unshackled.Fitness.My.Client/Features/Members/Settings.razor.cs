@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Unshackled.Fitness.Core;
-using Unshackled.Fitness.Core.Web.Components;
+using Unshackled.Fitness.Core.Components;
+using Unshackled.Fitness.Core.Models;
 using Unshackled.Fitness.My.Client.Extensions;
 
 namespace Unshackled.Fitness.My.Client.Features.Members;

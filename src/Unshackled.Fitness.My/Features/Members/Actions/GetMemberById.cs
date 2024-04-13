@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Unshackled.Fitness.Core;
 using Unshackled.Fitness.Core.Data;
+using Unshackled.Fitness.Core.Models;
 
 namespace Unshackled.Fitness.My.Features.Members.Actions;
 

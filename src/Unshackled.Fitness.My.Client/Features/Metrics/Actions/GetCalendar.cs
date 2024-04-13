@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Unshackled.Fitness.Core;
+using Unshackled.Fitness.Core.Models.Calendars;
 
 namespace Unshackled.Fitness.My.Client.Features.Metrics.Actions;
 

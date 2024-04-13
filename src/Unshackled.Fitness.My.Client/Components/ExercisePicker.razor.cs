@@ -3,7 +3,7 @@ using Unshackled.Fitness.Core.Enums;
 using Unshackled.Fitness.My.Client.Features.ExercisePicker.Actions;
 using Unshackled.Fitness.My.Client.Features.ExercisePicker.Models;
 
-namespace Unshackled.Fitness.Core.Web.Components;
+namespace Unshackled.Fitness.Core.Components;
 
 public class ExercisePickerBase : BaseSearchComponent<SearchExerciseModel, ExerciseModel>
 {

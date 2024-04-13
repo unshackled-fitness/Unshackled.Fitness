@@ -1,5 +1,5 @@
 ﻿using MudBlazor;
-using Unshackled.Fitness.Core.Web.Components;
+using Unshackled.Fitness.Core.Components;
 
 namespace Unshackled.Fitness.My.Client.Features.Members;
 

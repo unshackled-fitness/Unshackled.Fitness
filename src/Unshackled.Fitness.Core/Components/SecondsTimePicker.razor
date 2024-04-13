@@ -1,0 +1,93 @@
+﻿﻿@using MudBlazor.Internal
+@namespace Unshackled.Fitness.Core.Components
+@inherits MudPicker<TimeSpan?>
+
+@Render
+
+@code{
+
+    protected override RenderFragment PickerContent=> 
+    @<CascadingValue Value="@this" IsFixed="true">
+        <MudPickerToolbar Class="@ToolbarClass" Style="@Style" DisableToolbar="@DisableToolbar" Orientation="@Orientation" PickerVariant="@PickerVariant" Color="@Color">
+            <div class="mud-timepicker-hourminute mud-ltr">
+                @if (TimeEditMode == TimeEditMode.Normal)
+                {
+                    <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="@HoursButtonClass" OnClick="OnHourClick">@GetHourString()</MudButton>
+                    <MudText Typo="Typo.h2" Class="mud-timepicker-separator">:</MudText>
+                    <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="@MinuteButtonClass" OnClick="OnMinutesClick">@GetMinuteString()</MudButton>
+                    <MudText Typo="Typo.h2" Class="mud-timepicker-separator">:</MudText>
+                    <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="@SecondButtonClass" OnClick="OnSecondsClick">@GetSecondString()</MudButton>
+                }
+                else
+                {
+                    <MudText Typo="Typo.h2" Class="mud-timepicker-separator">@GetHourString():@GetMinuteString():@GetSecondString()</MudText>
+                }
+            </div>
+        </MudPickerToolbar>
+        <MudPickerContent>
+            <div class="mud-picker-time-container">
+                <div class="mud-picker-time-clock">
+                    <div role="menu" tabindex="-1" class="mud-picker-time-clock-mask" @onmousedown="OnMouseDown" @onmouseup="OnMouseUp">
+                        <div class="@GetClockPinColor()"></div>
+                        <div class="@GetClockPointerColor()" style="height: @GetPointerHeight(); transform: @GetPointerRotation()">
+                            <div class="@GetClockPointerThumbColor()"></div>
+                        </div>
+                        <div class="@HourDialClass">                            
+                            @*Hours from 13 to 24 (00)*@
+                            @for(int i = 1; i <= 12; ++i)
+                            {
+                                var h = i;
+                                var angle =  (6 - h) * 30;
+                                <MudText Class="@GetNumberColor((h + 12) % 24)" Style="@GetTransform(angle, 109, 0, 5)">@(((h + 12) % 24).ToString("D2"))</MudText>
+                            }
+                            @*Hours from 1 to 12*@
+                            @for(int i = 1; i <= 12; ++i)
+                            {
+                                var h = i;
+                                var angle =  (6 - h) * 30;
+                                <MudText Class="@GetNumberColor(h)" Typo="Typo.body2" Style="@GetTransform(angle, 74, 0, 40)">@(h.ToString("D2"))</MudText>
+                            }
+                            @for(int i = 1; i <= 12; ++i)
+                            {
+                                var h = i;
+                                <div class="mud-picker-stick" style="@($"transform: rotateZ({h * 30}deg);")">
+                                    <div class="mud-picker-stick-inner mud-hour" @onclick="(() => OnMouseClickHour(h))" @onmouseover="(() => OnMouseOverHour(h))" @onclick:stopPropagation="true"></div>
+                                    <div class="mud-picker-stick-outer mud-hour" @onclick="(() => OnMouseClickHour((h + 12) % 24))" @onmouseover="(() => OnMouseOverHour((h + 12) % 24))" @onclick:stopPropagation="true"></div>
+                                </div>
+                            }
+                        </div>
+                        <div class="@MinuteDialClass">   
+                            @*Minutes from 05 to 60 (00) - step 5*@                     
+                            @for (int i = 0; i < 12; ++i)
+                            {
+                                var m = i;
+                                var angle =  (6 - m) * 30;
+                                <MudText Class="@GetNumberColor(m * 5)" Style="@GetTransform(angle, 109, 0, 5)">@((m * 5).ToString("D2"))</MudText>
+                            }
+                            @for (int i = 0; i < 60; ++i)
+                            {
+                                var m = i;
+                                <div class="mud-picker-stick mud-minute" style="@($"transform: rotateZ({m * 6}deg);")" @onclick="(() => OnMouseClickMinute(m))" @onmouseover="(() => OnMouseOverMinute(m))" @onclick:stopPropagation="true"></div>
+                            }
+                        </div>
+                        <div class="@SecondDialClass">   
+                            @*Minutes from 05 to 60 (00) - step 5*@                     
+                            @for (int i = 0; i < 12; ++i)
+                            {
+                                var s = i;
+                                var angle =  (6 - s) * 30;
+                                <MudText Class="@GetNumberColor(s * 5)" Style="@GetTransform(angle, 109, 0, 5)">@((s * 5).ToString("D2"))</MudText>
+                            }
+                            @for (int i = 0; i < 60; ++i)
+                            {
+                                var s = i;
+                                <div class="mud-picker-stick mud-minute" style="@($"transform: rotateZ({s * 6}deg);")" @onclick="(() => OnMouseClickSecond(s))" @onmouseover="(() => OnMouseOverSecond(s))" @onclick:stopPropagation="true"></div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </MudPickerContent>
+    </CascadingValue>;
+    
+}

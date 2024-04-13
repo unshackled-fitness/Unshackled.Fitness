@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor;
 using MudBlazor.Services;
-using Unshackled.Fitness.Core;
 using Unshackled.Fitness.Core.Configuration;
+using Unshackled.Fitness.Core.Models;
 using Unshackled.Fitness.My.Client;
 using Unshackled.Fitness.My.Client.Services;
 

@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Unshackled.Fitness.Core;
+using Unshackled.Fitness.Core.Models;
 
 namespace Unshackled.Fitness.My.Client.Services;
 // This is a client-side AuthenticationStateProvider that determines the user's authentication state by

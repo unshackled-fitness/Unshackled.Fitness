@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using MudBlazor.Utilities;
-using Unshackled.Fitness.Core;
 using Unshackled.Fitness.Core.Enums;
-using Unshackled.Fitness.Core.Web.Components;
+using Unshackled.Fitness.Core.Components;
 using Unshackled.Fitness.My.Client.Features.Metrics.Actions;
 using Unshackled.Fitness.My.Client.Features.Metrics.Models;
+using Unshackled.Fitness.Core.Models;
 
 namespace Unshackled.Fitness.My.Client.Features.Metrics;
 

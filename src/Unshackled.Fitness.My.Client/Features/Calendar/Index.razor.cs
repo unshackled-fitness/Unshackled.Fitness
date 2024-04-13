@@ -1,12 +1,12 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Unshackled.Fitness.Core;
 using Unshackled.Fitness.Core.Enums;
-using Unshackled.Fitness.Core.Web;
-using Unshackled.Fitness.Core.Web.Components;
+using Unshackled.Fitness.Core.Components;
 using Unshackled.Fitness.My.Client.Features.Calendar.Actions;
 using Unshackled.Fitness.My.Client.Features.Calendar.Models;
+using Unshackled.Fitness.Core.Models;
+using Unshackled.Fitness.Core.Models.Calendars;
 
 namespace Unshackled.Fitness.My.Client.Features.Calendar;
 

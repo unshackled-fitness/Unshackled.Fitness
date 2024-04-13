@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using Unshackled.Fitness.Core;
+using Unshackled.Fitness.Core.Models;
 
 namespace Unshackled.Fitness.My.Services;
 

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
-using Unshackled.Fitness.Core;
 using Unshackled.Fitness.Core.Data;
+using Unshackled.Fitness.Core.Models;
 using Unshackled.Fitness.My.Extensions;
 
 namespace Unshackled.Fitness.My.Features.WorkoutTemplates.Actions;

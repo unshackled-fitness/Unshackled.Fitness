@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Unshackled.Fitness.Core;
 using Unshackled.Fitness.Core.Data;
 using Unshackled.Fitness.Core.Data.Entities;
+using Unshackled.Fitness.Core.Models;
 
 namespace Unshackled.Fitness.My.Extensions;
 

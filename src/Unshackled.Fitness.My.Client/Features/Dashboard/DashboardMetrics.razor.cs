@@ -1,4 +1,4 @@
-using Unshackled.Fitness.Core.Web.Components;
+using Unshackled.Fitness.Core.Components;
 using Unshackled.Fitness.My.Client.Features.Dashboard.Actions;
 using Unshackled.Fitness.My.Client.Features.Dashboard.Models;
 

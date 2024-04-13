@@ -1,8 +1,8 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Unshackled.Fitness.Core;
-using Unshackled.Fitness.Core.Web.Components;
+using Unshackled.Fitness.Core.Components;
+using Unshackled.Fitness.Core.Models.Calendars;
 using Unshackled.Fitness.My.Client.Features.Calendar.Models;
 
 namespace Unshackled.Fitness.My.Client.Features.Calendar;
