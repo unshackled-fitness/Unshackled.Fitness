@@ -1,9 +1,23 @@
 ﻿@inherits SectionPropertiesBase
 
-<SectionComponent IsEditMode="@IsEditMode" IsEditing="@IsEditing">
+<SectionComponent IsEditMode="@IsEditMode" IsEditing="@IsEditing" Class="mb-6">
 
 	<SectionHeader Title="@Workout.Title" IsEditMode="@IsEditMode" IsEditing="@IsEditing" EditingClass="mb-4" DisableControls="@DisableControls"
 					FormId="@FormId" OnCancelClicked="@HandleEditCancelClicked" Breakpoint="Breakpoint.Sm">
+		<TitleContent>
+			@if (IsEditing)
+			{
+				<MudText Typo="Typo.h4">Edit Workout</MudText>
+			}
+			else
+			{
+				@if (Workout.Rating > 0 && !IsEditing)
+				{
+					<MudRating ReadOnly="true" SelectedValue="@Workout.Rating" Size="Size.Small" />
+				}
+				<MudText Typo="Typo.h4">@Workout.Title</MudText>
+			}
+		</TitleContent>
 		<EditModeToolbar>
 			<MudIconButton Icon="@Icons.Material.Filled.Edit" Disabled="@(DisableSectionControls || DisableControls)" Class="me-2"
 						Title="Edit" OnClick="@(() => HandleEditClicked())" />
@@ -18,6 +32,10 @@
 		{
 			<MudText Typo="Typo.body1" Class="mb-4">@Workout.DateStartedUtc.Value.ToLocalTime().ToString("f")</MudText>
 			<WorkoutSummary Workout="@Workout" />
+			@if (!string.IsNullOrEmpty(Workout.Notes))
+			{
+				<CaptionedProperty Title="Notes" Align="Align.Start" Value="@Workout.Notes.ReplaceLineBreaks("<br />")" />
+			}
 		}
 	}
 	else

@@ -15,6 +15,7 @@ public class WorkoutListModel : BaseObject
 	public int RepCount { get; set; }
 	public decimal VolumeKg { get; set; }
 	public decimal VolumeLb { get; set; }
+	public int Rating { get; set; }
 
 	[JsonIgnore]
 	public TimeSpan TotalTime => Calculator.TotalTime(DateStartedUtc, DateCompletedUtc);

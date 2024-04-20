@@ -58,9 +58,9 @@ public class WorkoutsController : BaseController
 
 	[HttpPost("finish")]
 	[ActiveMemberRequired]
-	public async Task<IActionResult> Finish([FromBody] string workoutSid)
+	public async Task<IActionResult> Finish([FromBody] CompleteWorkoutModel model)
 	{
-		return Ok(await Mediator.Send(new CompleteWorkout.Command(Member.Id, workoutSid)));
+		return Ok(await Mediator.Send(new CompleteWorkout.Command(Member.Id, model)));
 	}
 
 	[HttpGet("get/{sid}")]

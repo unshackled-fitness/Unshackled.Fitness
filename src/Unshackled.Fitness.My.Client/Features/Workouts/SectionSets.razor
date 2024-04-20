@@ -520,12 +520,6 @@
 	}
 </div>
 
-@if (ShowCompleteTasks)
-{
-	<SectionTasks Tasks="@Workout.Tasks" TaskType="@WorkoutTaskTypes.PostWorkout" IsEditMode="@IsEditMode" DisableSectionControls="@DisableSectionControls"
-			  WorkoutStatusChanged="@HandleWorkoutCompleted" />
-}
-
 <SideDrawer Open="DrawerOpen" Icon="@DrawerIcon" Title="@DrawerTitle" OpenChanged="@HandleDrawerOpenChange">
 	@if (OpenStats)
 	{

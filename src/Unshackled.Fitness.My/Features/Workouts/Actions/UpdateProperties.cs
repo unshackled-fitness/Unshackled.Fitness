@@ -41,6 +41,8 @@ public class UpdateProperties
 			workout.Title = request.Model.Title.Trim();
 			workout.DateStartedUtc = request.Model.DateStartedUtc;
 			workout.DateCompletedUtc = request.Model.DateCompletedUtc;
+			workout.Rating = request.Model.Rating;
+			workout.Notes = request.Model.Notes;
 			await db.SaveChangesAsync(cancellationToken);
 
 			return new CommandResult(true, "Workout updated.");

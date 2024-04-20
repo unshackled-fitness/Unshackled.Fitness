@@ -12,6 +12,8 @@ public class FormPropertiesModel
 	public bool IsComplete { get; set; }
 	public DateTime? DateStartedUtc { get; set; }
 	public DateTime? DateCompletedUtc { get; set; }
+	public int Rating { get; set; }
+	public string? Notes { get; set; }
 
 	private DateTime? dateStarted;
 	[JsonIgnore]

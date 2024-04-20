@@ -5,6 +5,7 @@ using Unshackled.Fitness.Core.Data;
 using Unshackled.Fitness.Core.Data.Entities;
 using Unshackled.Fitness.Core.Enums;
 using Unshackled.Fitness.Core.Models;
+using Unshackled.Fitness.My.Client.Features.Workouts.Models;
 using Unshackled.Fitness.My.Extensions;
 
 namespace Unshackled.Fitness.My.Features.Workouts.Actions;
@@ -14,12 +15,12 @@ public class CompleteWorkout
 	public class Command : IRequest<CommandResult>
 	{
 		public long MemberId { get; private set; }
-		public string WorkoutSid { get; private set; }
+		public CompleteWorkoutModel Model { get; private set; }
 
-		public Command(long memberId, string workoutSid)
+		public Command(long memberId, CompleteWorkoutModel model)
 		{
 			MemberId = memberId;
-			WorkoutSid = workoutSid;
+			Model = model;
 		}
 	}
 
@@ -29,10 +30,10 @@ public class CompleteWorkout
 
 		public async Task<CommandResult> Handle(Command request, CancellationToken cancellationToken)
 		{
-			if (string.IsNullOrEmpty(request.WorkoutSid))
+			if (string.IsNullOrEmpty(request.Model.WorkoutSid))
 				return new CommandResult(false, "Invalid workout ID.");
 
-			long workoutId = request.WorkoutSid.DecodeLong();
+			long workoutId = request.Model.WorkoutSid.DecodeLong();
 
 			if(workoutId == 0)
 				return new CommandResult(false, "Invalid workout ID.");
@@ -54,6 +55,8 @@ public class CompleteWorkout
 					.UpdateFromQueryAsync(x => new WorkoutTaskEntity { Completed = true });
 
 				workout.DateCompletedUtc = DateTime.UtcNow;
+				workout.Rating = request.Model.Rating;
+				workout.Notes = request.Model.Notes;
 				await db.SaveChangesAsync(cancellationToken);
 
 				// Calculate best sets and PR's

@@ -15,6 +15,8 @@ public class FormWorkoutModel : BaseMemberObject
 	public int RecordTargetWeightCount { get; set; }
 	public int RecordVolumeCount { get; set; }
 	public int RecordWeightCount { get; set; }
+	public int Rating { get; set; }
+	public string? Notes { get; set; }
 
 	[JsonIgnore]
 	public TimeSpan TotalWorkoutTime => Calculator.TotalTime(DateStartedUtc, DateCompletedUtc);
