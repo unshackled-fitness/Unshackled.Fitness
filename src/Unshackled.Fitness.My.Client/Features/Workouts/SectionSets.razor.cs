@@ -14,8 +14,8 @@ public class SectionSetsBase : BaseSectionComponent
 {
 	[Inject] protected IDialogService DialogService { get; set; } = default!;
 	[Parameter] public FormWorkoutModel Workout { get; set; } = new();
-	[Parameter] public EventCallback<FormWorkoutModel> WorkoutChanged { get; set; }
-	[Parameter] public EventCallback SetSaved { get; set; }
+	[Parameter] public EventCallback OnSetSaved { get; set; }
+	[Parameter] public EventCallback<bool> OnHasUnrecordedSetsChanged { get; set; }
 
 	protected int ActiveSetIdx { get; set; }
 
@@ -52,8 +52,6 @@ public class SectionSetsBase : BaseSectionComponent
 
 	protected bool OpenStats { get; set; } = false;
 
-	protected bool ShowCompleteTasks => IsWorkoutStarted && !IsWorkoutComplete && !Workout.Sets.Where(x => x.DateRecordedUtc == null).Any();
-
 	protected WeightUnits TotalWeightUnit => Workout.Sets.Any() ? Workout.Sets[0].WeightUnit : WeightUnits.kg;
 
 	protected string SplitTrackingCss => new CssBuilder("d-flex flex-wrap")
@@ -61,6 +59,8 @@ public class SectionSetsBase : BaseSectionComponent
 			? "flex-column flex-sm-row"
 			: "flex-column-reverse flex-sm-row-reverse justify-end")
 		.Build();
+
+	private bool hasUnrecordedSets = false;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -77,6 +77,8 @@ public class SectionSetsBase : BaseSectionComponent
 				Workout.Sets[ActiveSetIdx].IsExpanded = !IsWorkoutComplete;
 				await SetInitialValuesForActiveSet();
 			}
+
+			hasUnrecordedSets = Workout.Sets.Where(x => x.DateRecordedUtc == null).Any();
 		}
 	}
 
@@ -178,6 +180,7 @@ public class SectionSetsBase : BaseSectionComponent
 				Workout.Sets[i].SortOrder = i;
 			}
 			await GetNextActiveIdx();
+			await SetHasUnrecordedSets();
 		}
 		else
 		{
@@ -200,8 +203,6 @@ public class SectionSetsBase : BaseSectionComponent
 			IsWorking = true;
 			var group = Workout.Groups.LastOrDefault();
 			if (group != null) {
-				Console.WriteLine($"Group Title: {group.Title}");
-				Console.WriteLine($"Group SID: {group.Sid}");
 				var set = new FormWorkoutSetModel()
 				{
 					Equipment = pickerResult.Equipment,
@@ -227,6 +228,7 @@ public class SectionSetsBase : BaseSectionComponent
 						.ToList();
 
 					await GetNextActiveIdx();
+					await SetHasUnrecordedSets();
 				}
 				else
 				{
@@ -285,6 +287,7 @@ public class SectionSetsBase : BaseSectionComponent
 					// Get new active index
 					await GetNextActiveIdx();
 				}
+				await SetHasUnrecordedSets();
 			}
 			else
 			{
@@ -325,6 +328,7 @@ public class SectionSetsBase : BaseSectionComponent
 					// Get new active index
 					await GetNextActiveIdx();
 				}
+				await SetHasUnrecordedSets();
 			}
 			else
 			{
@@ -420,7 +424,8 @@ public class SectionSetsBase : BaseSectionComponent
 					Workout.Sets[ActiveSetIdx].IsExpanded = true;
 			}
 
-			await SetSaved.InvokeAsync();
+			await OnSetSaved.InvokeAsync();
+			await SetHasUnrecordedSets();			
 		}
 		else
 		{
@@ -462,13 +467,6 @@ public class SectionSetsBase : BaseSectionComponent
 		IsWorking = false;
 		StateHasChanged();
 		ShowNotification(result);
-	}
-
-	protected async Task HandleWorkoutCompleted()
-	{
-		IsWorking = true;
-		await WorkoutChanged.InvokeAsync(Workout);
-		IsWorking = false;
 	}
 
 	protected bool HasPR(FormWorkoutSetModel set)
@@ -558,6 +556,16 @@ public class SectionSetsBase : BaseSectionComponent
 					Workout.Sets[ActiveSetIdx].Weight = TotalWeightUnit == WeightUnits.kg ? completedSet.WeightKg : completedSet.WeightLb;
 				}
 			}
+		}
+	}
+
+	private async Task SetHasUnrecordedSets()
+	{
+		var unrecorded = Workout.Sets.Where(x => x.DateRecordedUtc == null).Any();
+		if (unrecorded != hasUnrecordedSets)
+		{
+			hasUnrecordedSets = unrecorded;
+			await OnHasUnrecordedSetsChanged.InvokeAsync(hasUnrecordedSets);
 		}
 	}
 }

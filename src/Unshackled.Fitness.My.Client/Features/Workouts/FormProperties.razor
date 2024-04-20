@@ -28,6 +28,17 @@
 				<MudTimePicker Label="Completion Time" AmPm="true" Variant="Variant.Outlined" TimeFormat="h:mm tt" Disabled="@DisableControls" Color="Color.Secondary"
 							   @bind-Time="@Model.TimeCompleted" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.TopRight" />
 			</MudItem>
+			<MudItem xs="12">
+				<div class="d-flex flex-row gap-2 align-center my-2">
+					<MudText Typo="Typo.body2">Rating</MudText>
+					<div>
+						<MudRating @bind-SelectedValue="@Model.Rating" />
+					</div>
+				</div>
+			</MudItem>
+			<MudItem xs="12">
+				<MudTextField Variant="Variant.Outlined" Label="Workout Notes (optional)" Lines="6" FullWidth="true" @bind-Value="@Model.Notes" />
+			</MudItem>
 		}
 	</MudGrid>
 </EditForm>

@@ -45,6 +45,8 @@ public class SectionPropertiesBase : BaseSectionComponent
 			DateStartedUtc = Workout.DateStartedUtc,
 			IsComplete = Workout.DateCompletedUtc.HasValue,
 			IsStarted = Workout.DateStartedUtc.HasValue,
+			Notes = Workout.Notes,
+			Rating = Workout.Rating,
 			Title = Workout.Title,
 			Sid = Workout.Sid
 		};
@@ -68,6 +70,8 @@ public class SectionPropertiesBase : BaseSectionComponent
 			Workout.Title = model.Title;
 			Workout.DateStartedUtc = model.DateStartedUtc;
 			Workout.DateCompletedUtc = model.DateCompletedUtc;
+			Workout.Rating = model.Rating;
+			Workout.Notes = model.Notes;
 			if (WorkoutChanged.HasDelegate)
 				await WorkoutChanged.InvokeAsync(Workout);
 		}

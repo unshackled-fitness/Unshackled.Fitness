@@ -21,6 +21,8 @@ public class WorkoutEntity : BaseMemberEntity
 	public int RecordTargetWeightCount { get; set; }
 	public int RecordVolumeCount { get; set; }
 	public int RecordWeightCount { get; set; }
+	public int? Rating { get; set; }
+	public string? Notes { get; set; }
 
 	public List<WorkoutSetGroupEntity> Groups { get; set; } = new();
 	public List<WorkoutSetEntity> Sets { get; set; } = new();

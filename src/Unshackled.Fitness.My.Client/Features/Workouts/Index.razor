@@ -49,9 +49,15 @@
 						<div>
 							@if (context.Item.DateStartedUtc.HasValue)
 							{
-								<MudText Typo="Typo.caption">
-									@context.Item.DateStartedUtc.Value.ToLocalTime().ToString("d")
-								</MudText>
+								<div class="d-flex flex-row gap-4 align-center">
+									<MudText Typo="Typo.caption">
+										@context.Item.DateStartedUtc.Value.ToLocalTime().ToString("d")
+									</MudText>
+									@if (context.Item.Rating > 0)
+									{
+										<div><MudRating ReadOnly="true" Size="Size.Small" SelectedValue="@context.Item.Rating" /></div>
+									}
+								</div>
 							}
 							<MudLink Typo="Typo.subtitle1" Href="@($"/workouts/{context.Item.Sid}")">@context.Item.Title</MudLink>
 						</div>
