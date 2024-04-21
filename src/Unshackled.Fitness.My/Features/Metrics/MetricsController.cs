@@ -24,9 +24,9 @@ public class MetricsController : BaseController
 
 	[HttpPost("get-calendar/{sid}")]
 	[DecodeId]
-	public async Task<IActionResult> GetCalendar(long id, [FromBody] DateOnly toDate)
+	public async Task<IActionResult> GetCalendar(long id, [FromBody] SearchCalendarModel model)
 	{
-		return Ok(await Mediator.Send(new GetCalendar.Query(Member.Id, id, toDate)));
+		return Ok(await Mediator.Send(new GetCalendar.Query(Member.Id, id, model)));
 	}
 
 	[HttpGet("list")]

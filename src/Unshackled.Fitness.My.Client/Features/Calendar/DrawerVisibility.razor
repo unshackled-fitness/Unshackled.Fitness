@@ -1,31 +1,31 @@
 ﻿@inherits DrawerStatsBase
 
-<MudText Typo="Typo.subtitle1" Color="Color.Tertiary" Class="mb-2">Presets</MudText>
-<MudPaper Class="mb-4 py-2 px-0">
-	<ListView Items="@Presets" UseDividers="false">
-		<ItemRenderer>
-			<div class="d-flex flex-row gap-2 align-center">
-				<div>
-					<MudIconButton Icon="@Icons.Material.Filled.PlayCircleFilled" Color="Color.Primary" Title="Apply Preset" Disabled="@IsSaving" 
-								   OnClick="@(() => HandleApplyPresetClicked(context.Item))" />
-				</div>
-				<MudText Class="flex-grow-1">@context.Item.Title</MudText>
-				@if (IsMemberActive)
-				{
+@if (Presets.Any())
+{
+	<MudText Typo="Typo.subtitle1" Color="Color.Tertiary" Class="mb-2">Presets</MudText>
+	<div class="mb-4 py-2 px-0">
+		<ListView Items="@Presets" UseDividers="false">
+			<ItemRenderer>
+				<div class="d-flex flex-row gap-2 align-center">
 					<div>
-						<MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.TopRight" Disabled="@IsSaving">
-							<MudMenuItem OnClick="@(() => HandleUpdatePresetClicked(context.Item))" OnTouch="@(() => HandleUpdatePresetClicked(context.Item))">Update with current</MudMenuItem>
-							<MudMenuItem OnClick="@(() => HandleDeletePresetClicked(context.Item))" OnTouch="@(() => HandleDeletePresetClicked(context.Item))">Delete</MudMenuItem>
-						</MudMenu>
+						<MudIconButton Icon="@Icons.Material.Filled.PlayCircleFilled" Color="Color.Primary" Title="Apply Preset" Disabled="@IsSaving" 
+									   OnClick="@(() => HandleApplyPresetClicked(context.Item))" />
 					</div>
-				}
-			</div>
-		</ItemRenderer>
-		<EmptyListRenderer>
-			<MudText Align="Align.Center" Color="Color.Tertiary">You don't have any presets.</MudText>
-		</EmptyListRenderer>
+					<MudText Class="flex-grow-1">@context.Item.Title</MudText>
+					@if (IsMemberActive)
+					{
+						<div>
+							<MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.TopRight" Disabled="@IsSaving">
+								<MudMenuItem OnClick="@(() => HandleUpdatePresetClicked(context.Item))" OnTouch="@(() => HandleUpdatePresetClicked(context.Item))">Update with current</MudMenuItem>
+								<MudMenuItem OnClick="@(() => HandleDeletePresetClicked(context.Item))" OnTouch="@(() => HandleDeletePresetClicked(context.Item))">Delete</MudMenuItem>
+							</MudMenu>
+						</div>
+					}
+				</div>
+			</ItemRenderer>
 		</ListView>
-</MudPaper>
+	</div>
+}
 
 
 <MudText Typo="Typo.subtitle1" Color="Color.Tertiary">Current Filters</MudText>

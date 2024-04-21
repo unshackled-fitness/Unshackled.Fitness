@@ -13,7 +13,6 @@ window.setupChart = (id, config) => {
 window.loadData = (id, datasets, formatTime) => {
 	if (typeof charts[id] !== 'undefined') {
 		charts[id].data.datasets = datasets;
-		charts[id].options.scales.y.min = 0;
 
 		if (formatTime) {
 			charts[id].options.scales.y.ticks.stepSize = 60;

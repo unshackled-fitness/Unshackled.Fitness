@@ -1,4 +1,8 @@
-﻿namespace Unshackled.Fitness.Core.Utils;
+﻿using System.Reflection;
+using MudBlazor;
+using Unshackled.Fitness.Core.Models;
+
+namespace Unshackled.Fitness.Core.Utils;
 
 public static class Calculator
 {
@@ -32,6 +36,25 @@ public static class Calculator
 			return "#000000";
 		else
 			return "#ffffff";
+	}
+
+	public static DateOnlyRange DateRange(DateTime? endDate, int previousMonths, DateTime defaultDate)
+	{
+		int toYear = endDate.HasValue ? endDate.Value.Year : defaultDate.Year;
+		int toMonth = endDate.HasValue ? endDate.Value.Month : defaultDate.Month;
+		int fromYear = toYear;
+		int fromMonth = toMonth - previousMonths;
+
+		if (fromMonth <= 0)
+		{
+			fromMonth = fromMonth + 12;
+			fromYear--;
+		}
+
+		return new DateOnlyRange(
+			new DateOnly(fromYear, fromMonth, 1), 
+			new DateOnly(toYear, toMonth + 1, 1).AddDays(-1)
+		);
 	}
 
 	public static int Pages(int pageSize, int total)

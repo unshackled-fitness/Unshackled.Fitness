@@ -8,6 +8,7 @@ public class CalendarBlockModel
 	public string? Color { get; set; }
 	public string? Title { get; set; }
 	public bool IsCentered { get; set; }
+	public decimal Value { get; set; }
 
 	[JsonIgnore]
 	public bool IsVisible { get; set; } = true;

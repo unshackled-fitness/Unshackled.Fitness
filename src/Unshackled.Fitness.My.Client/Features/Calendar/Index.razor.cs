@@ -7,6 +7,7 @@ using Unshackled.Fitness.My.Client.Features.Calendar.Actions;
 using Unshackled.Fitness.My.Client.Features.Calendar.Models;
 using Unshackled.Fitness.Core.Models;
 using Unshackled.Fitness.Core.Models.Calendars;
+using Unshackled.Fitness.Core.Utils;
 
 namespace Unshackled.Fitness.My.Client.Features.Calendar;
 
@@ -30,7 +31,7 @@ public class IndexBase : BaseComponent, IAsyncDisposable
 	protected bool SystemIsDark { get; set; } = false;
 
 	private string visibilityKey = "MetricVisibility";
-	private string searchKey = "SearchMetrics";
+	private string searchKey = "SearchCalendar";
 	private DateTime defaultDate = new DateTime(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, 1);
 
 	protected override async Task OnInitializedAsync()
@@ -159,8 +160,12 @@ public class IndexBase : BaseComponent, IAsyncDisposable
 
 	protected async Task HandleSearchClicked()
 	{
-		SearchModel.ToDate = FormModel.EndDate.HasValue ? DateOnly.FromDateTime(FormModel.EndDate.Value.AddMonths(1).AddDays(-1)) : DateOnly.FromDateTime(defaultDate);
-		SearchModel.FromDate = SearchModel.ToDate.AddMonths(-(FormModel.NumberOfMonths + 1)).AddDays(1);
+		var range = Calculator.DateRange(FormModel.EndDate, FormModel.NumberOfMonths, defaultDate);
+		SearchModel = new()
+		{
+			FromDate = range.Start,
+			ToDate = range.End
+		};
 		await localStorageService.SetItemAsync(searchKey, FormModel, CancellationToken.None);
 		await GetCalendar();
 	}
@@ -193,14 +198,15 @@ public class IndexBase : BaseComponent, IAsyncDisposable
 			EndDate = new DateTime(DateTimeOffset.Now.Date.Year, DateTimeOffset.Now.Date.Month, 1),
 			NumberOfMonths = 0
 		};
-		
+
 		FormModel = reset ? defaultModel : await localStorageService.GetItemAsync<FormSearchModel>(searchKey) ?? defaultModel;
 
+		var range = Calculator.DateRange(FormModel.EndDate, FormModel.NumberOfMonths, defaultDate);
 		SearchModel = new()
 		{
-			ToDate = FormModel.EndDate.HasValue ? DateOnly.FromDateTime(FormModel.EndDate.Value.AddMonths(1).AddDays(-1)) : DateOnly.FromDateTime(defaultDate)
+			FromDate = range.Start,
+			ToDate = range.End
 		};
-		SearchModel.FromDate = SearchModel.ToDate.AddMonths(-(FormModel.NumberOfMonths + 1)).AddDays(1);
 	}
 
 	private async Task SetFilterVisibility(List<CalendarBlockFilterModel> filters)

@@ -120,13 +120,14 @@ public class GetCalendar
 					{
 						Color = blocks[blockIdx].Color,
 						FilterId = blocks[blockIdx].MetricDefinitionId.Encode(),
-						IsCentered = true
+						IsCentered = true,
+						Value = blocks[blockIdx].RecordedValue
 					};
 
 					switch (blocks[blockIdx].MetricType)
 					{
 						case MetricTypes.ExactValue:
-							block.Title = blocks[blockIdx].RecordedValue.ToString("#");
+							block.Title = blocks[blockIdx].RecordedValue.ToString("#.#");
 							break;
 						case MetricTypes.Toggle:
 							break;

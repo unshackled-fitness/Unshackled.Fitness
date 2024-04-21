@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Unshackled.Fitness.Core.Data;
 using Unshackled.Fitness.Core.Enums;
 using Unshackled.Fitness.Core.Models.Calendars;
+using Unshackled.Fitness.My.Client.Features.Metrics.Models;
 
 namespace Unshackled.Fitness.My.Features.Metrics.Actions;
 
@@ -13,13 +14,13 @@ public class GetCalendar
 	{
 		public long MemberId { get; private set; }
 		public long Id { get; private set; }
-		public DateOnly ToDate { get; private set; }
+		public SearchCalendarModel Model { get; private set; }
 
-		public Query(long memberId, long id, DateOnly toDate)
+		public Query(long memberId, long id, SearchCalendarModel model)
 		{
 			MemberId = memberId;
 			Id = id;
-			ToDate = toDate;
+			Model = model;
 		}
 	}
 
@@ -29,13 +30,13 @@ public class GetCalendar
 
 		public async Task<CalendarModel> Handle(Query request, CancellationToken cancellationToken)
 		{
-			DateOnly toDate = request.ToDate;
-			DateOnly fromDate = toDate.AddYears(-1).AddDays(1);
+			DateOnly fromDate = request.Model.FromDate;
+			DateOnly toDate = request.Model.ToDate;
 
 			CalendarModel model = new()
 			{
-				ToDate = toDate,
-				FromDate = fromDate
+				FromDate = fromDate,
+				ToDate = toDate
 			};
 
 			model.YearsAvailable = await db.Metrics
@@ -80,13 +81,14 @@ public class GetCalendar
 					CalendarBlockModel block = new()
 					{
 						Color = blocks[blockIdx].Color,
-						IsCentered = true
+						IsCentered = true,
+						Value = blocks[blockIdx].RecordedValue
 					};
 
 					switch (blocks[blockIdx].MetricType)
 					{
 						case MetricTypes.ExactValue:
-							block.Title = blocks[blockIdx].RecordedValue.ToString("#");
+							block.Title = blocks[blockIdx].RecordedValue.ToString("#.#");
 							break;
 						case MetricTypes.Toggle:
 							break;

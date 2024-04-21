@@ -11,21 +11,52 @@
 }
 else
 {
-	<MudPaper Class="mb-6">
-		<SectionHeader Title="@MetricDefinition.Title" SubTitle="@MetricDefinition.SubTitle" />
-	</MudPaper>
+	<SectionHeader Title="@MetricDefinition.Title" SubTitle="@MetricDefinition.SubTitle" Class="mb-6" />
 
-	<MudPaper>
-		<Calendar Model="@CalendarModel">
-			<div>
-				<MudMenu Label="@LabelYear" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.KeyboardArrowDown" Size="Size.Small" Dense="true" Class="ms-1">
-					@foreach (var year in CalendarModel.YearsAvailable)
-					{
-						<MudMenuItem OnClick="@(() => HandleYearClicked(year))" OnTouch="@(() => HandleYearClicked(year))">@year</MudMenuItem>
-					}
-					<MudMenuItem OnClick="@(() => HandlePastYearClicked())" OnTouch="@(() => HandlePastYearClicked())">Past Year</MudMenuItem>
-				</MudMenu>
-			</div>
-		</Calendar>
-	</MudPaper>
+	<SearchForm T="FormSearchModel" Model="@FormModel" Class="mb-2" ResetClicked="@HandleResetClicked" SearchClicked="@HandleSearchClicked" Disable="@DisableControls">
+		<SearchFields>
+			<MudGrid Spacing="1" Class="flex-grow-1">
+				<MudItem xs="12" sm="6">
+					<MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense" Label="End Month" Disabled="@DisableControls"
+								   @bind-Date="FormModel.EndDate" OpenTo="OpenTo.Month" FixDay="1" DateFormat="MM/yyyy" />
+				</MudItem>
+				<MudItem xs="12" sm="6">
+					<MudSelect Variant="Variant.Outlined" Margin="Margin.Dense" Label="Previous Months" Disabled="@DisableControls"
+							   @bind-Value="@FormModel.NumberOfMonths">
+						@for (int i = 0; i < 12; i++)
+						{
+							var num = i;
+							<MudSelectItem Value="@num">@GetMonthDisplay(num)</MudSelectItem>
+						}
+					</MudSelect>
+				</MudItem>
+			</MudGrid>
+		</SearchFields>
+	</SearchForm>
+
+	@if (IsLoading)
+	{
+		<DefaultProgress />
+	}
+	else
+	{
+		<MudToolBar DisableGutters="true" Class="my-6">
+			<MudSpacer />
+			<MudButtonGroup OverrideStyles="false">
+				<MudButton Color="Color.Secondary" Variant="@GetButtonViewVariant(Views.Calendar)" OnClick="@(() => HandleViewButtonClicked(Views.Calendar))">Calendar</MudButton>
+				<MudButton Color="Color.Secondary" Variant="@GetButtonViewVariant(Views.Charts)" OnClick="@(() => HandleViewButtonClicked(Views.Charts))">Chart</MudButton>
+			</MudButtonGroup>
+			<MudSpacer />
+		</MudToolBar>
+
+		<div class="@GetViewClass(Views.Calendar)">
+			<Calendar Model="@CalendarModel">
+				<MudText Typo="Typo.subtitle1">@CalendarModel.FromDate.ToString("MMM yyyy") - @CalendarModel.ToDate.ToString("MMM yyyy")</MudText>
+			</Calendar>
+		</div>
+
+		<div class="@GetViewClass(Views.Charts)">
+			<Chart T="decimal" Class="mb-6" ChartState="@ChartMetric" />
+		</div>
+	}
 }
