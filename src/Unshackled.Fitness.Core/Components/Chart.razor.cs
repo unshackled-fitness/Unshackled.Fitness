@@ -9,6 +9,9 @@ public partial class Chart<T> : IAsyncDisposable where T : struct
 	[Inject] IJSRuntime JSRuntime { get; set; } = default!;
 
 	[Parameter] public ChartState<T> ChartState { get; set; } = default!;
+	[Parameter] public string? Class { get; set; }
+	[Parameter] public Dictionary<string, string> CustomLegend { get; set; } = new();
+	[Parameter] public bool FormatYaxisAsTime { get; set; } = false;
 
 	protected override void OnInitialized()
 	{
@@ -33,6 +36,6 @@ public partial class Chart<T> : IAsyncDisposable where T : struct
 
 	protected async void HandleDataLoaded()
 	{
-		await JSRuntime.InvokeVoidAsync("loadData", ChartState.Id, ChartState.DataSets);
+		await JSRuntime.InvokeVoidAsync("loadData", ChartState.Id, ChartState.DataSets, FormatYaxisAsTime);
 	}
 }

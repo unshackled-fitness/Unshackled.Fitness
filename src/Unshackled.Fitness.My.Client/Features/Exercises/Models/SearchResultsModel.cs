@@ -8,7 +8,7 @@ public class SearchResultsModel : SearchModel
 {
 	public SearchResultsModel()
 	{
-		PageSize = 60;
+		PageSize = 30;
 	}
 
 	public string ExerciseSid { get; set; } = string.Empty;

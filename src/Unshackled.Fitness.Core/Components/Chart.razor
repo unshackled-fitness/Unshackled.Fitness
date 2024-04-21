@@ -3,9 +3,20 @@
 
 @typeparam T
 
-
-<div style="display:flex;width:100%;height:100%;margin:auto;position:relative;">
-	<canvas id="@ChartState.Id"></canvas>
+<div class="@Class">
+	<div style="display:flex;width:100%;height:100%;margin:auto;position:relative;">
+		<canvas id="@ChartState.Id"></canvas>
+	</div>
+	@if (CustomLegend.Keys.Count > 0)
+	{
+		<div class="custom-legend">
+			@foreach (var key in CustomLegend.Keys)
+			{
+				<div class="legend-item">
+					<div class="color-block" style="background-color:@CustomLegend[key]"></div>
+					<MudText Typo="Typo.body2">@key</MudText>
+				</div>
+			}
+		</div>
+	}
 </div>
-
-

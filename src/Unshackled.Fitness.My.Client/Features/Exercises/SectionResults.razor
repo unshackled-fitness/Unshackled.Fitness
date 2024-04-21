@@ -108,6 +108,31 @@
 	</div>
 	<div class="@GetViewClass(Views.Charts)">
 		<PagingComponent Page="@SearchModel.Page" PageSize="@SearchResults.PageSize" Total="@SearchResults.Total" PageSelected="@HandlePageSelected" />
-		<Chart T="decimal" ChartState="@ChartWeightReps" />
+		<MudGrid Spacing="2">
+			@if (ChartBestWeight.DataSets.Length > 0)
+			{
+				<MudItem xs="12" lg="6">
+					<Chart T="decimal" Class="mb-6" ChartState="@ChartBestWeight" />
+				</MudItem>
+			}
+			@if (ChartHighestVolume.DataSets.Length > 0)
+			{
+				<MudItem xs="12" lg="6">
+					<Chart T="decimal" Class="mb-6" ChartState="@ChartHighestVolume" />
+				</MudItem>
+			}
+			@if (ChartMostReps.DataSets.Length > 0)
+			{
+				<MudItem xs="12" lg="6">
+					<Chart T="int" Class="mb-6" ChartState="@ChartMostReps" CustomLegend="@CustomLegend" />
+				</MudItem>
+			}
+			@if (ChartTime.DataSets.Length > 0)
+			{
+				<MudItem xs="12" lg="6">
+					<Chart T="int" Class="mb-6" ChartState="@ChartTime" CustomLegend="@CustomLegend" FormatYaxisAsTime="true" />
+				</MudItem>
+			}
+		</MudGrid>
 	</div>
 </div>

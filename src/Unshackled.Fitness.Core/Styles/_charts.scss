@@ -1,0 +1,21 @@
+/// <reference path="styles.scss" />
+
+.custom-legend {
+	display: flex;
+	flex-direction: row;
+	gap: 2rem;
+	align-items: center;
+	justify-content: center;
+	margin: .5rem 0 1rem;
+
+	.legend-item {
+		display: flex;
+		flex-direction: row;
+		gap: 0.5rem;
+
+		.color-block {
+			width: 2rem;
+			height: 1rem;
+		}
+	}
+}
