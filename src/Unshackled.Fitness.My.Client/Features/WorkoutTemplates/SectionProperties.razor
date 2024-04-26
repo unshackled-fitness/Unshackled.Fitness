@@ -1,7 +1,7 @@
 ﻿@inherits SectionPropertiesBase
 
-<SectionComponent IsEditMode="@IsEditMode" IsEditing="@IsEditing">
-	<SectionHeader Title="@GetSectionTitle()" IsEditMode="@IsEditMode" IsEditing="@IsEditing" FormId="@FormId" EditingClass="mb-4" Breakpoint="Breakpoint.Md" OnCancelClicked="@HandleCancelClicked">
+<SectionComponent IsEditMode="@IsEditMode" IsEditing="@(IsEditing || IsDuplicating)">
+	<SectionHeader Title="@GetSectionTitle()" IsEditMode="@IsEditMode" IsEditing="@(IsEditing || IsDuplicating)" FormId="@FormId" EditingClass="mb-4" Breakpoint="Breakpoint.Md" OnCancelClicked="@HandleCancelClicked">
 		<EditModeToolbar>
 			<MudIconButton Icon="@Icons.Material.Filled.Edit" Disabled="@DisableSectionControls"
 						   Title="Edit" OnClick="@(() => HandleEditClicked())" />
