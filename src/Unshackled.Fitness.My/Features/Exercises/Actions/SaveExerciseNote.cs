@@ -39,6 +39,10 @@ public class SaveExerciseNote
 
 			// Update exercise
 			exercise.Notes = request.Model.Notes?.Trim();
+
+			// Mark modified to avoid missing string case changes.
+			db.Entry(exercise).Property(x => x.Notes).IsModified = true;
+
 			await db.SaveChangesAsync(cancellationToken);
 
 			return new CommandResult(true, "Note updated.");

@@ -111,6 +111,10 @@ public class SaveDefinition
 					definition.SubTitle = request.Model.SubTitle?.Trim();
 					definition.Title = request.Model.Title.Trim();
 					msg += "updated.";
+
+					// Mark modified to avoid missing string case changes.
+					db.Entry(definition).Property(x => x.Title).IsModified = true;
+					db.Entry(definition).Property(x => x.SubTitle).IsModified = true;
 				}
 				await db.SaveChangesAsync(cancellationToken);
 

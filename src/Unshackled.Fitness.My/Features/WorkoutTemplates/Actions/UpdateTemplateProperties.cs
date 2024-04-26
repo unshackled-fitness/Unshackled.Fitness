@@ -40,7 +40,12 @@ public class UpdateTemplateProperties
 			// Update template
 			template.Description = request.Model.Description?.Trim();
 			template.Title = request.Model.Title.Trim();
-			await db.SaveChangesAsync(cancellationToken);
+
+			// Mark modified to avoid missing string case changes.
+			db.Entry(template).Property(x => x.Title).IsModified = true;
+			db.Entry(template).Property(x => x.Description).IsModified = true;
+
+			int changes = await db.SaveChangesAsync(cancellationToken);
 
 			return new CommandResult<TemplateModel>(true, "Template updated.", mapper.Map<TemplateModel>(template));
 		}

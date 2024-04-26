@@ -50,6 +50,10 @@ public class UpdateExercise
 			exercise.IsTrackingSplit = request.Model.IsTrackingSplit;
 			exercise.Muscles = request.Model.Muscles.ToJoinedIntString();
 			exercise.Title = request.Model.Title.ToUpper().Trim();
+
+			// Mark modified to avoid missing string case changes.
+			db.Entry(exercise).Property(x => x.Description).IsModified = true;
+
 			await db.SaveChangesAsync(cancellationToken);
 
 			return new CommandResult<ExerciseModel>(true, "Exercise updated.", mapper.Map<ExerciseModel>(exercise));

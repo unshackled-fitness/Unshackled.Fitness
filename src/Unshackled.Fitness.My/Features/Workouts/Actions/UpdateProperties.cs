@@ -43,6 +43,11 @@ public class UpdateProperties
 			workout.DateCompletedUtc = request.Model.DateCompletedUtc;
 			workout.Rating = request.Model.Rating;
 			workout.Notes = request.Model.Notes;
+
+			// Mark modified to avoid missing string case changes.
+			db.Entry(workout).Property(x => x.Title).IsModified = true;
+			db.Entry(workout).Property(x => x.Notes).IsModified = true;
+
 			await db.SaveChangesAsync(cancellationToken);
 
 			return new CommandResult(true, "Workout updated.");

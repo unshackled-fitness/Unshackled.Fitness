@@ -40,6 +40,11 @@ public class UpdateProperties
 			// Update program
 			program.Description = request.Model.Description?.Trim();
 			program.Title = request.Model.Title.Trim();
+
+			// Mark modified to avoid missing string case changes.
+			db.Entry(program).Property(x => x.Title).IsModified = true;
+			db.Entry(program).Property(x => x.Description).IsModified = true;
+
 			await db.SaveChangesAsync(cancellationToken);
 
 			var p = mapper.Map<ProgramModel>(program);
