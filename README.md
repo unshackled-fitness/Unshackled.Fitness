@@ -15,6 +15,11 @@ A hosted version is available at https://unshackled.fitness. A 30-day, no credit
 
 ## Run Locally
 
+Install the [.NET SDK](https://dotnet.microsoft.com/en-us/download) for your platform. Then, install the EF Core tools for the .NET CLI.
+```bash
+dotnet tool install --global dotnet-ef
+```
+
 Clone the project
 
 ```bash
@@ -146,11 +151,11 @@ Add a migration for the current release and your database.
 
 ```bash
 # MS SQL Server
-dotnet ef migrations add v1.0.0 -c MsSqlServerDbContext -s ../Unshackled.Fitness.Web -o Migrations
+dotnet ef migrations add v1.1.0 -c MsSqlServerDbContext -s ../Unshackled.Fitness.Web -o Migrations
 # MySQL Server
-dotnet ef migrations add v1.0.0 -c MySqlServerDbContext -s ../Unshackled.Fitness.Web -o Migrations
+dotnet ef migrations add v1.1.0 -c MySqlServerDbContext -s ../Unshackled.Fitness.Web -o Migrations
 # PostgreSQL Server
-dotnet ef migrations add v1.0.0 -c PostgresSqlServerDbContext -s ../Unshackled.Fitness.Web -o Migrations
+dotnet ef migrations add v1.1.0 -c PostgresSqlServerDbContext -s ../Unshackled.Fitness.Web -o Migrations
 ```
 
 Apply the migration
@@ -174,8 +179,8 @@ Start the server
 ```bash
 dotnet run
 ```
-
-
+ ### Upgrading to new versions ###
+ Review the release notes for the new version (and any previous versions you may have skipped) to see if new database migrations are required. Add and apply new migrations using the same commands as before while changing the version number to the new version.
 
 ## Acknowledgements
 
