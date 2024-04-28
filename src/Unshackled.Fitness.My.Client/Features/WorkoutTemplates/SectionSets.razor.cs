@@ -44,6 +44,7 @@ public class SectionSetsBase : BaseSectionComponent
 		var newSet = (FormTemplateSetModel)set.Clone();
 		newSet.Sid = string.Empty;
 		newSet.SortOrder = idx;
+		newSet.IsExpanded = true;
 		FormSets.Insert(idx, newSet);
 
 		for (int i = 0; i < FormSets.Count; i++)
@@ -63,6 +64,7 @@ public class SectionSetsBase : BaseSectionComponent
 				SetMetricType = pickerResult.SetMetricType,
 				ExerciseSid = pickerResult.ExerciseSid,
 				ListGroupSid = gSid,
+				IsExpanded = true,
 				IsTrackingSplit = pickerResult.IsTrackingSplit,
 				Muscles = pickerResult.Muscles,
 				RepMode = RepModes.Exact,
@@ -134,6 +136,11 @@ public class SectionSetsBase : BaseSectionComponent
 		FormGroups = result.Groups;
 		FormSets = result.Items;
 		DeletedGroups = result.DeletedGroups;
+	}
+
+	protected void HandleToggleExpanded(FormTemplateSetModel set)
+	{
+		set.IsExpanded = !set.IsExpanded;
 	}
 
 	protected async Task HandleUpdateClicked()

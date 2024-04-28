@@ -60,14 +60,20 @@
 			<ItemRenderer>
 				<div class="d-flex flex-row gap-3 mb-3">
 					<div>
-						<MudAvatar Variant="Variant.Outlined" Size="Size.Small">@(context.RowIndex + 1)</MudAvatar>
+						<MudAvatar Variant="Variant.Outlined" Size="Size.Small" Color="@(context.Item.SetType == WorkoutSetTypes.Warmup ? Color.Warning : Color.Secondary)">
+							@(context.RowIndex + 1)
+						</MudAvatar>
 					</div>
 					<div class="flex-grow-1">
 						<MudText Typo="Typo.subtitle1">@context.Item.Title</MudText>
 						<MudText Typo="Typo.body1" Color="Color.Tertiary">@context.Item.Equipment.Titles()</MudText>
 					</div>
+					<div>
+						<MudIconButton Icon="@(context.Item.IsExpanded ? Icons.Material.Filled.ArrowDropUp : Icons.Material.Filled.ArrowDropDown)"
+									   Title="@(context.Item.IsExpanded ? "Collapse" : "Expand")" OnClick="@(() => HandleToggleExpanded(context.Item))" />
+					</div>
 				</div>
-				<div class="d-flex flex-column flex-md-row gap-2">
+				<div class="flex-column flex-md-row gap-2 @(context.Item.IsExpanded ? "d-flex" : "d-none")">
 					<MudGrid Spacing="2">
 						<MudItem xs="12" md="3">
 							<WorkoutSetTypeSelect @bind-Value="context.Item.SetType" Margin="Margin.Dense" Disabled="@DisableControls" />

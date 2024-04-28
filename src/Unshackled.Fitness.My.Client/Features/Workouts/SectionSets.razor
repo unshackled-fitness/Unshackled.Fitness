@@ -379,7 +379,12 @@
 									</MudGrid>
 									@if(!string.IsNullOrEmpty(context.Item.ExerciseNotes))
 									{
-										<MudText Typo="Typo.body2" Class="my-2">@((MarkupString)context.Item.ExerciseNotes.ReplaceLineBreaks("<br />"))</MudText>
+										<div class="d-flex flex-row gap-2 align-start my-2">
+											<div>
+												<MudIcon Icon="@Icons.Material.Outlined.StickyNote2" Size="Size.Small" Title="Exercise Note" />
+											</div>
+											<MudText Typo="Typo.body2">@((MarkupString)context.Item.ExerciseNotes.ReplaceLineBreaks("<br />"))</MudText>
+										</div>
 									}
 									<MudToolBar DisableGutters="true" Dense="true" Class="mt-2 mt-sm-0">
 										<ProgressButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Secondary" 

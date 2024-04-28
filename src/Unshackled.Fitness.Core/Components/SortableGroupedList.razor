@@ -98,6 +98,10 @@
 						<ProgressButton Color="Color.Primary" Disabled="@IsWorking" IsWorking="@IsWorking" WorkingText="Applying" StartIcon="@Icons.Material.Filled.Check"
 										OnClick="@(() => HandleUpdateSortClicked())">Apply Order</ProgressButton>
 						<MudButton StartIcon="@Icons.Material.Filled.Cancel" OnClick="@(() => HandleCancelSortClicked())">Cancel</MudButton>
+						@if (SortingGroups.Count > 1)
+						{
+							<MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Sort" OnClick="@(() => HandleSortGroupClicked())">Sort @GroupLabel</MudButton>
+						}
 					</MudToolBar>
 					@foreach (var group in SortingGroups)
 					{
@@ -114,14 +118,6 @@
 							@NewZoneRenderer
 						}
 					</MudDropZone>
-					@if (SortingGroups.Count > 1)
-					{
-						<MudToolBar DisableGutters="true" Dense="true">
-							<MudSpacer />
-							<MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Sort" OnClick="@(() => HandleSortGroupClicked())">Sort @GroupLabel</MudButton>
-							<MudSpacer />
-						</MudToolBar>
-					}
 				</ChildContent>
 				<ItemRenderer>
 					@if (DraggableItemRenderer != null)

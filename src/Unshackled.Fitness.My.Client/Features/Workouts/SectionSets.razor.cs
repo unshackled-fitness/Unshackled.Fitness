@@ -536,6 +536,34 @@ public class SectionSetsBase : BaseSectionComponent
 		}
 		else
 		{
+			// Default to target reps
+			if (Workout.Sets[ActiveSetIdx].RepsTarget > 0)
+			{
+				if (Workout.Sets[ActiveSetIdx].IsTrackingSplit)
+				{
+					Workout.Sets[ActiveSetIdx].RepsLeft = Workout.Sets[ActiveSetIdx].RepsTarget;
+					Workout.Sets[ActiveSetIdx].RepsRight = Workout.Sets[ActiveSetIdx].RepsTarget;
+				}
+				else
+				{
+					Workout.Sets[ActiveSetIdx].Reps = Workout.Sets[ActiveSetIdx].RepsTarget;
+				}
+			}
+
+			// Default to target time
+			if (Workout.Sets[ActiveSetIdx].SecondsTarget > 0)
+			{
+				if (Workout.Sets[ActiveSetIdx].IsTrackingSplit)
+				{
+					Workout.Sets[ActiveSetIdx].SecondsLeft = Workout.Sets[ActiveSetIdx].SecondsTarget;
+					Workout.Sets[ActiveSetIdx].SecondsRight = Workout.Sets[ActiveSetIdx].SecondsTarget;
+				}
+				else
+				{
+					Workout.Sets[ActiveSetIdx].Seconds = Workout.Sets[ActiveSetIdx].SecondsTarget;
+				}
+			}
+
 			// Get last set from workout history
 			SearchSetModel searchModel = new()
 			{

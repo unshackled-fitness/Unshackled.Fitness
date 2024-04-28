@@ -21,6 +21,9 @@ public class FormTemplateSetModel : BaseObject, IGroupedSortable, ICloneable
 	public int IntensityTarget { get; set; }
 
 	[JsonIgnore]
+	public bool IsExpanded { get; set; }
+
+	[JsonIgnore]
 	public TimeSpan? TimeSeconds
 	{
 		get => SecondsTarget > 0 ? new(0, 0, SecondsTarget) : null;
