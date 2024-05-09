@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Unshackled.Fitness.Core.Data;
+using Unshackled.Fitness.Core.Data.Entities;
 using Unshackled.Fitness.Core.Models;
 using Unshackled.Fitness.My.Extensions;
 
@@ -43,6 +44,25 @@ public class DeleteDefinition
 
 			db.MetricDefinitions.Remove(definition);			
 			await db.SaveChangesAsync(cancellationToken);
+
+			// Update sort order of any definitions coming after deleted definition
+			await db.MetricDefinitions
+				.Where(x => x.MemberId == request.MemberId && x.SortOrder > definition.SortOrder)
+				.UpdateFromQueryAsync(x => new MetricDefinitionEntity { SortOrder = x.SortOrder - 1 });
+
+			// Check if group is empty
+			bool hasDefs = await db.MetricDefinitions
+				.Where(x => x.ListGroupId == definition.ListGroupId)
+				.AnyAsync();
+
+			if (!hasDefs)
+			{
+				// Delete empty group
+				await db.MetricDefinitionGroups
+					.Where(x => x.Id == definition.ListGroupId)
+					.DeleteFromQueryAsync(cancellationToken);
+			}
+
 			return new CommandResult(true, "Metric deleted.");
 		}
 	}

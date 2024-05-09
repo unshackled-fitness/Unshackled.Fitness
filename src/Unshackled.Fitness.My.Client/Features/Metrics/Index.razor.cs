@@ -67,7 +67,17 @@ public class IndexBase : BaseComponent
 			ShowNotification(result);
 			if (result.Success)
 			{
+				// Remove the definition from the list
 				ListModel.Metrics.Remove(DeletingDefinition);
+
+				// If no metrics left in the group
+				if (!ListModel.Metrics.Where(x => x.ListGroupSid == DeletingDefinition.ListGroupSid).Any())
+				{
+					// Remove the group
+					var group = ListModel.Groups.Where(x => x.Sid == DeletingDefinition.ListGroupSid).SingleOrDefault();
+					if (group != null)
+						ListModel.Groups.Remove(group);
+				}
 			}
 			DeletingDefinition = null;
 			ShowView = Views.List;
