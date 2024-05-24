@@ -1,28 +1,31 @@
 ﻿@inherits DashboardStatsBase
 
-<div class="d-flex flex-column flex-md-row gap-8 gap-md-4 mb-12">
-	<div class="workout-summary flex-grow-1">
-		<div class="summary-item">
-			<MudText Class="summary-label" Color="Color.Tertiary" Align="Align.Center">Workouts Tracked</MudText>
-			<MudText Class="summary-value">@Model.TotalWorkouts</MudText>
-			@if (Model.Years.Any())
-			{
-				<MudText Class="summary-caption" Color="Color.Tertiary">since @Model.Years.FirstOrDefault()</MudText>
-			}
-		</div>
-		<MudDivider Vertical="true" FlexItem="true" />
-		<div class="summary-item">
-			<MudText Class="summary-label" Color="Color.Tertiary" Align="Align.Center">Total Volume</MudText>
-			<MudText Class="summary-value">
-				<WeightLabel WeightKg="@Model.TotalVolumeKg" WeightLb="@Model.TotalVolumeLb" UnitSystem="@State.ActiveMember.Settings.DefaultUnits" />
-			</MudText>
-			@if (Model.Years.Any())
-			{
-				<MudText Class="summary-caption" Color="Color.Tertiary">since @Model.Years.FirstOrDefault()</MudText>
-			}
-		</div>
-	</div>
-	<div class="stat-graph">
+<div class="d-flex flex-column flex-md-row gap-8 mb-8">
+	<MudGrid Spacing="2" Class="flex-grow-1">
+		<MudItem xs="6">
+			<MudPaper Class="h-100">
+				<MudText Typo="Typo.body2" Color="Color.Tertiary" Align="Align.Center">Workouts Tracked</MudText>
+				<MudText Typo="Typo.h4" Align="Align.Center" Class="my-4">@Model.TotalWorkouts</MudText>
+				@if (Model.Years.Any())
+				{
+					<MudText Typo="Typo.caption" Align="Align.Center" Color="Color.Tertiary" Class="d-block">since @Model.Years.FirstOrDefault()</MudText>
+				}
+			</MudPaper>
+		</MudItem>
+		<MudItem xs="6">
+			<MudPaper Class="h-100">
+				<MudText Typo="Typo.body2" Color="Color.Tertiary" Align="Align.Center">Total Volume</MudText>
+				<MudText Typo="Typo.h4" Align="Align.Center" Class="my-4">
+					<WeightLabel WeightKg="@Model.TotalVolumeKg" WeightLb="@Model.TotalVolumeLb" UnitSystem="@State.ActiveMember.Settings.DefaultUnits" />
+				</MudText>
+				@if (Model.Years.Any())
+				{
+					<MudText Typo="Typo.caption" Align="Align.Center" Color="Color.Tertiary" Class="d-block">since @Model.Years.FirstOrDefault()</MudText>
+				}
+			</MudPaper>
+		</MudItem>
+	</MudGrid>
+	<MudPaper class="stat-graph">
 		<div>
 			<MudText Typo="Typo.body1" Inline="true">@Model.Workouts.Count Workouts in</MudText>
 				<MudMenu Label="@LabelYear" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.KeyboardArrowDown" Size="Size.Small" Dense="true" Class="ms-1">
@@ -88,7 +91,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</MudPaper>
 </div>
 
 

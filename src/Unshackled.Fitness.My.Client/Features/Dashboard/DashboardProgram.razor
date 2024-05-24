@@ -2,8 +2,8 @@
 
 @if (Templates.Any())
 {
-	<div class="d-flex flex-column gap-0 align-center align-md-start mb-12">
-		<MudText Color="Color.Tertiary">@(Templates.Count > 1 ? "Today's Workouts" : "Today's Workout")</MudText>
+	<MudPaper Class="d-flex flex-column gap-0 align-center mb-8">
+		<MudText Align="Align.Center" Color="Color.Tertiary">@(Templates.Count > 1 ? "Today's Workouts" : "Today's Workout")</MudText>
 		<ListView TItem="ProgramListModel" Items="@Templates" Class="w-100">
 			<ItemRenderer>
 				@if (!context.Item.IsStarted)
@@ -50,7 +50,7 @@
 				}
 			</ItemRenderer>
 		</ListView>
-	</div>
+	</MudPaper>
 }
 
 
